@@ -15,7 +15,8 @@ obj/**
 
 vs/__build_obj
 vs/__build_obj/**
-
+vs/__build_obj_client
+vs/__build_obj_client/**
 ipch/
 ipch/**
 
