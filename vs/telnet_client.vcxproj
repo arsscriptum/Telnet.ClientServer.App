@@ -29,6 +29,17 @@
     <ClInclude Include="..\src\client\resource.h" />
     <ClInclude Include="..\src\client\StdAfx.h" />
   </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\client\CTelnet.rc" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\src\client\res\CTelnet.ico" />
+    <Image Include="..\src\client\res\CTelnetDoc.ico" />
+    <Image Include="..\src\client\res\Toolbar.bmp" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\src\client\res\CTelnet.rc2" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
