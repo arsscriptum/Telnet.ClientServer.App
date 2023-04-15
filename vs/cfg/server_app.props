@@ -7,8 +7,8 @@
      <ProjectRoot>$(ProjectDir)..\</ProjectRoot>
      <TempRoot>$(ProjectDir)</TempRoot>
      <SolutionRootDirectory>$(ProjectDir)..\</SolutionRootDirectory>
-     <ExternalDirectory>$(SolutionRootDirectory)external</ExternalDirectory>
-     <ScriptsDirectory>$(SolutionRootDirectory)scripts</ScriptsDirectory>
+     <ExternalDirectory>$(SolutionRootDirectory)external\</ExternalDirectory>
+     <ScriptsDirectory>$(SolutionRootDirectory)scripts\</ScriptsDirectory>
   </PropertyGroup>
 
   <PropertyGroup Label="ModuleMacros">
@@ -79,7 +79,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>$(ScriptsDirectory)server_post_build.bat</Command>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-VSPostBuild.ps1 $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
 

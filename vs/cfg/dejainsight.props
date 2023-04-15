@@ -73,9 +73,6 @@
       <AdditionalLibraryDirectories>$(DejaInsightLibPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(DejaInsight_LinkOpt_Lib);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>copy $(DejaInsight_LinkOpt_Dll) $(OutDir)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
 
 </Project>
