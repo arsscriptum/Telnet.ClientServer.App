@@ -1,0 +1,10 @@
+﻿  ClientSocket.cpp
+  CTelnet.cpp
+F:\Code\Telnet.ClientServer.App\src\client\CTelnet.cpp(69,2): warning C4996: 'CWinApp::Enable3dControlsStatic': CWinApp::Enable3dControlsStatic is no longer needed. You should remove this call.
+  CTelnetDoc.cpp
+  CTelnetView.cpp
+  HostDialog.cpp
+  MainFrm.cpp
+  StdAfx.cpp
+  Génération de code en cours...
+  telnet_client.vcxproj -> F:\Code\Telnet.ClientServer.App\bin\Win32\Debug\telnet_client.exe
