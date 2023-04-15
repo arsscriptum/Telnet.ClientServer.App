@@ -20,4 +20,9 @@
 #include <afx.h>
 
 #include <windows.h>
+
+#include "log.h"
+
+
+
 #endif//__STDAFX_F__

@@ -274,7 +274,7 @@ BOOL CNTService :: StartDispatcher() {
 
 BOOL CNTService :: InstallService() {
     TCHAR szPath[1024];
-
+	LOG_TRACE("CNTService::InstallService", "");
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
 					// diagnostic or error reason: orignal class assumed
 					// that we were using _main for entry (a console app).
@@ -284,7 +284,8 @@ BOOL CNTService :: InstallService() {
 
 	if( GetModuleFileName( 0, szPath, 1023 ) == 0 ) {
 		TCHAR szErr[256];
-		_tprintf(TEXT("Unable to install %s - %s\n"), m_lpDisplayName, GetLastErrorText(szErr, 256));
+		LOG_ERROR("CNTService::InstallService", "Unable to install % s - % s", m_lpDisplayName, GetLastErrorText(szErr, 256));
+		
 		return FALSE;
 	}
 
@@ -336,18 +337,18 @@ BOOL CNTService :: InstallService() {
 									);
 
 			if( schService ) {
-				_tprintf(TEXT("%s installed.\n"), m_lpDisplayName );
+				LOG_TRACE("CNTService::InstallService", "%s installed.", m_lpDisplayName );
 				CloseServiceHandle(schService);
 				bRet = TRUE;
 			} else {
 				TCHAR szErr[256];
-				_tprintf(TEXT("CreateService failed - %s\n"), GetLastErrorText(szErr, 256));
+				LOG_ERROR("CNTService::InstallService", "CreateService failed - %s", GetLastErrorText(szErr, 256));
 			}
 
 			CloseServiceHandle(schSCManager);
 		 } else {
 			TCHAR szErr[256];
-			_tprintf(TEXT("OpenSCManager failed - %s\n"), GetLastErrorText(szErr,256));
+			LOG_ERROR("CNTService::InstallService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
 		if( bRet ) {
@@ -400,43 +401,46 @@ BOOL CNTService :: RemoveService() {
 
 			if( schService ) {
 				// try to stop the service
-				if( ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus) ) {
-					_tprintf(TEXT("Stopping %s."), m_lpDisplayName);
+				if (ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus)) {
+					LOG_TRACE("CNTService::RemoveService", "Stopping %s.", m_lpDisplayName);
 					Sleep(1000);
 
-					while( QueryServiceStatus(schService, &m_ssStatus) ) {
-						if( m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING ) {
-							_tprintf(TEXT("."));
-							Sleep( 1000 );
-						} else
+					while (QueryServiceStatus(schService, &m_ssStatus)) {
+						if (m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING) {
+							LOG_TRACE("CNTService::RemoveService", ".");
+							Sleep(1000);
+						}
+						else
 							break;
 					}
 
-					if( m_ssStatus.dwCurrentState == SERVICE_STOPPED )
-						_tprintf(TEXT("\n%s stopped.\n"), m_lpDisplayName);
-						 else
-							  _tprintf(TEXT("\n%s failed to stop.\n"), m_lpDisplayName);
+					if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
+						LOG_TRACE("CNTService::RemoveService", "\n%s stopped.", m_lpDisplayName);
+					}
+					else {
+						LOG_ERROR("CNTService::RemoveService", "\n%s failed to stop.", m_lpDisplayName);
+					}
 				}
 
 				// now remove the service
 				if( DeleteService(schService) ) {
-					_tprintf(TEXT("%s removed.\n"), m_lpDisplayName);
+					LOG_TRACE("CNTService::RemoveService", "%s removed.", m_lpDisplayName);
 					bRet = TRUE;
 				} else {
 					TCHAR szErr[256];
-					_tprintf(TEXT("DeleteService failed - %s\n"), GetLastErrorText(szErr,256));
+					LOG_ERROR("CNTService::RemoveService", "DeleteService failed - %s", GetLastErrorText(szErr,256));
 				}
 
 				CloseServiceHandle(schService);
 			} else {
 				TCHAR szErr[256];
-				_tprintf(TEXT("OpenService failed - %s\n"), GetLastErrorText(szErr,256));
+				LOG_ERROR("CNTService::RemoveService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 			}
 
 			  CloseServiceHandle(schSCManager);
 		 } else {
 			TCHAR szErr[256];
-			_tprintf(TEXT("OpenSCManager failed - %s\n"), GetLastErrorText(szErr,256));
+			LOG_ERROR("CNTService::RemoveService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
 		if( bRet )
@@ -465,33 +469,37 @@ BOOL CNTService :: EndService() {
 		if( schService ) {
 			// try to stop the service
 			if( ::ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus) ) {
-				_tprintf(TEXT("Stopping %s."), m_lpDisplayName);
+				LOG_TRACE("CNTService::EndService", "Stopping %s.", m_lpDisplayName);
 				::Sleep(1000);
 
 				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
 					if( m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING ) {
-						_tprintf(TEXT("."));
+						LOG_TRACE("CNTService::EndService", ".");
 						::Sleep( 1000 );
 					} else
 						break;
 				}
 
-				if( m_ssStatus.dwCurrentState == SERVICE_STOPPED )
-					bRet = TRUE, _tprintf(TEXT("\n%s stopped.\n"), m_lpDisplayName);
-                else
-                    _tprintf(TEXT("\n%s failed to stop.\n"), m_lpDisplayName);
+				if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
+					bRet = TRUE;
+					LOG_TRACE("CNTService::EndService", "\n%s stopped.", m_lpDisplayName);
+				}
+				else {
+					LOG_ERROR("CNTService::EndService", "\n%s failed to stop.", m_lpDisplayName);
+				}
+                    
 			}
 
 			::CloseServiceHandle(schService);
 		} else {
 			TCHAR szErr[256];
-			_tprintf(TEXT("OpenService failed - %s\n"), GetLastErrorText(szErr,256));
+			LOG_ERROR("CNTService::EndService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
 		TCHAR szErr[256];
-		_tprintf(TEXT("OpenSCManager failed - %s\n"), GetLastErrorText(szErr,256));
+		LOG_ERROR("CNTService::EndService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 
 	return bRet;
@@ -515,38 +523,44 @@ BOOL CNTService :: StartupService() {
 
 		if( schService ) {
 			// try to start the service
-			_tprintf(TEXT("Starting up %s."), m_lpDisplayName);
+			LOG_TRACE("CNTService::StartupService", "Starting up %s.", m_lpDisplayName);
 			if( ::StartService(schService, 0, 0) ) {
 				Sleep(1000);
 
 				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
 					if( m_ssStatus.dwCurrentState == SERVICE_START_PENDING ) {
-						_tprintf(TEXT("."));
+						LOG_TRACE("CNTService::StartupService", ".");
 						Sleep( 1000 );
 					} else
 						break;
 				}
 
-				if( m_ssStatus.dwCurrentState == SERVICE_RUNNING )
-					bRet = TRUE, _tprintf(TEXT("\n%s started.\n"), m_lpDisplayName);
-                else
-                    _tprintf(TEXT("\n%s failed to start.\n"), m_lpDisplayName);
+				if (m_ssStatus.dwCurrentState == SERVICE_RUNNING) {
+					bRet = TRUE;
+					LOG_TRACE("CNTService::StartupService", "%s started.", m_lpDisplayName);
+				}
+				else {
+					LOG_ERROR("CNTService::StartupService", "%s failed to start.", m_lpDisplayName);
+				}
+
+			
+                    
 			} else {
 				// StartService failed
 				TCHAR szErr[256];
-				_tprintf(TEXT("\n%s failed to start: %s\n"), m_lpDisplayName, GetLastErrorText(szErr,256));
+				LOG_ERROR("CNTService::StartupService", "%s failed to start: %s", m_lpDisplayName, GetLastErrorText(szErr,256));
 			}
 
 			::CloseServiceHandle(schService);
 		} else {
 			TCHAR szErr[256];
-			_tprintf(TEXT("OpenService failed - %s\n"), GetLastErrorText(szErr,256));
+			LOG_ERROR("CNTService::StartupService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
 		TCHAR szErr[256];
-		_tprintf(TEXT("OpenSCManager failed - %s\n"), GetLastErrorText(szErr,256));
+		LOG_ERROR("CNTService::StartupService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 
 	return bRet;
@@ -583,7 +597,7 @@ BOOL CNTService :: DebugService(int argc, char ** argv, BOOL faceless) {
 
 	if( !faceless ) {	//!! TCW MOD - no faceless, so give it a face.
 		SetupConsole();	//!! TCW MOD - make the console for debugging
-	   _tprintf(TEXT("Debugging %s.\n"), m_lpDisplayName);
+	   LOG_TRACE("CNTService::DebugService", "Debugging %s.", m_lpDisplayName);
 
 		SetConsoleCtrlHandler(ControlHandler, TRUE);
 	}
@@ -639,7 +653,7 @@ void CNTService :: Shutdown() {
 
 void WINAPI CNTService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
 	_ASSERTE( gpTheService != 0 );
-
+	LOG_TRACE("CNTService::ServiceMain", "register our service control handler for %s", gpTheService->m_lpDisplayName);
 	// register our service control handler:
 	gpTheService->m_sshStatusHandle =	RegisterServiceCtrlHandler(
 											gpTheService->m_lpServiceName,
@@ -647,7 +661,7 @@ void WINAPI CNTService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
 										);
 
 	if( gpTheService->m_sshStatusHandle )
-
+		LOG_TRACE("CNTService::ServiceMain", "report the status to the service control manager. SERVICE_START_PENDING");
 		// report the status to the service control manager.
 		if( gpTheService->ReportStatus(SERVICE_START_PENDING) ){
 			gpTheService->Run( dwArgc, lpszArgv );}
@@ -701,7 +715,7 @@ BOOL WINAPI CNTService :: ControlHandler(DWORD dwCtrlType) {
 	switch( dwCtrlType ) {
 		case CTRL_BREAK_EVENT:  // use Ctrl+C or Ctrl+Break to simulate
 		case CTRL_C_EVENT:      // SERVICE_CONTROL_STOP in debug mode
-			_tprintf(TEXT("Stopping %s.\n"), gpTheService->m_lpDisplayName);
+			LOG_TRACE("CNTService::ControlHandler", "Stopping %s.", gpTheService->m_lpDisplayName);
 			gpTheService->Stop();
 			return TRUE;
 	}

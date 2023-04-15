@@ -44,8 +44,8 @@ public:
 	void Stop();
 
 	//construction code
-	SMRemoteService() : CNTService(TEXT("Telnet Server"), 
-		TEXT("Telnet Server")) , m_hStop(0){};
+	SMRemoteService() : CNTService(TEXT("__dev_telnet_srv"), 
+		TEXT("__dev_telnet_srv")) , m_hStop(0){};
 };
 
 UINT thrid_daemon;
@@ -59,11 +59,13 @@ extern void MasterReset(void);
 //this is the main process starts our process
 void SMRemoteService::Run(DWORD argc, LPTSTR * argv) 
 {
+	LOG_TRACE("SMRemoteService::Run", "Run");
 	restartCount = 0;
 	requestReset = FALSE;
-
+	LOG_TRACE("SMRemoteService::Run", "Run ReportStatus(SERVICE_START_PENDING);");
 	ReportStatus(SERVICE_START_PENDING);
 	m_hStop = CreateEvent(0, TRUE, FALSE, 0);
+	LOG_TRACE("SMRemoteService::Run", "Run ReportStatus(SERVICE_RUNNING);");
 	ReportStatus(SERVICE_RUNNING);
 
 	//start the deamon thread
@@ -73,10 +75,11 @@ void SMRemoteService::Run(DWORD argc, LPTSTR * argv)
 
 	WaitForSingleObjectEx(m_hStop,INFINITE,FALSE);
 
+	LOG_TRACE("SMRemoteService::Run", "TerminateThread;");
 	TerminateThread((void*)masterThread,0);
 	CloseHandle(m_hStop);
 
-
+	LOG_TRACE("SMRemoteService::Run", "Run ReportStatus(SERVICE_STOPPED);");
 	ReportStatus(SERVICE_STOPPED);
 }
 
@@ -84,6 +87,7 @@ void SMRemoteService::Run(DWORD argc, LPTSTR * argv)
 //signal the main process (Run) to terminate
 void SMRemoteService::Stop() 
 {
+	LOG_TRACE("SMRemoteService::Stop", "ReportStatus(SERVICE_STOP_PENDING);");
 	if( m_hStop )
 	{
 		SetEvent(m_hStop);
@@ -138,6 +142,7 @@ void SMRemoteService::Stop()
 
 int main( int argc, char ** argv )
 {
+	LOG_TRACE("main", "RegisterService;");
 	SMRemoteService service;
 	return service.RegisterService(argc, argv);
 }

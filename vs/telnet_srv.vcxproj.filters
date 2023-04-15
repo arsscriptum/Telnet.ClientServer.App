@@ -1,0 +1,16 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\server\Main.cpp" />
+    <ClCompile Include="..\src\server\NTService.cpp" />
+    <ClCompile Include="..\src\server\stdafx.cpp" />
+    <ClCompile Include="..\src\server\telnetd.cpp" />
+    <ClCompile Include="..\src\common\log.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\server\NTService.h" />
+    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h" />
+    <ClInclude Include="..\src\server\stdafx.h" />
+    <ClInclude Include="..\src\common\log.h" />
+  </ItemGroup>
+</Project>

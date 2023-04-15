@@ -630,7 +630,7 @@ char GetCharFromClient()
 	if(!read)
 	{
 		ch = -1;
-		printf("Socket broken at other end....\n");
+		LOG_ERROR("SOCKET","Socket broken at other end....");
 	}
 	return ch;
 }
