@@ -11,15 +11,15 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\src\Main.cpp" />
-    <ClCompile Include="..\src\NTService.cpp" />
-    <ClCompile Include="..\src\stdafx.cpp" />
-    <ClCompile Include="..\src\telnetd.cpp" />
+    <ClCompile Include="..\src\server\Main.cpp" />
+    <ClCompile Include="..\src\server\NTService.cpp" />
+    <ClCompile Include="..\src\server\stdafx.cpp" />
+    <ClCompile Include="..\src\server\telnetd.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\NTService.h" />
-    <ClInclude Include="..\src\NTServiceEventLogMsg.h" />
-    <ClInclude Include="..\src\stdafx.h" />
+    <ClInclude Include="..\src\server\NTService.h" />
+    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h" />
+    <ClInclude Include="..\src\server\stdafx.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />
@@ -64,7 +64,7 @@
     <TargetName>$(TargetName)</TargetName>
   </PropertyGroup>
   <ItemDefinitionGroup>
-  <!--   
+    <!--   
          ClCompile COMMON
   -->
     <ClCompile>
@@ -98,7 +98,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-  <!--   
+    <!--   
          ClCompile Release
   -->
     <ClCompile>
@@ -113,7 +113,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-  <!--   
+    <!--   
          ClCompile Debug
   -->
     <ClCompile>
