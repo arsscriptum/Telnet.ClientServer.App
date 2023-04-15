@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?> 
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+<PropertyGroup Label="PropertySheets_Included">
+  <codemeter_integration>winapp_uses_codemeter</codemeter_integration>
+</PropertyGroup>
+    
+<!--
+    //==============================================================================
+    //
+    //   codemeter.props
+    //   Property sheet for the codemeter log tool integration.
+    //==============================================================================
+    //  Copyright (C) Guilaume Plante 2020 <codecastor@icloud.com>
+    //==============================================================================
+-->
+
+
+  <!-- General CodeMeter Environment added in UserMacros -->
+  <PropertyGroup Label="CodeMeterMacros">
+    <AxProtectorDevKitEnv>$(AXPROTECTOR_SDK)</AxProtectorDevKitEnv> 
+    <CodeMeterDevKitEnv>$(CODEMETER_SDK)</CodeMeterDevKitEnv> 
+    <AxProtectorDevKitPath>C:\Program Files (x86)\WIBU-SYSTEMS\AxProtector\Devkit</AxProtectorDevKitPath> 
+    <CodeMeterDevKitPath>C:\Program Files (x86)\CodeMeter\DevKit</CodeMeterDevKitPath> 
+    <CodeMeterDevKitLibPath>$(CodeMeterDevKitPath)\lib</CodeMeterDevKitLibPath> 
+    <CodeMeterDevKitBinPath>$(CodeMeterDevKitPath)\bin</CodeMeterDevKitBinPath> 
+    <AxProtectorDevKitLibPath>$(AxProtectorDevKitPath)\lib</AxProtectorDevKitLibPath> 
+    <CodeMeterIncludesPath>$(AxProtectorDevKitPath)\include;$(CodeMeterDevKitPath)\include;$(CodeMeterDevKitPath)\HipApi\C++\include;$(CodeMeterDevKitPath)\HipApi\C</CodeMeterIncludesPath> 
+    <CodeMeterLibsPath>$(AxProtectorDevKitPath)\bin;$(AxProtectorDevKitPath)\lib;$(CodeMeterDevKitPath)\lib;$(CodeMeterDevKitPath)\HipApi\C++\lib;$(CodeMeterDevKitPath)\HipApi\C</CodeMeterLibsPath> 
+  </PropertyGroup>   
+
+  <Choose>
+    <When Condition="'$(Platform)'=='Win32' Or '$(Platform)'=='x86'">
+      <PropertyGroup>
+          <WupiEngine_Lib>WupiEngine32.lib</WupiEngine_Lib>
+          <WupiEngine_Dll>WupiEngine32.dll</WupiEngine_Dll>
+          <WibuCm_Lib>WibuCm32.lib</WibuCm_Lib>
+          <WibuCm_Dll>WibuCm32.dll</WibuCm_Dll>
+          <CmRmtAct_Lib>CmRmtAct32.lib</CmRmtAct_Lib>
+          <CmRmtAct_Dll>CmRmtAct32.dll</CmRmtAct_Dll>
+          <WibuCmHipApi_Lib>WibuCmHipApi32.lib</WibuCmHipApi_Lib>
+          <WibuCmHipApi_Dll>WibuCmHipApi32.dll</WibuCmHipApi_Dll>
+          <CodeMeter_LinkOpt_Lib>$(WupiEngine_Lib);$(WibuCmHipApi_Lib)</CodeMeter_LinkOpt_Lib>
+      </PropertyGroup>
+    </When>
+    <Otherwise>
+      <PropertyGroup>
+          <WupiEngine_Lib>WupiEngine64.lib</WupiEngine_Lib>
+          <WupiEngine_Dll>WupiEngine64.dll</WupiEngine_Dll>
+          <WibuCm_Lib>WibuCm64.lib</WibuCm_Lib>
+          <WibuCm_Dll>WibuCm64.dll</WibuCm_Dll>
+          <CmRmtAct_Lib>CmRmtAct64.lib</CmRmtAct_Lib>
+          <CmRmtAct_Dll>CmRmtAct64.dll</CmRmtAct_Dll>
+          <WibuCmHipApi_Lib>WibuCmHipApi64.lib</WibuCmHipApi_Lib>
+          <WibuCmHipApi_Dll>WibuCmHipApi64.dll</WibuCmHipApi_Dll>
+          <CodeMeter_LinkOpt_Lib>$(WupiEngine_Lib);$(WibuCmHipApi_Lib)</CodeMeter_LinkOpt_Lib>
+      </PropertyGroup>
+    </Otherwise>
+  </Choose>
+
+   <ItemDefinitionGroup Condition="'$(Platform)'=='Win32' Or '$(Platform)'=='x86'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(CodeMeterIncludesPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CODEMETER_ENABLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CodeMeterLibsPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CodeMeter_LinkOpt_Lib);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Platform)'=='Win64' Or '$(Platform)'=='x64'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(CodeMeterIncludesPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CODEMETER_ENABLED;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CodeMeterLibsPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CodeMeter_LinkOpt_Lib);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+   <ItemDefinitionGroup Condition="'$(Platform)'=='Static_Win32' Or '$(Platform)'=='Static_x86'">
+    <ClCompile>
+      <AdditionalIncludeDirectories>$(CodeMeterIncludesPath);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>CODEMETER_ENABLED;_CODEMETER_API_STATIC_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ClCompile>
+    <Link>
+      <AdditionalLibraryDirectories>$(CodeMeterLibsPath);%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalDependencies>$(CodeMeter_LinkOpt_Lib);%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+</Project>
+
