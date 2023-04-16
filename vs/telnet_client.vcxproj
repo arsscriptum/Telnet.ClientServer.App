@@ -11,6 +11,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\client\CachedScrollView.cpp" />
     <ClCompile Include="..\src\client\ClientSocket.cpp" />
     <ClCompile Include="..\src\client\CTelnet.cpp" />
     <ClCompile Include="..\src\client\CTelnetDoc.cpp" />
@@ -22,6 +23,7 @@
     <ClCompile Include="..\src\common\ScoppedLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\client\CachedScrollView.h" />
     <ClInclude Include="..\src\client\ClientSocket.h" />
     <ClInclude Include="..\src\client\CTelnet.h" />
     <ClInclude Include="..\src\client\CTelnetDoc.h" />
@@ -36,7 +38,6 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\client\CTelnet.rc" />
-    <ResourceCompile Include="..\src\client\CTelnet.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\src\client\res\CTelnet.ico" />

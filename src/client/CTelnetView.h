@@ -5,6 +5,8 @@
 #if !defined(AFX_CTelnetVIEW_H__243EC4A1_4FED_11D3_8C9E_00C0F0405B24__INCLUDED_)
 #define AFX_CTelnetVIEW_H__243EC4A1_4FED_11D3_8C9E_00C0F0405B24__INCLUDED_
 
+#include "CachedScrollView.h"
+
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -33,7 +35,7 @@ const	unsigned char USERVAR	= '3';
 
 #define ioBuffSize 1024
 
-class CTelnetView : public CScrollView
+class CTelnetView : public CCachedScrollView
 {
 protected: // create from serialization only
 	CTelnetView();

@@ -78,6 +78,9 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <PreBuildEvent>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-PreBuild.ps1</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
       <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ClientPostBuild.ps1 $(Configuration)</Command>
     </PostBuildEvent>
