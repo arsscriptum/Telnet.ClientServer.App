@@ -49,6 +49,7 @@ CTelnetView::CTelnetView()
 	cSock = NULL;
 	bOptionsSent = FALSE;
 	TempCounter = 0;
+	processedLines = 0;
 	cCursX = 0;
 	for(int x = 0; x < 80; x++)
 	{
@@ -221,9 +222,16 @@ void CTelnetView::ProcessMessage(CClientSocket * pSock)
 	{
 		LOG_TRACE("CTelnetView::ProcessMessage", "Received %d byets", nBytes);
 		int ndx = 0;
-		while(GetLine(m_bBuf, nBytes, ndx) != TRUE);
+		while (GetLine(m_bBuf, nBytes, ndx) != TRUE);
+			
+		
 		ProcessOptions();
 		MessageReceived(m_strNormalText);
+		CSize sizeTotal;
+		sizeTotal.cx = dtX * 80 + 3;
+		sizeTotal.cy = dtY * bufferLines + processedLines;
+		LOG_TRACE("CTelnetView::SetScrollSizes", "processedLines %d", processedLines);
+		SetScrollSizes(MM_TEXT, sizeTotal);
 	}
 	m_strLine.Empty();
 	m_strResp.Empty();
@@ -428,6 +436,7 @@ BOOL CTelnetView::GetLine( unsigned char * bytes, int nBytes, int& ndx )
 
 		if (ndx == nBytes)
 		{
+			processedLines++;
 			bLine = TRUE;
 		}
 	}

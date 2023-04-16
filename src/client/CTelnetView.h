@@ -29,7 +29,7 @@ const	unsigned char VALUE		= '1';
 const	unsigned char ESC		= '2';
 const	unsigned char USERVAR	= '3';
 
-#define bufferLines 100
+#define bufferLines 500
 #define dtX 8
 #define dtY 13
 
@@ -60,6 +60,7 @@ public:
 	BOOL bOptionsSent;
 	CString m_strResp;
 	CString m_strLine;
+	unsigned int processedLines;
 	unsigned char m_bBuf[ioBuffSize];
 	BOOL GetLine( unsigned char * bytes, int nBytes, int& ndx );
 	void DispatchMessage(CString strText);
