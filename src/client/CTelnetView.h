@@ -6,7 +6,7 @@
 #define AFX_CTelnetVIEW_H__243EC4A1_4FED_11D3_8C9E_00C0F0405B24__INCLUDED_
 
 #include "CachedScrollView.h"
-
+#include "keycodes_hashtable.h"
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -71,6 +71,8 @@ public:
 
 	void DrawCursor(CDC * pDC, BOOL pDraw);
 	void DoDraw(CDC* pDC);
+
+	KeyCodesHashTable hashKeyCodes;
 
 private:
 	void MessageReceived(LPCSTR pText);

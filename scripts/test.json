@@ -1,0 +1,350 @@
+[
+  {
+    "Key": "Arrow Down",
+    "Code": "\\u001b[B"
+  },
+  {
+    "Key": "Arrow Left",
+    "Code": "\\u001b[D"
+  },
+  {
+    "Key": "Arrow Right",
+    "Code": "\\u001b[C"
+  },
+  {
+    "Key": "Arrow Up",
+    "Code": "\\u001b[A"
+  },
+  {
+    "Key": "BackSpace",
+    "Code": "\\u0008"
+  },
+  {
+    "Key": "Back Tab",
+    "Code": "\\u001bOP\\u0009"
+  },
+  {
+    "Key": "Delete",
+    "Code": "\\u007f"
+  },
+  {
+    "Key": "Escape",
+    "Code": "\\u001b"
+  },
+  {
+    "Key": "Linefeed",
+    "Code": "\\u000a"
+  },
+  {
+    "Key": "Return",
+    "Code": "\\u000d"
+  },
+  {
+    "Key": "Tab",
+    "Code": "\\u0009"
+  },
+  {
+    "Key": "\\u001bOP",
+    "Code": "F1"
+  },
+  {
+    "Key": "\\u001bOQ",
+    "Code": "F2"
+  },
+  {
+    "Key": "\\u001bOR",
+    "Code": "F3"
+  },
+  {
+    "Key": "\\u001bOS",
+    "Code": "F4"
+  },
+  {
+    "Key": "\\u001b[15~",
+    "Code": "F5"
+  },
+  {
+    "Key": "\\u001b[17~",
+    "Code": "F6"
+  },
+  {
+    "Key": "\\u001b[18~",
+    "Code": "F7"
+  },
+  {
+    "Key": "\\u001b[19~",
+    "Code": "F8"
+  },
+  {
+    "Key": "\\u001b[20~",
+    "Code": "F9"
+  },
+  {
+    "Key": "\\u001b[21~",
+    "Code": "F10"
+  },
+  {
+    "Key": "\\u001b[23~",
+    "Code": "F11"
+  },
+  {
+    "Key": "\\u001b[24~",
+    "Code": "F12"
+  },
+  {
+    "Key": "\\u001b[25~",
+    "Code": "F13"
+  },
+  {
+    "Key": "\\u001b[26~",
+    "Code": "F14"
+  },
+  {
+    "Key": "\\u001b[28~",
+    "Code": "F15"
+  },
+  {
+    "Key": "\\u001b[29~",
+    "Code": "F16"
+  },
+  {
+    "Key": "\\u001b[31~",
+    "Code": "F17"
+  },
+  {
+    "Key": "\\u001b[32~",
+    "Code": "F18"
+  },
+  {
+    "Key": "\\u001b[33~",
+    "Code": "F19"
+  },
+  {
+    "Key": "\\u001b[34~",
+    "Code": "F20"
+  },
+  {
+    "Key": "0",
+    "Code": "\\u001bOp"
+  },
+  {
+    "Key": "1",
+    "Code": "\\u001bOq"
+  },
+  {
+    "Key": "2",
+    "Code": "\\u001bOr"
+  },
+  {
+    "Key": "3",
+    "Code": "\\u001bOs"
+  },
+  {
+    "Key": "4",
+    "Code": "\\u001bOt"
+  },
+  {
+    "Key": "5",
+    "Code": "\\u001bOu"
+  },
+  {
+    "Key": "6",
+    "Code": "\\u001bOv"
+  },
+  {
+    "Key": "7",
+    "Code": "\\u001bOw"
+  },
+  {
+    "Key": "8",
+    "Code": "\\u001bOx"
+  },
+  {
+    "Key": "9",
+    "Code": "\\u001bOy"
+  },
+  {
+    "Key": "Minus",
+    "Code": "\\u001bOm"
+  },
+  {
+    "Key": "Comma",
+    "Code": "\\u001bOl"
+  },
+  {
+    "Key": "Period",
+    "Code": "\\u001bOn"
+  },
+  {
+    "Key": "Enter",
+    "Code": "\\u001bOM"
+  },
+  {
+    "Key": "\\u0006  ( CTRL+F )",
+    "Code": "ACK"
+  },
+  {
+    "Key": "\\u0007  ( CTRL+G )",
+    "Code": "BELL"
+  },
+  {
+    "Key": "\\u0008  ( CTRL+H )",
+    "Code": "BS"
+  },
+  {
+    "Key": "\\u0018  ( CTRL+X )",
+    "Code": "CAN"
+  },
+  {
+    "Key": "\\u000d  ( CTRL+M )",
+    "Code": "CR"
+  },
+  {
+    "Key": "\\u0011  ( CTRL+Q )",
+    "Code": "DC1 or XON"
+  },
+  {
+    "Key": "\\u0012  ( CTRL+R )",
+    "Code": "DC2"
+  },
+  {
+    "Key": "\\u0013  ( CTRL+S )",
+    "Code": "DC3 or XOFF"
+  },
+  {
+    "Key": "\\u0014  ( CTRL+T )",
+    "Code": "DC4"
+  },
+  {
+    "Key": "\\u0010  ( CTRL+P )",
+    "Code": "DLE"
+  },
+  {
+    "Key": "\\u0019  ( CTRL+Y )",
+    "Code": "EM"
+  },
+  {
+    "Key": "\\u0005  ( CTRL+E )",
+    "Code": "ENQ"
+  },
+  {
+    "Key": "\\u0004  ( CTRL+D )",
+    "Code": "EOT"
+  },
+  {
+    "Key": "\\u001b  ( CTRL+[ )",
+    "Code": "ESC"
+  },
+  {
+    "Key": "\\u0017  (&nbsp;CTRL+W&nbsp;)",
+    "Code": "ETB"
+  },
+  {
+    "Key": "\\u0003  ( CTRL+C )",
+    "Code": "ETX"
+  },
+  {
+    "Key": "\\u000c  ( CTRL+L )",
+    "Code": "FF"
+  },
+  {
+    "Key": "\\u001c  ( CTRL+\\ )",
+    "Code": "FS"
+  },
+  {
+    "Key": "\\u001d  ( CTRL+] )",
+    "Code": "GS"
+  },
+  {
+    "Key": "\\u0009  ( CTRL+I )",
+    "Code": "HT"
+  },
+  {
+    "Key": "\\u000a  ( CTRL+J )",
+    "Code": "LF"
+  },
+  {
+    "Key": "\\u0015  ( CTRL+U )",
+    "Code": "NAK"
+  },
+  {
+    "Key": "\\u0000  (&nbsp;CTRL+SpaceBar&nbsp;)",
+    "Code": "NUL"
+  },
+  {
+    "Key": "\\u001e  ( CTRL+~ )",
+    "Code": "RS"
+  },
+  {
+    "Key": "\\u000f  ( CTRL+O )",
+    "Code": "SI"
+  },
+  {
+    "Key": "\\u000e  ( CTRL+N )",
+    "Code": "SO"
+  },
+  {
+    "Key": "\\u0001  ( CTRL+A )",
+    "Code": "SOH"
+  },
+  {
+    "Key": "\\u0002  ( CTRL+B )",
+    "Code": "STX"
+  },
+  {
+    "Key": "\\u001a  ( CTRL+Z )",
+    "Code": "SUB"
+  },
+  {
+    "Key": "\\u0016  ( CTRL+V )",
+    "Code": "SYN"
+  },
+  {
+    "Key": "\\u001f  ( CTRL+? )",
+    "Code": "US"
+  },
+  {
+    "Key": "\\u000b  ( CTRL+K )",
+    "Code": "VT"
+  },
+  {
+    "Key": "Do",
+    "Code": "\\u001b[29~"
+  },
+  {
+    "Key": "Find",
+    "Code": "\\u001b[1~"
+  },
+  {
+    "Key": "Help",
+    "Code": "\\u001b[28~"
+  },
+  {
+    "Key": "Insert",
+    "Code": "\\u001b[2~"
+  },
+  {
+    "Key": "KeyEnd",
+    "Code": "\\u001b[F"
+  },
+  {
+    "Key": "KeyHome",
+    "Code": "\\u001b[H"
+  },
+  {
+    "Key": "NextScn",
+    "Code": "\\u001b[6~"
+  },
+  {
+    "Key": "PrevScn",
+    "Code": "\\u001b[5~"
+  },
+  {
+    "Key": "Remove",
+    "Code": "\\u001b[3~"
+  },
+  {
+    "Key": "Select",
+    "Code": "\\u001b[44~"
+  }
+]

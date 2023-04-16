@@ -20,6 +20,7 @@
     <ClCompile Include="..\src\client\MainFrm.cpp" />
     <ClCompile Include="..\src\client\StdAfx.cpp" />
     <ClCompile Include="..\src\client\TTComboBox.cpp" />
+    <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
     <ClCompile Include="..\src\common\ScoppedLogger.cpp" />
   </ItemGroup>
@@ -35,7 +36,10 @@
     <ClInclude Include="..\src\client\StdAfx.h" />
     <ClInclude Include="..\src\client\TTComboBox.h" />
     <ClInclude Include="..\src\common\custom_assert.h" />
+    <ClInclude Include="..\src\common\hashtable.h" />
+    <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
+    <ClInclude Include="..\src\common\myexception.h" />
     <ClInclude Include="..\src\common\ScopedLogger.h" />
   </ItemGroup>
   <ItemGroup>

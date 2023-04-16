@@ -44,6 +44,8 @@ END_MESSAGE_MAP()
 CTelnetView::CTelnetView()
 {
 	LOG_TRACE("CTelnetView::CTelnetView", "CONSTRUCTOR");
+	memset(&m_bBuf, 0, ioBuffSize);
+	bNegotiating = FALSE;
 	cTextColor = RGB(200,200,000);
 	cBackgroundColor = RGB(000,000,222);
 	cSock = NULL;
@@ -58,6 +60,12 @@ CTelnetView::CTelnetView()
 			cText[x][y] = ' ';
 		}
 	}
+
+	hashKeyCodes.InitializeKeyCodes();
+#ifdef _DEBUG
+	hashKeyCodes.Test();
+#endif
+	
 }
 
 CTelnetView::~CTelnetView()

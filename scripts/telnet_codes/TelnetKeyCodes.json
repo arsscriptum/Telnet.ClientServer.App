@@ -1,0 +1,437 @@
+[
+  {
+    "Key": "Arrow Down",
+    "Code": "`\\u001b[B",
+    "CodeSource": "\\\\u001b[B"
+  },
+  {
+    "Key": "Arrow Left",
+    "Code": "`\\u001b[D",
+    "CodeSource": "\\\\u001b[D"
+  },
+  {
+    "Key": "Arrow Right",
+    "Code": "`\\u001b[C",
+    "CodeSource": "\\\\u001b[C"
+  },
+  {
+    "Key": "Arrow Up",
+    "Code": "`\\u001b[A",
+    "CodeSource": "\\\\u001b[A"
+  },
+  {
+    "Key": "BackSpace",
+    "Code": "`\\u0008",
+    "CodeSource": "\\\\u0008"
+  },
+  {
+    "Key": "Back Tab",
+    "Code": "`\\u001bOP`\\u0009",
+    "CodeSource": "\\\\u001bOP\\\\u0009"
+  },
+  {
+    "Key": "Delete",
+    "Code": "`\\u007f",
+    "CodeSource": "\\\\u007f"
+  },
+  {
+    "Key": "Escape",
+    "Code": "`\\u001b",
+    "CodeSource": "\\\\u001b"
+  },
+  {
+    "Key": "Linefeed",
+    "Code": "`\\u000a",
+    "CodeSource": "\\\\u000a"
+  },
+  {
+    "Key": "Return",
+    "Code": "`\\u000d",
+    "CodeSource": "\\\\u000d"
+  },
+  {
+    "Key": "Tab",
+    "Code": "`\\u0009",
+    "CodeSource": "\\\\u0009"
+  },
+  {
+    "Key": "F1",
+    "Code": "`\\u001bOP",
+    "CodeSource": "\\\\u001bOP"
+  },
+  {
+    "Key": "F2",
+    "Code": "`\\u001bOQ",
+    "CodeSource": "\\\\u001bOQ"
+  },
+  {
+    "Key": "F3",
+    "Code": "`\\u001bOR",
+    "CodeSource": "\\\\u001bOR"
+  },
+  {
+    "Key": "F4",
+    "Code": "`\\u001bOS",
+    "CodeSource": "\\\\u001bOS"
+  },
+  {
+    "Key": "F5",
+    "Code": "`\\u001b[15~",
+    "CodeSource": "\\\\u001b[15~"
+  },
+  {
+    "Key": "F6",
+    "Code": "`\\u001b[17~",
+    "CodeSource": "\\\\u001b[17~"
+  },
+  {
+    "Key": "F7",
+    "Code": "`\\u001b[18~",
+    "CodeSource": "\\\\u001b[18~"
+  },
+  {
+    "Key": "F8",
+    "Code": "`\\u001b[19~",
+    "CodeSource": "\\\\u001b[19~"
+  },
+  {
+    "Key": "F9",
+    "Code": "`\\u001b[20~",
+    "CodeSource": "\\\\u001b[20~"
+  },
+  {
+    "Key": "F10",
+    "Code": "`\\u001b[21~",
+    "CodeSource": "\\\\u001b[21~"
+  },
+  {
+    "Key": "F11",
+    "Code": "`\\u001b[23~",
+    "CodeSource": "\\\\u001b[23~"
+  },
+  {
+    "Key": "F12",
+    "Code": "`\\u001b[24~",
+    "CodeSource": "\\\\u001b[24~"
+  },
+  {
+    "Key": "F13",
+    "Code": "`\\u001b[25~",
+    "CodeSource": "\\\\u001b[25~"
+  },
+  {
+    "Key": "F14",
+    "Code": "`\\u001b[26~",
+    "CodeSource": "\\\\u001b[26~"
+  },
+  {
+    "Key": "F15",
+    "Code": "`\\u001b[28~",
+    "CodeSource": "\\\\u001b[28~"
+  },
+  {
+    "Key": "F16",
+    "Code": "`\\u001b[29~",
+    "CodeSource": "\\\\u001b[29~"
+  },
+  {
+    "Key": "F17",
+    "Code": "`\\u001b[31~",
+    "CodeSource": "\\\\u001b[31~"
+  },
+  {
+    "Key": "F18",
+    "Code": "`\\u001b[32~",
+    "CodeSource": "\\\\u001b[32~"
+  },
+  {
+    "Key": "F19",
+    "Code": "`\\u001b[33~",
+    "CodeSource": "\\\\u001b[33~"
+  },
+  {
+    "Key": "F20",
+    "Code": "`\\u001b[34~",
+    "CodeSource": "\\\\u001b[34~"
+  },
+  {
+    "Key": "0",
+    "Code": "`\\u001bOp",
+    "CodeSource": "\\\\u001bOp"
+  },
+  {
+    "Key": "1",
+    "Code": "`\\u001bOq",
+    "CodeSource": "\\\\u001bOq"
+  },
+  {
+    "Key": "2",
+    "Code": "`\\u001bOr",
+    "CodeSource": "\\\\u001bOr"
+  },
+  {
+    "Key": "3",
+    "Code": "`\\u001bOs",
+    "CodeSource": "\\\\u001bOs"
+  },
+  {
+    "Key": "4",
+    "Code": "`\\u001bOt",
+    "CodeSource": "\\\\u001bOt"
+  },
+  {
+    "Key": "5",
+    "Code": "`\\u001bOu",
+    "CodeSource": "\\\\u001bOu"
+  },
+  {
+    "Key": "6",
+    "Code": "`\\u001bOv",
+    "CodeSource": "\\\\u001bOv"
+  },
+  {
+    "Key": "7",
+    "Code": "`\\u001bOw",
+    "CodeSource": "\\\\u001bOw"
+  },
+  {
+    "Key": "8",
+    "Code": "`\\u001bOx",
+    "CodeSource": "\\\\u001bOx"
+  },
+  {
+    "Key": "9",
+    "Code": "`\\u001bOy",
+    "CodeSource": "\\\\u001bOy"
+  },
+  {
+    "Key": "Minus",
+    "Code": "`\\u001bOm",
+    "CodeSource": "\\\\u001bOm"
+  },
+  {
+    "Key": "Comma",
+    "Code": "`\\u001bOl",
+    "CodeSource": "\\\\u001bOl"
+  },
+  {
+    "Key": "Period",
+    "Code": "`\\u001bOn",
+    "CodeSource": "\\\\u001bOn"
+  },
+  {
+    "Key": "Enter",
+    "Code": "`\\u001bOM",
+    "CodeSource": "\\\\u001bOM"
+  },
+  {
+    "Key": "ACK",
+    "Code": "`\\u0006  ( CTRL+F )",
+    "CodeSource": "\\\\u0006  ( CTRL+F )"
+  },
+  {
+    "Key": "BELL",
+    "Code": "`\\u0007  ( CTRL+G )",
+    "CodeSource": "\\\\u0007  ( CTRL+G )"
+  },
+  {
+    "Key": "BS",
+    "Code": "`\\u0008  ( CTRL+H )",
+    "CodeSource": "\\\\u0008  ( CTRL+H )"
+  },
+  {
+    "Key": "CAN",
+    "Code": "`\\u0018  ( CTRL+X )",
+    "CodeSource": "\\\\u0018  ( CTRL+X )"
+  },
+  {
+    "Key": "CR",
+    "Code": "`\\u000d  ( CTRL+M )",
+    "CodeSource": "\\\\u000d  ( CTRL+M )"
+  },
+  {
+    "Key": "DC1 or XON",
+    "Code": "`\\u0011  ( CTRL+Q )",
+    "CodeSource": "\\\\u0011  ( CTRL+Q )"
+  },
+  {
+    "Key": "DC2",
+    "Code": "`\\u0012  ( CTRL+R )",
+    "CodeSource": "\\\\u0012  ( CTRL+R )"
+  },
+  {
+    "Key": "DC3 or XOFF",
+    "Code": "`\\u0013  ( CTRL+S )",
+    "CodeSource": "\\\\u0013  ( CTRL+S )"
+  },
+  {
+    "Key": "DC4",
+    "Code": "`\\u0014  ( CTRL+T )",
+    "CodeSource": "\\\\u0014  ( CTRL+T )"
+  },
+  {
+    "Key": "DLE",
+    "Code": "`\\u0010  ( CTRL+P )",
+    "CodeSource": "\\\\u0010  ( CTRL+P )"
+  },
+  {
+    "Key": "EM",
+    "Code": "`\\u0019  ( CTRL+Y )",
+    "CodeSource": "\\\\u0019  ( CTRL+Y )"
+  },
+  {
+    "Key": "ENQ",
+    "Code": "`\\u0005  ( CTRL+E )",
+    "CodeSource": "\\\\u0005  ( CTRL+E )"
+  },
+  {
+    "Key": "EOT",
+    "Code": "`\\u0004  ( CTRL+D )",
+    "CodeSource": "\\\\u0004  ( CTRL+D )"
+  },
+  {
+    "Key": "ESC",
+    "Code": "`\\u001b  ( CTRL+[ )",
+    "CodeSource": "\\\\u001b  ( CTRL+[ )"
+  },
+  {
+    "Key": "ETB",
+    "Code": "`\\u0017  (&nbsp;CTRL+W&nbsp;)",
+    "CodeSource": "\\\\u0017  (&nbsp;CTRL+W&nbsp;)"
+  },
+  {
+    "Key": "ETX",
+    "Code": "`\\u0003  ( CTRL+C )",
+    "CodeSource": "\\\\u0003  ( CTRL+C )"
+  },
+  {
+    "Key": "FF",
+    "Code": "`\\u000c  ( CTRL+L )",
+    "CodeSource": "\\\\u000c  ( CTRL+L )"
+  },
+  {
+    "Key": "FS",
+    "Code": "`\\u001c  ( CTRL+`\\ )",
+    "CodeSource": "\\\\u001c  ( CTRL+\\\\ )"
+  },
+  {
+    "Key": "GS",
+    "Code": "`\\u001d  ( CTRL+] )",
+    "CodeSource": "\\\\u001d  ( CTRL+] )"
+  },
+  {
+    "Key": "HT",
+    "Code": "`\\u0009  ( CTRL+I )",
+    "CodeSource": "\\\\u0009  ( CTRL+I )"
+  },
+  {
+    "Key": "LF",
+    "Code": "`\\u000a  ( CTRL+J )",
+    "CodeSource": "\\\\u000a  ( CTRL+J )"
+  },
+  {
+    "Key": "NAK",
+    "Code": "`\\u0015  ( CTRL+U )",
+    "CodeSource": "\\\\u0015  ( CTRL+U )"
+  },
+  {
+    "Key": "NUL",
+    "Code": "`\\u0000  (&nbsp;CTRL+SpaceBar&nbsp;)",
+    "CodeSource": "\\\\u0000  (&nbsp;CTRL+SpaceBar&nbsp;)"
+  },
+  {
+    "Key": "RS",
+    "Code": "`\\u001e  ( CTRL+~ )",
+    "CodeSource": "\\\\u001e  ( CTRL+~ )"
+  },
+  {
+    "Key": "SI",
+    "Code": "`\\u000f  ( CTRL+O )",
+    "CodeSource": "\\\\u000f  ( CTRL+O )"
+  },
+  {
+    "Key": "SO",
+    "Code": "`\\u000e  ( CTRL+N )",
+    "CodeSource": "\\\\u000e  ( CTRL+N )"
+  },
+  {
+    "Key": "SOH",
+    "Code": "`\\u0001  ( CTRL+A )",
+    "CodeSource": "\\\\u0001  ( CTRL+A )"
+  },
+  {
+    "Key": "STX",
+    "Code": "`\\u0002  ( CTRL+B )",
+    "CodeSource": "\\\\u0002  ( CTRL+B )"
+  },
+  {
+    "Key": "SUB",
+    "Code": "`\\u001a  ( CTRL+Z )",
+    "CodeSource": "\\\\u001a  ( CTRL+Z )"
+  },
+  {
+    "Key": "SYN",
+    "Code": "`\\u0016  ( CTRL+V )",
+    "CodeSource": "\\\\u0016  ( CTRL+V )"
+  },
+  {
+    "Key": "US",
+    "Code": "`\\u001f  ( CTRL+? )",
+    "CodeSource": "\\\\u001f  ( CTRL+? )"
+  },
+  {
+    "Key": "VT",
+    "Code": "`\\u000b  ( CTRL+K )",
+    "CodeSource": "\\\\u000b  ( CTRL+K )"
+  },
+  {
+    "Key": "Do",
+    "Code": "`\\u001b[29~",
+    "CodeSource": "\\\\u001b[29~"
+  },
+  {
+    "Key": "Find",
+    "Code": "`\\u001b[1~",
+    "CodeSource": "\\\\u001b[1~"
+  },
+  {
+    "Key": "Help",
+    "Code": "`\\u001b[28~",
+    "CodeSource": "\\\\u001b[28~"
+  },
+  {
+    "Key": "Insert",
+    "Code": "`\\u001b[2~",
+    "CodeSource": "\\\\u001b[2~"
+  },
+  {
+    "Key": "KeyEnd",
+    "Code": "`\\u001b[F",
+    "CodeSource": "\\\\u001b[F"
+  },
+  {
+    "Key": "KeyHome",
+    "Code": "`\\u001b[H",
+    "CodeSource": "\\\\u001b[H"
+  },
+  {
+    "Key": "NextScn",
+    "Code": "`\\u001b[6~",
+    "CodeSource": "\\\\u001b[6~"
+  },
+  {
+    "Key": "PrevScn",
+    "Code": "`\\u001b[5~",
+    "CodeSource": "\\\\u001b[5~"
+  },
+  {
+    "Key": "Remove",
+    "Code": "`\\u001b[3~",
+    "CodeSource": "\\\\u001b[3~"
+  },
+  {
+    "Key": "Select",
+    "Code": "`\\u001b[44~",
+    "CodeSource": "\\\\u001b[44~"
+  }
+]
