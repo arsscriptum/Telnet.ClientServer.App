@@ -105,6 +105,8 @@ if($FormatTable){
 
 if($GetCPlusPlusCode){
     $SourceFilePath = "F:\Code\Telnet.ClientServer.App\src\common\keycodes_hashtable.cpp"
+    $TmpSourceFilePath = "F:\Code\Telnet.ClientServer.App\src\common\keycodes_hashtable.tmp"
+    $SourceFilePathBackup = "$ENV:Temp\keycodes_hashtable.bak"
     $SourceFileContent = Get-SourceFileContent -Path $SourceFilePath
     $InitCode = ""
     $AllCodes | % {
@@ -113,8 +115,19 @@ if($GetCPlusPlusCode){
     }
     $NewSourceFileContent = $SourceFileContent.Replace('__SOURCE_CODE_InitializeKeyCodes__',$InitCode)
 
-    Set-Content -Path "$SourceFilePath" -Value "$NewSourceFileContent"
+    Set-Content -Path "$TmpSourceFilePath" -Value "$NewSourceFileContent"
     $ExpPath = (Get-Command "explorer.exe").Source
-    Write-Host "Opening `"$SourceFilePath`""
-    &"$ExpPath" "$SourceFilePath"
+    Write-Host "Opening `"$TmpSourceFilePath`""
+    &"$ExpPath" "$TmpSourceFilePath"
+
+    $confirmation = Read-Host "Replace `"$SourceFilePath`" with `"$TmpSourceFilePath`" ? (y/N)"
+    if("$confirmation" -eq 'y'){
+        Write-Host "BACKUP to `"$SourceFilePathBackup`"..."
+        Copy-Item "$SourceFilePath" "$SourceFilePathBackup" -Force -ErrorAction Ignore | Out-Null
+        Write-Host "Updating `"$SourceFilePath`"..."
+        Copy-Item "$TmpSourceFilePath" "$SourceFilePath" -Force -ErrorAction Ignore | Out-Null
+        Write-Host "Deleting `"$TmpSourceFilePath`"..."
+        $Null = Remove-Item -Path "$TmpSourceFilePath" -Force -ErrorAction Ignore | Out-Null
+        &"$ExpPath" "$SourceFilePath"
+    }
 }
