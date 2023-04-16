@@ -20,6 +20,7 @@ CHostDialog::CHostDialog(CWnd* pParent /*=NULL*/)
 {
 	//{{AFX_DATA_INIT(CHostDialog)
 	m_HostName = _T("192.168.0.101");
+	
 	//}}AFX_DATA_INIT
 }
 

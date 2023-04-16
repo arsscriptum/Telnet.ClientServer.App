@@ -232,6 +232,8 @@ void CTelnetView::ProcessMessage(CClientSocket * pSock)
 		sizeTotal.cy = dtY * bufferLines + processedLines;
 		LOG_TRACE("CTelnetView::SetScrollSizes", "processedLines %d", processedLines);
 		SetScrollSizes(MM_TEXT, sizeTotal);
+		CSize totalSize = GetTotalSize();
+		LOG_TRACE("CTelnetView::SetScrollSizes", "totalSize %d", totalSize.cy);
 	}
 	m_strLine.Empty();
 	m_strResp.Empty();

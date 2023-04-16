@@ -29,7 +29,7 @@ const	unsigned char VALUE		= '1';
 const	unsigned char ESC		= '2';
 const	unsigned char USERVAR	= '3';
 
-#define bufferLines 500
+#define bufferLines 200
 #define dtX 8
 #define dtY 13
 
