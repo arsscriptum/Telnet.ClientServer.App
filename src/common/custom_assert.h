@@ -1,15 +1,15 @@
 
 //==============================================================================
 //
-//   log.h - exported_h
+//   custom_assert.h 
 //
 //==============================================================================
-//  cybercastor - made in quebec 2020 <cybercastor@icloud.com>
+//  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
 //==============================================================================
 
 
-#ifndef __CUSTOM_ASERT_H__
-#define __CUSTOM_ASERT_H__
+#ifndef __CUSTOM_ASSERT_H__
+#define __CUSTOM_ASSERT_H__
 
 
 #include <cstdlib>
@@ -24,5 +24,5 @@
 #define MY_ASSERT(x)
 #endif
 
-#endif //__CUSTOM_ASERT_H__
+#endif //__CUSTOM_ASSERT_H__
 

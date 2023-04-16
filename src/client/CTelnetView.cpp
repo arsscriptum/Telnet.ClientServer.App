@@ -80,8 +80,8 @@ void CTelnetView::OnDraw(CDC* pDC)
 	CTelnetDoc* pDoc = GetDocument();
 	MY_ASSERT(pDoc);
 
-//	pDC->SelectObject(GetStockObject(SYSTEM_FONT));
-	pDC->SelectObject(GetStockObject(ANSI_FIXED_FONT));
+	pDC->SelectObject(GetStockObject(SYSTEM_FONT));
+	//pDC->SelectObject(GetStockObject(ANSI_FIXED_FONT));
 
 	DrawCursor(pDC,FALSE);
 	DoDraw(pDC);

@@ -1,6 +1,11 @@
-// stdafx.cpp : source file that includes just the standard includes
-//	CTelnet.pch will be the pre-compiled header
-//	stdafx.obj will contain the pre-compiled type information
+
+//==============================================================================
+//
+//   stdafx.cpp
+//
+//==============================================================================
+//  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
+//==============================================================================
 
 #include "stdafx.h"
 

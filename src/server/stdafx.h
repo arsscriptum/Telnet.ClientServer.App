@@ -1,12 +1,10 @@
 
 //==============================================================================
 //
-//     stdafx.h : include file for standard system include files,
-//           or project specific include files that are used frequently, but
-//           are changed infrequently
+//   stdafx.h 
 //
 //==============================================================================
-//  Copyright (C) Guilaume Plante 2020 <cybercastor@icloud.com>
+//  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
 //==============================================================================
 
 

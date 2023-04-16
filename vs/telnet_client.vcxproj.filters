@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="..\src\client\ClientSocket.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\CTelnet.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\CTelnetDoc.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\CTelnetView.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\HostDialog.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\MainFrm.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\ScoppedLogger.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\client\StdAfx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="..\src\client\ClientSocket.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\CTelnet.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\CTelnetDoc.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\CTelnetView.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\HostDialog.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\log.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\MainFrm.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\resource.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\custom_assert.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\ScopedLogger.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\client\StdAfx.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\src\client\res\CTelnet.ico">
+      <Filter>gui</Filter>
+    </Image>
+    <Image Include="..\src\client\res\CTelnetDoc.ico">
+      <Filter>gui</Filter>
+    </Image>
+    <Image Include="..\src\client\res\Toolbar.bmp">
+      <Filter>gui</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="gui">
+      <UniqueIdentifier>{43a124b2-da63-4dd2-8445-2a31cff30315}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="src">
+      <UniqueIdentifier>{554ea3c9-1985-4c8f-94f3-01a70c7c2de9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{876f4482-baf4-4daf-ab97-862055f89644}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="..\src\client\CTelnet.rc">
+      <Filter>gui</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="..\src\client\res\CTelnet.rc2">
+      <Filter>gui</Filter>
+    </CustomBuild>
+  </ItemGroup>
+</Project>

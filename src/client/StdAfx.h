@@ -1,7 +1,13 @@
-// stdafx.h : include file for standard system include files,
-//  or project specific include files that are used frequently, but
-//      are changed infrequently
+
+//==============================================================================
 //
+//   stdafx.h 
+//
+//==============================================================================
+//  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
+//==============================================================================
+
+
 
 #if !defined(AFX_STDAFX_H__FE95BC89_9860_11D3_8CD5_00C0F0405B24__INCLUDED_)
 #define AFX_STDAFX_H__FE95BC89_9860_11D3_8CD5_00C0F0405B24__INCLUDED_

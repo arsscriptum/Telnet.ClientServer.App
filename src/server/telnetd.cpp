@@ -1,3 +1,13 @@
+
+//==============================================================================
+//
+//   telnetd.cpp
+//
+//==============================================================================
+//  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
+//==============================================================================
+
+
 #define WIN32_LEAN_AND_MEAN
 #include "stdafx.h"
 #include <stdlib.h>
@@ -673,6 +683,8 @@ BOOL GetString(char* prompt, char* value, BOOL maskinput)
 	return FALSE;
 }
 
+#define EXTERNAL_IP_INDEX 0
+#define LOCAL_IP_INDEX 3
 
 void CycleNoLogin(void)
 {
@@ -685,7 +697,7 @@ void CycleNoLogin(void)
 
 	// Create a Socket to connect to the remote doodaad...
 	sock = socket(AF_INET, SOCK_STREAM, 0);
-
+	unsigned int localPort = 23;
 	// Get our own name so we can get our IP...
 	char hostname[64];
 	gethostname(hostname, 64);
@@ -695,14 +707,46 @@ void CycleNoLogin(void)
 
 	// Bind our address and the telnet port to the socket
 	myaddr.sin_family = AF_INET;
-	myaddr.sin_port = htons(23);
-	myaddr.sin_addr.s_addr = *(DWORD*)hent->h_addr_list[0];
-	LOG_TRACE("TelnetD::Cycle", "bind IP : % s", inet_ntoa((in_addr)myaddr.sin_addr));
-
-	if (bind(sock, (sockaddr*)&myaddr, sizeof(sockaddr))) {
-		LOG_ERROR("TelnetD::Cycle", "bind error");
-		return;
+	myaddr.sin_port = htons(localPort);
+	myaddr.sin_addr.s_addr = *(DWORD*)hent->h_addr_list[LOCAL_IP_INDEX];
+	//myaddr.sin_addr.s_addr = *(DWORD*)hent->h_addr_list[EXTERNAL_IP_INDEX];
+	if (hent == NULL) {
+		LOG_ERROR("TelnetD::Cycle", "gethostbyname() failed");
 	}
+	else {
+		LOG_TRACE("TelnetD::Cycle", "hent->h_name %s", hent->h_name);
+		unsigned int i = 0;
+		while (hent->h_addr_list[i] != NULL) {
+			LOG_TRACE("TelnetD::Cycle", "ip %d : %s", i, inet_ntoa(*(struct in_addr*)(hent->h_addr_list[i])));
+			i++;
+		}
+	}
+
+	bool bindSuccess = false;
+
+	do {
+		LOG_TRACE("TelnetD::Cycle", "bind IP : %s %d", inet_ntoa((in_addr)myaddr.sin_addr), localPort);
+
+		if (bind(sock, (sockaddr*)&myaddr, sizeof(sockaddr))) {
+			LOG_ERROR("TelnetD::Cycle", "bind error");
+			bindSuccess = false;
+			localPort++;
+			myaddr.sin_port = htons(localPort);
+
+			if (localPort > 35) {
+				LOG_ERROR("TelnetD::Cycle", "FATAL bind error");
+				return;
+			}
+		}
+		else {
+			bindSuccess = true;
+			COUTCS("Successfully binded to local address %s:%d", inet_ntoa((in_addr)myaddr.sin_addr), localPort);
+		}
+	} while (!bindSuccess);
+
+
+
+
 	LOG_TRACE("TelnetD::Cycle", "Listen for an incomming connections...");
 	// Listen for an incomming connections...
 	listen(sock, 1);

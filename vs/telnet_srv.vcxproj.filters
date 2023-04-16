@@ -1,16 +1,42 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
-    <ClCompile Include="..\src\server\Main.cpp" />
-    <ClCompile Include="..\src\server\NTService.cpp" />
-    <ClCompile Include="..\src\server\stdafx.cpp" />
-    <ClCompile Include="..\src\server\telnetd.cpp" />
-    <ClCompile Include="..\src\common\log.cpp" />
+    <ClCompile Include="..\src\common\log.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\Main.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\NTService.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\stdafx.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\telnetd.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\server\NTService.h" />
-    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h" />
-    <ClInclude Include="..\src\server\stdafx.h" />
-    <ClInclude Include="..\src\common\log.h" />
+    <ClInclude Include="..\src\common\log.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\NTService.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\stdafx.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <Filter Include="src">
+      <UniqueIdentifier>{33ef26d6-e27b-4d4b-88f4-714eb97a6ad7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers">
+      <UniqueIdentifier>{a1f6e2bc-5630-410d-a025-2032c229d3be}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
 </Project>

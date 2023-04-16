@@ -36,6 +36,7 @@
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\client\CTelnet.rc" />
+    <ResourceCompile Include="..\src\client\CTelnet.rc2" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\src\client\res\CTelnet.ico" />
