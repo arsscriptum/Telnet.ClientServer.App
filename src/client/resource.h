@@ -7,6 +7,7 @@
 #define IDR_CTELNETYPE                  129
 #define IDD_HOST                        130
 #define IDC_EDIT1                       1000
+#define IDC_COMBO2                      1002
 
 // Next default values for new objects
 // 

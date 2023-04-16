@@ -1,6 +1,6 @@
 #if !defined(AFX_HOSTDIALOG_H__FE95BC99_9860_11D3_8CD5_00C0F0405B24__INCLUDED_)
 #define AFX_HOSTDIALOG_H__FE95BC99_9860_11D3_8CD5_00C0F0405B24__INCLUDED_
-
+#include "TTComboBox.h"
 #if _MSC_VER >= 1000
 #pragma once
 #endif // _MSC_VER >= 1000
@@ -19,7 +19,10 @@ public:
 // Dialog Data
 	//{{AFX_DATA(CHostDialog)
 	enum { IDD = IDD_HOST };
-	CString	m_HostName;
+	CTTComboBox m_HostCombo;
+	CString m_HostComboText;
+	CTTComboBox	m_DropDown;
+	int		m_nDropListIndex;
 	//}}AFX_DATA
 
 
@@ -36,6 +39,11 @@ protected:
 	// Generated message map functions
 	//{{AFX_MSG(CHostDialog)
 	virtual void OnOK();
+	virtual BOOL OnInitDialog();
+	afx_msg void OnCbnSelchangeHost();
+	afx_msg void OnCbnSetfocusComboHost();
+	afx_msg void OnBnClickedOk();
+	afx_msg void OnSimpleEditupdate();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
 };

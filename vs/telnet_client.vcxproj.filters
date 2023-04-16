@@ -31,6 +31,9 @@
     <ClCompile Include="..\src\client\CachedScrollView.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\client\TTComboBox.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\client\ClientSocket.h">
@@ -69,6 +72,9 @@
     <ClInclude Include="..\src\client\CachedScrollView.h">
       <Filter>headers</Filter>
     </ClInclude>
+    <ClInclude Include="..\src\client\TTComboBox.h">
+      <Filter>headers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="..\src\client\res\CTelnet.ico">
@@ -90,6 +96,9 @@
     </Filter>
     <Filter Include="headers">
       <UniqueIdentifier>{876f4482-baf4-4daf-ab97-862055f89644}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="headers\NewFilter1">
+      <UniqueIdentifier>{4aa1762a-1b8f-4ff8-b16c-b4ad2dea48a2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

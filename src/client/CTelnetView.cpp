@@ -137,7 +137,7 @@ void CTelnetView::OnInitialUpdate()
 
 	CHostDialog host;
 	host.DoModal();
-	cHostName = host.m_HostName;
+	cHostName = host.m_HostComboText;;
 
 	//create the socket and hook up to the host
 	BOOL bOK;

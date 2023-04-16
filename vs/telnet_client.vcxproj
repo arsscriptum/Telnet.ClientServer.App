@@ -19,6 +19,7 @@
     <ClCompile Include="..\src\client\HostDialog.cpp" />
     <ClCompile Include="..\src\client\MainFrm.cpp" />
     <ClCompile Include="..\src\client\StdAfx.cpp" />
+    <ClCompile Include="..\src\client\TTComboBox.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
     <ClCompile Include="..\src\common\ScoppedLogger.cpp" />
   </ItemGroup>
@@ -32,6 +33,7 @@
     <ClInclude Include="..\src\client\MainFrm.h" />
     <ClInclude Include="..\src\client\resource.h" />
     <ClInclude Include="..\src\client\StdAfx.h" />
+    <ClInclude Include="..\src\client\TTComboBox.h" />
     <ClInclude Include="..\src\common\custom_assert.h" />
     <ClInclude Include="..\src\common\log.h" />
     <ClInclude Include="..\src\common\ScopedLogger.h" />
