@@ -51,7 +51,8 @@ public:
 UINT thrid_daemon;
 extern unsigned __stdcall Daemon(void*);
 unsigned long masterThread;
-extern void Cycle(void);
+extern void CycleNoLogin(void);
+extern void Cycle(void); 
 long restartCount;
 volatile BOOL requestReset;
 extern void MasterReset(void);

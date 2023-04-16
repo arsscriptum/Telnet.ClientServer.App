@@ -60,7 +60,7 @@ void __cdecl ConsoleOut(std::string color, const char *format, ...)
 	std::clog << Format << buf;
 }
 
-void __cdecl ConsoleLog(const char *format, ...)
+void __cdecl ConsoleDebugLog(const char *format, ...)
 {
 	
 	char    buf[4096], *p = buf;
@@ -79,13 +79,30 @@ void __cdecl ConsoleLog(const char *format, ...)
 	*p++ = '\r';
 	*p++ = '\n';
 	*p = '\0';
-	char    buf2[4096];
-	strncpy(buf2, "[TESTSERVICE] ", 14);
-	strncat(buf2, buf, 3000);
-	LOG_TRACE("Service","%s", buf);
-	OutputDebugString( buf2);
-	EndOfLineEscapeTag FormatTitle{ CONSOLE_COLOR_BLUE, ANSI_TEXT_COLOR_RESET };
-	EndOfLineEscapeTag FormatText{ CONSOLE_COLOR_CYAN, ANSI_TEXT_COLOR_RESET };
-	std::clog << FormatTitle << "[service] ";
-	std::clog << FormatText << buf;
+	DEJA_TRACE("ConsoleDebugLog","%s", buf);
+	OutputDebugString( buf );
+}
+
+void __cdecl ConsoleErrorLog(const char *format, ...)
+{
+	
+	char    buf[4096], *p = buf;
+	va_list args;
+	int     n;
+
+	va_start(args, format);
+	n = vsnprintf(p, sizeof buf - 3, format, args); // buf-3 is room for CR/LF/NUL
+	va_end(args);
+
+	p += (n < 0) ? sizeof buf - 3 : n;
+
+	while (p > buf  &&  isspace(p[-1]))
+		*--p = '\0';
+
+	*p++ = '\r';
+	*p++ = '\n';
+	*p = '\0';
+
+	DEJA_ERROR("ASSERT","%s", buf);
+	OutputDebugString( buf );
 }

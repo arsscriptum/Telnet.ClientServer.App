@@ -23,3 +23,10 @@
 #endif 
 
 #endif
+
+
+#ifdef _CONNECT_NO_LOGIN
+#pragma message("LOGIN DISABLED")
+#else
+#pragma message("LOGIN ENABLED")
+#endif

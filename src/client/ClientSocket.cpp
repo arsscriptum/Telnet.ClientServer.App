@@ -19,11 +19,13 @@ static char THIS_FILE[] = __FILE__;
 
 CClientSocket::CClientSocket(CTelnetView * pView)
 {
+	LOG_TRACE("CClientSocket::CClientSocket", "CONSTRUCTOR");
 	cView = pView;
 }
 
 CClientSocket::~CClientSocket()
 {
+	LOG_TRACE("CClientSocket::~CClientSocket()", "DESTRUCTOR");
 }
 
 
@@ -41,7 +43,7 @@ END_MESSAGE_MAP()
 void CClientSocket::OnClose(int nErrorCode) 
 {
 //	AfxMessageBox("Connection Closed",MB_OK);
-	
+	LOG_TRACE("CClientSocket::OnClose", "OnClose %d ", nErrorCode);
 	CAsyncSocket::OnClose(nErrorCode);
 	if(!IsWindow(cView->m_hWnd)) return;
 	if(!IsWindowVisible(cView->m_hWnd)) return;
@@ -51,21 +53,24 @@ void CClientSocket::OnClose(int nErrorCode)
 
 void CClientSocket::OnConnect(int nErrorCode) 
 {
+	LOG_TRACE("CClientSocket::OnConnect", "OnConnect %d ", nErrorCode);
 	CAsyncSocket::OnConnect(nErrorCode);
 }
 
 void CClientSocket::OnOutOfBandData(int nErrorCode) 
 {
-	ASSERT(FALSE); //Telnet should not have OOB data
+	MY_ASSERT(FALSE); //Telnet should not have OOB data
 	CAsyncSocket::OnOutOfBandData(nErrorCode);
 }
 
 void CClientSocket::OnReceive(int nErrorCode) 
 {
+	LOG_TRACE("CClientSocket::OnReceive", "OnReceive %d ", nErrorCode);
 	cView->ProcessMessage(this);
 }
 
 void CClientSocket::OnSend(int nErrorCode) 
 {
+	LOG_TRACE("CClientSocket::OnSend", "OnSend %d ", nErrorCode);
 	CAsyncSocket::OnSend(nErrorCode);
 }

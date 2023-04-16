@@ -16,6 +16,9 @@
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
+
+#pragma  warning( disable: 4996 )
+
 #include <afxwin.h>         // MFC core and standard components
 #include <afxext.h>         // MFC extensions
 #include <afxdisp.h>        // MFC OLE automation classes
@@ -23,6 +26,8 @@
 #include <afxcmn.h>			// MFC support for Windows Common Controls
 #endif // _AFX_NO_AFXCMN_SUPPORT
 
+#include "log.h"
+#include "custom_assert.h"
 
 //{{AFX_INSERT_LOCATION}}
 // Microsoft Developer Studio will insert additional declarations immediately before the previous line.

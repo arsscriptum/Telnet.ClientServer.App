@@ -674,6 +674,169 @@ BOOL GetString(char* prompt, char* value, BOOL maskinput)
 }
 
 
+void CycleNoLogin(void)
+{
+	LOG_TRACE("TelnetD::Cycle", "WSAStartup");
+	// Startup Winsock
+	WSAStartup(0x0101, &wi);
+
+	//create the stop event
+	m_SocketClosed = CreateEvent(0, TRUE, FALSE, 0);
+
+	// Create a Socket to connect to the remote doodaad...
+	sock = socket(AF_INET, SOCK_STREAM, 0);
+
+	// Get our own name so we can get our IP...
+	char hostname[64];
+	gethostname(hostname, 64);
+	LOG_TRACE("TelnetD::Cycle", "gethostname %s", hostname);
+	// Get our hostent info
+	hostent* hent = gethostbyname(hostname);
+
+	// Bind our address and the telnet port to the socket
+	myaddr.sin_family = AF_INET;
+	myaddr.sin_port = htons(23);
+	myaddr.sin_addr.s_addr = *(DWORD*)hent->h_addr_list[0];
+	LOG_TRACE("TelnetD::Cycle", "bind IP : % s", inet_ntoa((in_addr)myaddr.sin_addr));
+
+	if (bind(sock, (sockaddr*)&myaddr, sizeof(sockaddr))) {
+		LOG_ERROR("TelnetD::Cycle", "bind error");
+		return;
+	}
+	LOG_TRACE("TelnetD::Cycle", "Listen for an incomming connections...");
+	// Listen for an incomming connections...
+	listen(sock, 1);
+
+
+	// accept an incoming
+	talk = accept(sock, NULL, NULL);
+
+	//print the welcome string
+	char* msg = "Telnet Server Started";
+	send(talk, msg, strlen(msg), 0);
+	char crlf[3] = { 0x0D, 0x0A, 0x00 };
+	send(talk, crlf, strlen(crlf), 0);
+	send(talk, crlf, strlen(crlf), 0);
+	send(talk, crlf, strlen(crlf), 0);
+
+	//get the username and password
+	char username[64];
+	char password[64];
+	char domain[64];
+
+
+	// Save the "Standard" handles.
+	stdinput = GetStdHandle(STD_INPUT_HANDLE);
+	stdoutput = GetStdHandle(STD_OUTPUT_HANDLE);
+	stderror = GetStdHandle(STD_ERROR_HANDLE);
+
+	// Create the "Input" pipe for the console to get stuff from us
+	CreatePipe(&readInput, &writeInput, &security, 0);
+	// Set the Default "Input" handle of the console to be this pipe
+	SetStdHandle(STD_INPUT_HANDLE, readInput);
+
+	// Create the console's "Output" pipe by which we get stuff back
+	CreatePipe(&readOutput, &writeOutput, &security, 0);
+	// Set the "Output" handle to be this pipe.
+	SetStdHandle(STD_OUTPUT_HANDLE, writeOutput);
+
+	// Create the console's Error pipe
+	CreatePipe(&readError, &writeError, &security, 0);
+	// Set the stderr handle to be our pipe.
+	SetStdHandle(STD_ERROR_HANDLE, writeError);
+
+
+	//if (GetString("Username:", username, FALSE))
+		//if (GetString("Password:", password, TRUE))
+			//if (GetString("  Domain:", domain, FALSE))
+	{
+		LOG_TRACE("TelnetD::Cycle", "Username %s", username);
+		LOG_TRACE("TelnetD::Cycle", "password %s", password);
+		LOG_TRACE("TelnetD::Cycle", "domain %s", domain);
+
+		send(talk, crlf, strlen(crlf), 0);
+		send(talk, crlf, strlen(crlf), 0);
+
+		// Create a thread to handle socket input
+		unsigned int th1 = _beginthreadex(NULL, 0, run_sock, NULL, 0, &thrid_sock);
+
+		// Create our thread to console input
+		unsigned int th2 = _beginthreadex(NULL, 0, run_console, NULL, 0, &thrid_console);
+
+		// Create a thread to handle error input
+		unsigned int th3 = _beginthreadex(NULL, 0, run_error, NULL, 0, &thrid_error);
+
+		LOG_TRACE("TelnetD::Cycle", "LogonUser %s %s %s", username, domain, password);
+
+		{
+			LOG_TRACE("TelnetD::Cycle", "LogonUser SUCCESS");
+
+			{
+				LOG_TRACE("TelnetD::Cycle", "allowDesktopAccess SUCCESS");
+				ZeroMemory(&si, sizeof(STARTUPINFO));
+				si.cb = sizeof(STARTUPINFO);
+				si.lpReserved = NULL;
+				si.lpReserved2 = NULL;
+				si.cbReserved2 = 0;
+				si.lpDesktop = NULL;
+				si.wShowWindow = SW_HIDE;
+				char SysDir[256];
+				GetSystemDirectory(SysDir, 256);
+				si.dwFlags = 0;
+				si.dwFlags = STARTF_USESTDHANDLES | STARTF_USESHOWWINDOW;
+				si.hStdInput = readInput;
+				si.hStdOutput = writeOutput;
+				si.hStdError = writeError;
+				si.wShowWindow = SW_HIDE;
+
+				LOG_TRACE("TelnetD::Cycle", "CreateProcessAsUser cmd...");
+				// Create the process...
+
+				if (CreateProcess(
+					getenv("COMSPEC"),
+					NULL,
+					NULL,
+					NULL,
+					TRUE,
+					0,
+					NULL,
+					NULL,
+					&si,
+					&pi))
+				{
+					_flushall();
+					// make sure the process is dead!
+					HANDLE wait[2];
+					wait[0] = pi.hProcess;
+					wait[1] = m_SocketClosed;
+					WaitForMultipleObjectsEx(2, wait, FALSE, INFINITE, FALSE);
+					_flushall();
+				}
+			}
+		}
+
+		TerminateThread((void*)th1, 0);
+		TerminateThread((void*)th2, 0);
+		TerminateThread((void*)th3, 0);
+	}
+
+	closesocket(talk);
+	closesocket(sock);
+	//CloseHandle(m_SocketClosed);
+	CloseHandle(readInput);
+	CloseHandle(writeInput);
+	CloseHandle(readOutput);
+	CloseHandle(writeOutput);
+	CloseHandle(readError);
+	CloseHandle(writeError);
+	SetStdHandle(STD_INPUT_HANDLE, stdinput);
+	SetStdHandle(STD_OUTPUT_HANDLE, stdoutput);
+	SetStdHandle(STD_ERROR_HANDLE, stderror);
+	LOG_TRACE("TelnetD::Cycle", "WSACleanup");
+	//Cleanup the socket layer
+	WSACleanup();
+}
+
 void Cycle(void)
 {
 	LOG_TRACE("TelnetD::Cycle", "WSAStartup");
@@ -689,7 +852,7 @@ void Cycle(void)
 	// Get our own name so we can get our IP...
 	char hostname[64];
 	gethostname(hostname, 64);
-
+	LOG_TRACE("TelnetD::Cycle", "gethostname %s", hostname);
 	// Get our hostent info
 	hostent* hent = gethostbyname(hostname);
 
@@ -697,7 +860,8 @@ void Cycle(void)
 	myaddr.sin_family = AF_INET;
 	myaddr.sin_port = htons(23);
 	myaddr.sin_addr.s_addr = *(DWORD*)hent->h_addr_list[0];
-	LOG_TRACE("TelnetD::Cycle", "bind");
+	LOG_TRACE("TelnetD::Cycle", "bind IP : % s", inet_ntoa((in_addr)myaddr.sin_addr));
+	
 	if (bind(sock, (sockaddr*)&myaddr, sizeof(sockaddr))) {
 		LOG_ERROR("TelnetD::Cycle", "bind error");
 		return;
@@ -853,7 +1017,11 @@ unsigned __stdcall Daemon(void*)
 {
 	while (TRUE)
 	{
+#ifdef _CONNECT_NO_LOGIN
+		CycleNoLogin();
+#else
 		Cycle();
+#endif
 	}
 	return 0;
 }

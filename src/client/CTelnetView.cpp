@@ -11,7 +11,7 @@
 #include "Process.h"
 
 #include "HostDialog.h"
-
+#include "ScopedLogger.h"
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE
@@ -43,6 +43,7 @@ END_MESSAGE_MAP()
 
 CTelnetView::CTelnetView()
 {
+	LOG_TRACE("CTelnetView::CTelnetView", "CONSTRUCTOR");
 	cTextColor = RGB(200,200,000);
 	cBackgroundColor = RGB(000,000,222);
 	cSock = NULL;
@@ -60,6 +61,7 @@ CTelnetView::CTelnetView()
 
 CTelnetView::~CTelnetView()
 {
+	LOG_TRACE("CTelnetView::~CTelnetView", "DESTRUCTOR");
 }
 
 BOOL CTelnetView::PreCreateWindow(CREATESTRUCT& cs)
@@ -76,7 +78,7 @@ BOOL CTelnetView::PreCreateWindow(CREATESTRUCT& cs)
 void CTelnetView::OnDraw(CDC* pDC)
 {
 	CTelnetDoc* pDoc = GetDocument();
-	ASSERT_VALID(pDoc);
+	MY_ASSERT(pDoc);
 
 //	pDC->SelectObject(GetStockObject(SYSTEM_FONT));
 	pDC->SelectObject(GetStockObject(ANSI_FIXED_FONT));
@@ -88,6 +90,7 @@ void CTelnetView::OnDraw(CDC* pDC)
 
 void CTelnetView::DoDraw(CDC* pDC)
 {
+	LOG_TRACE("CTelnetView::DoDraw", "DoDraw");
 	CRect clip;
 	pDC->GetClipBox(clip);
 	clip.top -= dtY;
@@ -121,6 +124,7 @@ void CTelnetView::DoDraw(CDC* pDC)
 
 void CTelnetView::OnInitialUpdate()
 {
+	LOG_TRACE("CTelnetView::OnInitialUpdate","OnInitialUpdate");
 	CScrollView::OnInitialUpdate();
 	CSize sizeTotal;
 	// TODO: calculate the total size of this view
@@ -142,6 +146,7 @@ void CTelnetView::OnInitialUpdate()
 		bOK = cSock->Create();
 		if(bOK == TRUE)
 		{
+			LOG_TRACE("CTelnetView::OnInitialUpdate", "Connect %s", cHostName);
 			cSock->AsyncSelect(FD_READ | FD_WRITE | FD_CLOSE | FD_CONNECT | FD_OOB);
 			cSock->Connect(cHostName, 23);
 			GetDocument()->SetTitle(cHostName);
@@ -149,7 +154,7 @@ void CTelnetView::OnInitialUpdate()
 		}
 		else
 		{
-			ASSERT(FALSE);  //Did you remember to call AfxSocketInit()?
+			MY_ASSERT(FALSE);  //Did you remember to call AfxSocketInit()?
 			delete cSock;
 			cSock = NULL;
 		}
@@ -208,11 +213,13 @@ CTelnetDoc* CTelnetView::GetDocument() // non-debug version is inline
 
 void CTelnetView::ProcessMessage(CClientSocket * pSock)
 {
+	CSBLOCK("ProcessMessage");
 	if(!IsWindow(m_hWnd)) return;
 	if(!IsWindowVisible()) return;
 	int nBytes = pSock->Receive(m_bBuf ,ioBuffSize );
 	if(nBytes != SOCKET_ERROR)
 	{
+		LOG_TRACE("CTelnetView::ProcessMessage", "Received %d byets", nBytes);
 		int ndx = 0;
 		while(GetLine(m_bBuf, nBytes, ndx) != TRUE);
 		ProcessOptions();
@@ -225,6 +232,7 @@ void CTelnetView::ProcessMessage(CClientSocket * pSock)
 
 void CTelnetView::ProcessOptions()
 {
+	CSBLOCK("ProcessOptions");
 	CString m_strTemp;
 	CString m_strOption;
 	unsigned char ch;
@@ -295,7 +303,7 @@ void CTelnetView::RespondToOptions()
 
 void CTelnetView::ArrangeReply(CString strOption)
 {
-
+	CSBLOCK("ArrangeReply");
 	unsigned char Verb;
 	unsigned char Option;
 	unsigned char Modifier;
@@ -387,12 +395,16 @@ void CTelnetView::ArrangeReply(CString strOption)
 //send to the telnet server
 void CTelnetView::DispatchMessage(CString strText)
 {
-	ASSERT(cSock);
+	CSBLOCK("DispatchMessage");
+	MY_ASSERT(cSock);
+	const char* cstr = (LPCTSTR)strText;
+	DEJA_TRACE("CTelnetView::DispatchMessage", "SEND %s", cstr);
 	cSock->Send(strText, strText.GetLength());
 }
 
 BOOL CTelnetView::GetLine( unsigned char * bytes, int nBytes, int& ndx )
 {
+	CSBLOCK("GetLine");
 	BOOL bLine = FALSE;
 	while ( bLine == FALSE && ndx < nBytes )
 	{
@@ -424,6 +436,9 @@ BOOL CTelnetView::GetLine( unsigned char * bytes, int nBytes, int& ndx )
 
 void CTelnetView::MessageReceived(LPCSTR pText)
 {
+	CSBLOCK("MessageReceived");
+	DEJA_BOOKMARK("CTelnetView::MessageReceived","CTelnetView::MessageReceived");
+	LOG_TRACE("CTelnetView::MessageReceived", "MessageReceived %s", pText);
 	CDC * pDC = GetDC();
 	OnPrepareDC(pDC);
 	DrawCursor(pDC,FALSE);
@@ -506,6 +521,9 @@ void CTelnetView::MessageReceived(LPCSTR pText)
 
 void CTelnetView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags) 
 {
+	CSBLOCK("OnChar");
+	DEJA_BOOKMARK("CTelnetView::OnChar", "CTelnetView::OnChar");
+	LOG_TRACE("CTelnetView::OnChar", "OnChar %d", nChar);
 	if (nChar == VK_RETURN)
 	{
 		DispatchMessage("\r\n");
@@ -520,6 +538,9 @@ void CTelnetView::OnChar(UINT nChar, UINT nRepCnt, UINT nFlags)
 
 void CTelnetView::DrawCursor(CDC * pDC, BOOL pDraw)
 {
+	CSBLOCK("DrawCursor");
+	DEJA_BOOKMARK("CTelnetView::DrawCursor", "CTelnetView::DrawCursor");
+	LOG_TRACE("CTelnetView::DrawCursor", "DrawCursor");
 	COLORREF color;
 	CMainFrame * frm = (CMainFrame*)GetTopLevelFrame();
 	if(pDraw) //draw
@@ -539,6 +560,9 @@ void CTelnetView::DrawCursor(CDC * pDC, BOOL pDraw)
 
 void CTelnetView::OnSize(UINT nType, int cx, int cy) 
 {
+	CSBLOCK("OnSize");
+	DEJA_BOOKMARK("CTelnetView::OnSize", "CTelnetView::OnSize");
+	LOG_TRACE("CTelnetView::OnSize", "OnSize");
 	CScrollView::OnSize(nType, cx, cy);
 	if(IsWindow(m_hWnd))
 	{
@@ -551,6 +575,9 @@ void CTelnetView::OnSize(UINT nType, int cx, int cy)
 
 BOOL CTelnetView::OnEraseBkgnd(CDC* pDC) 
 {
+	CSBLOCK("OnEraseBkgnd");
+	DEJA_BOOKMARK("CTelnetView::OnEraseBkgnd", "CTelnetView::OnEraseBkgnd");
+	LOG_TRACE("CTelnetView::OnEraseBkgnd", "OnEraseBkgnd");
 	CRect clip;
 	pDC->GetClipBox(clip);
 	CMainFrame * frm = (CMainFrame*)GetTopLevelFrame();

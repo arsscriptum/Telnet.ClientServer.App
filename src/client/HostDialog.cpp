@@ -19,7 +19,7 @@ CHostDialog::CHostDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CHostDialog::IDD, pParent)
 {
 	//{{AFX_DATA_INIT(CHostDialog)
-	m_HostName = _T("");
+	m_HostName = _T("172.29.64.1");
 	//}}AFX_DATA_INIT
 }
 

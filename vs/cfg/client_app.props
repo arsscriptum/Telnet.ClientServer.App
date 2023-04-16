@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?> 
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 <PropertyGroup Label="PropertySheets_Included">
-  <serverapp_integration>winapp_server_app</serverapp_integration>
+  <clientapp_integration>winapp_client_app</clientapp_integration>
 </PropertyGroup>
   <PropertyGroup Label="ServiceMacros">
      <ProjectRoot>$(ProjectDir)..\</ProjectRoot>
@@ -26,7 +26,7 @@
 
    <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectRoot)src;$(ProjectRoot)src\server;$(ProjectRoot)src\common;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ProjectRoot)src;$(ProjectRoot)src\client;$(ProjectRoot)src\common;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
@@ -52,6 +52,7 @@
         C4711 = function '' selected for automatic inline expansion [Just informational]
         C4738 = storing 32-bit float result in memory, possible loss of performance [Just informational]
         C4820 = bytes' bytes padding added after construct 'member_name' [Just informational]
+        C4996 =  'CWinApp::Enable3dControlsStatic': CWinApp::Enable3dControlsStatic is no longer needed. You should remove this call.
         C5026 = 'type': move constructor was implicitly defined as deleted [Just informational]
         C5027 = 'type': move assignment operator was implicitly defined as deleted [Just informational]
         C5045 = Compiler will insert Spectre mitigation for memory load if /Qspectre switch specified [Just informational]
@@ -59,7 +60,7 @@
         C5264 = 'const' variable is not used [reported for const in header files]
         C5258 = explicit capture of '' is not required for this use [VS 2019 requires capture of constexpr]
       -->
-      <DisableSpecificWarnings Condition="'$(CHARLS_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4710;4711;4738;4820;5026;5027;5045;5246;5264;5258</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(CHARLS_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4710;4711;4738;4820;4996;5026;5027;5045;5246;5264;5258</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro
@@ -78,9 +79,21 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration)</Command>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ClientPostBuild.ps1 $(Configuration)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <!--   
+         ClCompile Debug
+  -->
+    <ClCompile>
+      <Optimization>Disabled</Optimization>
+      <DebugInformationFormat>ProgramDatabase</DebugInformationFormat>
+    </ClCompile>
+    <Link>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <GenerateMapFile>true</GenerateMapFile>
+    </Link>
+  </ItemDefinitionGroup>
 </Project>
 

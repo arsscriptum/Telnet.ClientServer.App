@@ -105,8 +105,8 @@ const std::string CONSOLE_COLOR_GREEN = "\u001b[32m";
 const std::string CONSOLE_COLOR_YELLOW = "\u001b[33m";
 
 void __cdecl ConsoleOut( std::string color, const char *format, ...);
-void __cdecl ConsoleLog(const char *format, ...);
-
+void __cdecl ConsoleDebugLog(const char *format, ...);
+void __cdecl ConsoleErrorLog(const char *format, ...);
 # define COUTCMD( ... )     { ConsoleLog(  __VA_ARGS__ );  }	
 # define COUTRS( ... )      { ConsoleOut(CONSOLE_COLOR_RED,  __VA_ARGS__ );  }	
 # define COUTR( ... )       { ConsoleOut(CONSOLE_COLOR_RED,  __VA_ARGS__ );  }	
@@ -116,8 +116,8 @@ void __cdecl ConsoleLog(const char *format, ...);
 # define COUTC( ... )       { ConsoleOut(CONSOLE_COLOR_CYAN_BRIGHT,  __VA_ARGS__ );  }	
 # define COUTCS( ... )      { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
 # define COUTINFO( ... )    { ConsoleOut( CONSOLE_COLOR_BKGRND_WHITE, __VA_ARGS__ );  }	
-#define LOG_PRINTF ConsoleLog
-#define _NETPRINTF ConsoleLog
+#define ASSERT_TRACE_ERROR ConsoleErrorLog
+#define _NETPRINTF ConsoleDebugLog
 int WriteToLog(char* str);
 #ifndef DEJA_DISABLED
 	# define LOG_TRACE DEJA_TRACE	

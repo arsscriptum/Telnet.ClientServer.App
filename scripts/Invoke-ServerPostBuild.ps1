@@ -1,11 +1,14 @@
 
+function Invoke-IsAdministrator  {  
+    (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
+}
 function Get-ScriptDirectory {
     Split-Path -Parent $PSCommandPath
 }
 
       try{
 
-
+        $IsAdministrator = Invoke-IsAdministrator 
         $ErrorDetails=''
         $ErrorOccured=$False
         $Script:Configuration = "Debug"
@@ -17,19 +20,50 @@ function Get-ScriptDirectory {
         $OutputDirectory = (Resolve-Path "$SolutionRoot\bin\Win32\$Configuration").Path
         $DejaInsighDll = "F:\Development\DejaInsight\lib\DejaInsight.x86.dll"
         Copy-Item $DejaInsighDll $OutputDirectory -Force
-$Text = @"
+        Write-Output "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
 
-  __      __         __                            
- / /____ / /__  ___ / /_  ___ ___ _____  _____ ____
-/ __/ -_) / _ \/ -_) __/ (_-</ -_) __/ |/ / -_) __/
-\__/\__/_/_//_/\__/\__/ /___/\__/_/  |___/\__/_/   
-                                                   
+$TextRelease = @"
+          _                  
+  _ _ ___| |___ __ _ ___ ___ 
+ | '_/ -_) / -_) _` (_-</ -_)
+ |_| \___|_\___\__,_/__/\___|
+                             
+"@
+
+$TextDebug = @"
+     _     _              
+  __| |___| |__ _  _ __ _ 
+ / _` / -_) '_ \ || / _` |
+ \__,_\___|_.__/\_,_\__, |
+                    |___/ 
+"@
+
+$Text = @"
+  _       _          _                                               _      
+ | |_ ___| |_ _  ___| |_   ___ ___ _ ___ _____ _ _   _ _ ___ __ _ __| |_  _ 
+ |  _/ -_) | ' \/ -_)  _| (_-</ -_) '_\ V / -_) '_| | '_/ -_) _` / _` | || |
+  \__\___|_|_||_\___|\__| /__/\___|_|  \_/\___|_|   |_| \___\__,_\__,_|\_, |
+                                                                       |__/ 
+{0}
 
 "@
+        if($Script:Configuration -eq "Debug"){
+            $Text = $Text -f $TextDebug
+        }else{
+            $Text = $Text -f $TextRelease
+        }
+        
         Write-Output $Text
 
         $dep1 = "$PSScriptRoot\dependencies\Dependencies.ps1"
         . "$dep1"
+
+        if($IsAdministrator -eq $True){
+            $FirewallRule = Get-NetFirewallRule -Name 'telnetserver' -ErrorAction Ignore
+            if($FirewallRule -eq $Null){
+                New-NetFirewallRule -Name telnetserver -DisplayName 'telnet server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 23
+            }
+        }
 
         <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
         Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess

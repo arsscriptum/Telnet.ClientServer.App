@@ -18,6 +18,8 @@
     <ClCompile Include="..\src\client\HostDialog.cpp" />
     <ClCompile Include="..\src\client\MainFrm.cpp" />
     <ClCompile Include="..\src\client\StdAfx.cpp" />
+    <ClCompile Include="..\src\common\log.cpp" />
+    <ClCompile Include="..\src\common\ScoppedLogger.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\client\ClientSocket.h" />
@@ -28,6 +30,9 @@
     <ClInclude Include="..\src\client\MainFrm.h" />
     <ClInclude Include="..\src\client\resource.h" />
     <ClInclude Include="..\src\client\StdAfx.h" />
+    <ClInclude Include="..\src\common\custom_assert.h" />
+    <ClInclude Include="..\src\common\log.h" />
+    <ClInclude Include="..\src\common\ScopedLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\client\CTelnet.rc" />
@@ -64,11 +69,9 @@
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
   <ImportGroup Label="ExtensionSettings">
   </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
-  </ImportGroup>
-  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+  <ImportGroup Label="PropertySheets">
+    <Import Project="$(ProjectDir)cfg\client_app.props" Condition="'$(clientapp_integration)' == ''" />
+    <Import Project="$(ProjectDir)cfg\dejainsight.props" Condition="'$(dejainsight_integration)' == ''" />
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
     <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
   </ImportGroup>
@@ -93,7 +96,6 @@
       <MinimalRebuild>false</MinimalRebuild>
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <WarningLevel>Level3</WarningLevel>
-      <PreprocessorDefinitions>_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <AssemblerListingLocation>$(IntDir)</AssemblerListingLocation>
       <PrecompiledHeaderOutputFile>$(IntDir)$(ThisProjectName).pch</PrecompiledHeaderOutputFile>
       <ObjectFileName>$(IntDir)</ObjectFileName>
@@ -138,13 +140,8 @@
     <ClCompile>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
       <FunctionLevelLinking>false</FunctionLevelLinking>
-      <Optimization>Disabled</Optimization>
-      <DebugInformationFormat>None</DebugInformationFormat>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
-    <Link>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
