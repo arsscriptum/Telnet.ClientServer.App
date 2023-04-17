@@ -18,6 +18,8 @@ static char THIS_FILE[] = __FILE__;
 CHostDialog::CHostDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CHostDialog::IDD, pParent)
 	, m_HostComboText(_T(""))
+	, m_strPort(_T("35010"))
+	, m_uiPort(35010)
 {
 	//{{AFX_DATA_INIT(CHostDialog)
 
@@ -32,6 +34,16 @@ void CHostDialog::DoDataExchange(CDataExchange* pDX)
 	DDX_Control(pDX, IDC_COMBO2, m_HostCombo);
 	DDX_CBString(pDX, IDC_COMBO2, m_HostComboText);
 	//}}AFX_DATA_MAP
+	DDX_Text(pDX, IDC_EDIT_PORT, m_strPort);
+
+	m_uiPort = _ttoi(m_strPort);
+	if (m_uiPort > MAX_CONNECTION_PORT) {
+		m_uiPort = MAX_CONNECTION_PORT;
+	}
+	if (m_uiPort < MIN_CONNECTION_PORT) {
+		m_uiPort = MIN_CONNECTION_PORT;
+	}
+	m_strPort.Format(_T("%d"), m_uiPort);
 }
 
 

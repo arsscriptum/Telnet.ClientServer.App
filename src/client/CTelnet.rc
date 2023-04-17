@@ -155,18 +155,19 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
 END
 
-IDD_HOST DIALOGEX 0, 0, 219, 87
+IDD_HOST DIALOGEX 0, 0, 239, 108
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Host"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "Connect",IDOK,162,66,50,14
-    LTEXT           "Host Name (or IP address)",IDC_STATIC,7,14,109,12,SS_CENTERIMAGE
-    COMBOBOX        IDC_COMBO2,7,31,100,47,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_TABSTOP
-    LTEXT           "Port",IDC_STATIC,117,15,45,12,SS_CENTERIMAGE
-    EDITTEXT        IDC_EDIT_PORT,115,29,40,14,ES_AUTOHSCROLL | ES_NUMBER
-    DEFPUSHBUTTON   "Cancel",IDCANCEL,110,66,50,14
-    DEFPUSHBUTTON   "Clear History",IDCLEAR,163,29,50,14
+    DEFPUSHBUTTON   "Connect",IDOK,174,71,50,14
+    LTEXT           "Host Name (or IP address)",IDC_STATIC,14,20,109,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO2,14,37,100,47,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_TABSTOP
+    LTEXT           "Port",IDC_STATIC,124,21,45,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PORT,122,35,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,119,71,50,14
+    DEFPUSHBUTTON   "Clear History",IDCLEAR,170,36,50,14
+    GROUPBOX        "Connection Settings",IDC_STATIC,7,7,225,94
 END
 
 
@@ -194,10 +195,6 @@ BEGIN
         BEGIN
             VALUE "FileDescription", "Client Console Connector"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", ""
-            VALUE "LegalCopyright", ""
-            VALUE "OriginalFilename", ""
-            VALUE "ProductName", ""
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
@@ -227,9 +224,9 @@ BEGIN
     IDD_HOST, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 212
+        RIGHTMARGIN, 232
         TOPMARGIN, 7
-        BOTTOMMARGIN, 80
+        BOTTOMMARGIN, 101
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -245,7 +242,8 @@ BEGIN
     0,
     0, 0, 0, 0,
     0, 0, 0, 0,
-    100, 100, 100, 100
+    100, 100, 100, 100,
+    0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,
     0, 0, 0, 0,

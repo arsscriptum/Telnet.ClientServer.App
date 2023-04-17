@@ -45,6 +45,7 @@ protected: // create from serialization only
 	COLORREF cBackgroundColor;
 
 	CString cHostName;
+	unsigned int uiPort;
 
 //telnet related operations and variables
 public:

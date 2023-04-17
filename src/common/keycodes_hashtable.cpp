@@ -7,6 +7,11 @@
 //  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
 //==============================================================================
 
+//
+//  THIS FILE IS UPDATED AUTOMATICALLY WHEN YOU RUN  . .\scripts\Update-TelnetKeyCodes.ps1
+//
+//
+
 
 #include "stdafx.h"
 #include "keycodes_hashtable.h"

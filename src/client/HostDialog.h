@@ -7,6 +7,8 @@
 // HostDialog.h : header file
 //
 
+#define MIN_CONNECTION_PORT 1024
+#define MAX_CONNECTION_PORT 65535
 /////////////////////////////////////////////////////////////////////////////
 // CHostDialog dialog
 
@@ -50,6 +52,8 @@ public:
 	afx_msg void OnBnClickedCancel();
 	afx_msg void OnBnClickedClear();
 	afx_msg void OnEnChangeEditPort();
+	CString m_strPort;
+	unsigned int m_uiPort;
 };
 
 //{{AFX_INSERT_LOCATION}}

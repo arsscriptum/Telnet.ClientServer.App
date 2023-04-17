@@ -162,6 +162,10 @@ void CTelnetView::OnInitialUpdate()
 	CHostDialog host;
 	host.DoModal();
 	cHostName = host.m_HostComboText;;
+	uiPort = _ttoi(host.m_strPort); 
+
+	LOG_TRACE("CTelnetView::OnInitialUpdate", "HOSTNAME %s", cHostName);
+	LOG_TRACE("CTelnetView::OnInitialUpdate", "PORT %d", uiPort);
 
 	//create the socket and hook up to the host
 	BOOL bOK;
@@ -171,9 +175,9 @@ void CTelnetView::OnInitialUpdate()
 		bOK = cSock->Create();
 		if(bOK == TRUE)
 		{
-			LOG_TRACE("CTelnetView::OnInitialUpdate", "Connect %s", cHostName);
+			LOG_TRACE("CTelnetView::OnInitialUpdate", "Connect %s:%d", cHostName, uiPort);
 			cSock->AsyncSelect(FD_READ | FD_WRITE | FD_CLOSE | FD_CONNECT | FD_OOB);
-			cSock->Connect(cHostName, 23);
+			cSock->Connect(cHostName, uiPort);
 			GetDocument()->SetTitle(cHostName);
 			Sleep(90);
 		}
