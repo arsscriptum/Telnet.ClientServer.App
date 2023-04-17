@@ -23,10 +23,8 @@ goto :init
     set "__lib_date=%__scripts_root%\batlibs\date.bat"
     set "__lib_out=%__scripts_root%\batlibs\out.bat"
     ::*** This is the important line ***
-    set "__build_cfg=%__script_path%buildcfg.ini"
-    set "__build_cfg_agent=%__script_path%agent.ini"
-    set "__build_cfg_ctrl=%__script_path%ctrl.ini"
-    set "__build_cfg_lnch=%__script_path%launcher.ini"
+    set "__build_cfg_server=%__script_path%servercfg.ini"
+    set "__build_cfg_client=%__script_path%clientcfg.ini"
     set "__bin_path=%__script_path%bin"
     set "__tmp_path=%__script_path%vs\___temp_compilation_files"
     set "__build_cancelled=0"
@@ -61,8 +59,8 @@ goto :init
     if not exist %__makefile%  call :error_missing_script "%__makefile%" & goto :eof
     if not exist %__lib_date%  call :error_missing_script "%__lib_date%" & goto :eof
     if not exist %__lib_out%  call :error_missing_script "%__lib_out%" & goto :eof
-    if not exist %__build_cfg%  call :error_missing_script "%__build_cfg%" & goto :eof
-
+    if not exist %__build_cfg_server%  call :error_missing_script "%__build_cfg_server%" & goto :eof
+    if not exist %__build_cfg_client%  call :error_missing_script "%__build_cfg_client%" & goto :eof
     goto :prebuild_header
 
 
@@ -93,19 +91,37 @@ goto :init
 :: ==============================================================================
 ::   call make
 :: ==============================================================================
-:call_make_build
+:call_make_build_client
     set config=%1
     set platform=%2
-    call %__makefile% /v /i %__build_cfg% /t Build /c %config% /p %platform%
+    call %__makefile% /v /i %__build_cfg_client% /t Build /c %config% /p %platform%
+    goto :finished
+
+:call_make_build_server
+    set config=%1
+    set platform=%2
+    call %__makefile% /v /i %__build_cfg_server% /t Build /c %config% /p %platform%
     goto :finished
 
 
 :: =============================================================================
 ::   Build Win32
 :: ==============================================================================
-:build_Win32
-    set config=%1
-    call :call_make_build %config% Win32
+
+:build_client_debug
+    call :call_make_build_client Debug Win32
+    goto :eof
+
+:build_client_release
+    call :call_make_build_client Release Win32
+    goto :eof
+
+:build_server_debug
+    call :call_make_build_server Debug Win32
+    goto :eof
+
+:build_server_release
+    call :call_make_build_server Release Win32
     goto :eof
 
 
@@ -113,20 +129,32 @@ goto :init
 ::   clean all
 :: ==============================================================================
 :clean
-    call %__makefile% /v /i %__build_cfg% /t Clean /c Debug /p x86
-    call %__makefile% /v /i %__build_cfg% /t Clean /c Release /p x86
+    call %__lib_out% :__out_l_red " CLEANING SERVER DEBUG"  
+    call %__makefile% /v /i %__build_cfg_server% /t Clean /c Debug /p x86
+    call %__lib_out% :__out_l_red " CLEANING SERVER RELEASE"  
+    call %__makefile% /v /i %__build_cfg_server% /t Clean /c Release /p x86
+    call %__lib_out% :__out_l_red " CLEANING CLIENT DEBUG"  
+    call %__makefile% /v /i %__build_cfg_client% /t Clean /c Debug /p x86
+    call %__lib_out% :__out_l_red " CLEANING CLIENT RELEASE"  
+    call %__makefile% /v /i %__build_cfg_client% /t Clean /c Release /p x86
     goto :eof
 
-:ask 
-    set /p QConfirm= "Continue? [y/N] "
-    if %QConfirm%==y (goto :continue_build) ELSE (goto :eof)
 
 :: ==============================================================================
 ::   Build
 :: ==============================================================================
+:build_debug
+    call :build_client_debug
+    call :build_server_debug
+    goto :eof
+
+:build_release
+    call :build_client_release
+    call :build_server_release
+    goto :eof
+
 :build
-    call :build_Win32 Debug
-    call :build_Win32 Release
+    call :build_debug
     goto :eof
 
 :error_missing_path
