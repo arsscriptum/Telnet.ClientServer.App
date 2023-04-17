@@ -5,7 +5,6 @@ function Invoke-IsAdministrator  {
 function Get-ScriptDirectory {
     Split-Path -Parent $PSCommandPath
 }
-
       try{
 
         $IsAdministrator = Invoke-IsAdministrator 
@@ -14,57 +13,77 @@ function Get-ScriptDirectory {
         $Script:Configuration = "Debug"
         if(!([string]::IsNullOrEmpty($args[0]))){
             $Script:Configuration = $args[0]
+            Write-Output "Configuration ==> $Script:Configuration"
+        }else{
+            throw "missing argument 0"
         }
-        $ScriptDirectory = Get-ScriptDirectory
-        $SolutionRoot = (Resolve-Path "$ScriptDirectory\..").Path
-        $OutputDirectory = (Resolve-Path "$SolutionRoot\bin\Win32\$Configuration").Path
-        $DejaInsighDll = "F:\Development\DejaInsight\lib\DejaInsight.x86.dll"
+        if(!([string]::IsNullOrEmpty($args[1]))){
+            $RootPath = $args[1]
+            Write-Output "RootPath ==> $RootPath"
+        }else{
+            throw "missing argument 1"
+        }
+        $SolutionDirectory = (Resolve-Path $RootPath).Path
+        
+        $ScriptsDirectory = (Resolve-Path "$SolutionDirectory\scripts").Path
+        $OutputDirectory = (Resolve-Path "$SolutionDirectory\bin\Win32\$Configuration").Path
+        $BuiltExecutable = Join-Path "$OutputDirectory" "telnet_srv.exe"
+        $ReadmeFile  = Join-Path "$SolutionDirectory" "usage.txt"
+        Write-Output "=========================================================="
+        Write-Output "                   DIRECTORIES CONFIGURATION              "
+        Write-Output "`tSolutionDirectory ==> $SolutionDirectory"
+        Write-Output "`tScriptsDirectory  ==> $ScriptsDirectory"
+        Write-Output "`tOutputDirectory   ==> $OutputDirectory"
+        Write-Output "=========================================================="
+        [string[]]$deps = . "$ScriptsDirectory\dependencies\GetDependencies.ps1" -Path "$ScriptsDirectory\dependencies"
+        $depscount = $deps.Count
+        $deps | % {
+            $file = $_
+            . "$file"
+            #Write-Output "Include `"$file`""
+        }
+        $Test = Test-Dependencies -Quiet
+        if(! ($Test) ) { throw "dependencies error"} 
+
+        
+        Write-Output "`n=========================================================="
+        Write-Output "                    COPY DEJAINSIGHT LIBRARY                "
+        Write-Output "==========================================================`n"
+        $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
         Copy-Item $DejaInsighDll $OutputDirectory -Force
+
         Write-Output "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
 
-$TextRelease = @"
-          _                  
-  _ _ ___| |___ __ _ ___ ___ 
- | '_/ -_) / -_) _` (_-</ -_)
- |_| \___|_\___\__,_/__/\___|
-                             
-"@
+        Write-Output "`n=========================================================="
+        Write-Output "                  CONFIGURE VERSION SETTINGS              "
+        Write-Output "==========================================================`n"
+        Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Server"
 
-$TextDebug = @"
-     _     _              
-  __| |___| |__ _  _ __ _ 
- / _` / -_) '_ \ || / _` |
- \__,_\___|_.__/\_,_\__, |
-                    |___/ 
-"@
-
-$Text = @"
-  _       _          _                                               _      
- | |_ ___| |_ _  ___| |_   ___ ___ _ ___ _____ _ _   _ _ ___ __ _ __| |_  _ 
- |  _/ -_) | ' \/ -_)  _| (_-</ -_) '_\ V / -_) '_| | '_/ -_) _` / _` | || |
-  \__\___|_|_||_\___|\__| /__/\___|_|  \_/\___|_|   |_| \___\__,_\__,_|\_, |
-                                                                       |__/ 
-{0}
-
-"@
-        if($Script:Configuration -eq "Debug"){
-            $Text = $Text -f $TextDebug
-        }else{
-            $Text = $Text -f $TextRelease
-        }
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
         
-        Write-Output $Text
-
-        $dep1 = "$PSScriptRoot\dependencies\Dependencies.ps1"
-        . "$dep1"
-
+        Write-Output "=========================================================="
+        Write-Output "                CONFIGURE NET FIREWALL RULES              "
         if($IsAdministrator -eq $True){
-            $FirewallRule = Get-NetFirewallRule -Name 'telnetserver' -ErrorAction Ignore
+            $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
             if($FirewallRule -eq $Null){
-                New-NetFirewallRule -Name telnetserver -DisplayName 'telnet server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 23
+                Write-Output "Add New Rule"
+                New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
             }
         }
+        Write-Output "=========================================================="
 
+        $TextConfig = $Script:TextRelease
+        if("$Configuration" -eq "Debug"){
+          $TextConfig = $Script:TextDebug
+        }
+        $OutLog = $Script:TextServerReady -f $TextConfig
+        Write-Output $OutLog
+
+        Write-Output "=========================================================="
+        Write-Output "              CONFIGURE SERVICE REGISTRATION              "
+        Write-Output "=========================================================="
         <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
         Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
         Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
@@ -72,6 +91,7 @@ $Text = @"
         Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
         Invoke-CmProtek -InputFile "$Script:TargetPath" -OutputFile "$Script:ServicePath"
         #>
+        
     }catch{
         Write-Error "$_"
         $ErrorDetails= "$_"

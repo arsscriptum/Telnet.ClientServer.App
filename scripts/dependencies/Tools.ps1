@@ -8,18 +8,28 @@ function ExitWithCode($exitcode) {
   $host.SetShouldExit($exitcode)
   exit $exitcode
 }
-
 function Test-Dependencies{
+   [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$false)]
+        [Alias('q')]
+        [switch]$Quiet
+    )
+    $ShowLogs = ! ($Quiet)
     $Res = $True
-    $Functions=@("Invoke-CmProtek", "Get-AccesschkPath", "Get-SetAclPath", "Uninstall-WinService", "Install-WinService1", "Install-WinService", "Set-GroupConfig", "Remove-ServiceGroupConfig", "Set-WinServicePermissions", "Get-AccesschkPath", "Get-PermissionShortNum", "Get-PermissionShortName", "Get-ServicePermissions", "Set-ServicePermissions", "ExitWithCode")
+    $Functions=@("Set-BinaryFileVersionSettings", "Test-VerPatchCompatible", "Get-NativeFileVersion", "Invoke-CmProtek", "Get-AccesschkPath", "Get-SetAclPath", "Uninstall-WinService", "Install-WinService", "Install-WinService", "Set-GroupConfig", "Remove-ServiceGroupConfig", "Set-WinServicePermissions", "Get-AccesschkPath", "Get-PermissionShortNum", "Get-PermissionShortName", "Get-ServicePermissions", "Set-ServicePermissions", "ExitWithCode")
     ForEach($fn in $Functions){
         try{
             $f = Get-Command $fn 
-            Write-Host "`t[OK] " -f DarkGreen -n
-            Write-Host "$fn" -f DarkGray
+            if($ShowLogs){
+                Write-Host "`t[OK] " -f DarkGreen -n
+                Write-Host "$fn" -f DarkGray
+            }
         }catch{
-            Write-Host "`t[ERROR] " -f DarkRed -n
-            Write-Host "$fn" -f DarkGray
+            if($ShowLogs){
+                Write-Host "`t[ERROR] " -f DarkRed -n
+                Write-Host "$fn" -f DarkGray
+            }
             $Res = $False
         }
     }

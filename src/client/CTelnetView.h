@@ -83,7 +83,7 @@ public:
 
 // Operations
 public:
-
+	static BOOL WINAPI	ControlHandler(DWORD CtrlType);
 // Overrides
 	// ClassWizard generated virtual function overrides
 	//{{AFX_VIRTUAL(CTelnetView)

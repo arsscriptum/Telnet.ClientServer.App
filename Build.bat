@@ -93,44 +93,10 @@ goto :init
 :: ==============================================================================
 ::   call make
 :: ==============================================================================
-:call_make_build_agent
-    set config=%1
-    set platform=%2
-    call %__makefile% /v /i %__build_cfg_agent% /t Build /c %config% /p %platform%
-    goto :finished
-
-:: ==============================================================================
-::   call make
-:: ==============================================================================
-:call_make_build_ctrl
-    set config=%1
-    set platform=%2
-    call %__makefile% /v /i %__build_cfg_ctrl% /t Build /c %config% /p %platform%
-    goto :finished
-
-:: ==============================================================================
-::   call make
-:: ==============================================================================
-:call_make_build_lnch
-    set config=%1
-    set platform=%2
-    call %__makefile% /v /i %__build_cfg_lnch% /t Build /c %config% /p %platform%
-    goto :finished
-
-:: ==============================================================================
-::   call make
-:: ==============================================================================
 :call_make_build
     set config=%1
     set platform=%2
     call %__makefile% /v /i %__build_cfg% /t Build /c %config% /p %platform%
-    goto :finished
-
-:call_make_build_export
-    set config=%1
-    set platform=%2
-    set export_path=%3
-    call %__makefile% /v /i %__build_cfg% /t Build /c %config% /p %platform% /x %export_path%
     goto :finished
 
 
@@ -144,22 +110,11 @@ goto :init
 
 
 :: ==============================================================================
-::   Build x64
-:: ==============================================================================
-:build_x64
-    set config=%1
-    call :call_make_build %config% x64
-    goto :eof
-
-
-:: ==============================================================================
 ::   clean all
 :: ==============================================================================
 :clean
     call %__makefile% /v /i %__build_cfg% /t Clean /c Debug /p x86
     call %__makefile% /v /i %__build_cfg% /t Clean /c Release /p x86
-    call %__makefile% /v /i %__build_cfg% /t Clean /c Debug /p x64
-    call %__makefile% /v /i %__build_cfg% /t Clean /c Release /p x64
     goto :eof
 
 :ask 
@@ -170,7 +125,8 @@ goto :init
 ::   Build
 :: ==============================================================================
 :build
-    call :build_x64 Debug
+    call :build_Win32 Debug
+    call :build_Win32 Release
     goto :eof
 
 :error_missing_path

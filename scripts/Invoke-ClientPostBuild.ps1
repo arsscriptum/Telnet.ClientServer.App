@@ -1,72 +1,98 @@
 
+function Invoke-IsAdministrator  {  
+    (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
+}
 function Get-ScriptDirectory {
     Split-Path -Parent $PSCommandPath
 }
-
       try{
 
-
+        $IsAdministrator = Invoke-IsAdministrator 
         $ErrorDetails=''
         $ErrorOccured=$False
         $Script:Configuration = "Debug"
         if(!([string]::IsNullOrEmpty($args[0]))){
             $Script:Configuration = $args[0]
+            Write-Output "Configuration ==> $Script:Configuration"
+        }else{
+            throw "missing argument 0"
         }
-        $ScriptDirectory = Get-ScriptDirectory
-        $SolutionRoot = (Resolve-Path "$ScriptDirectory\..").Path
-        $OutputDirectory = (Resolve-Path "$SolutionRoot\bin\Win32\$Configuration").Path
-        $DejaInsighDll = "F:\Development\DejaInsight\lib\DejaInsight.x86.dll"
+        if(!([string]::IsNullOrEmpty($args[1]))){
+            $RootPath = $args[1]
+            Write-Output "RootPath ==> $RootPath"
+        }else{
+            throw "missing argument 1"
+        }
+        $SolutionDirectory = (Resolve-Path $RootPath).Path
+        
+        $ScriptsDirectory = (Resolve-Path "$SolutionDirectory\scripts").Path
+        $OutputDirectory = (Resolve-Path "$SolutionDirectory\bin\Win32\$Configuration").Path
+        $BuiltExecutable = Join-Path "$OutputDirectory" "telnet_client.exe"
+        $ReadmeFile  = Join-Path "$SolutionDirectory" "readme.txt"
+        Write-Output "=========================================================="
+        Write-Output "                   DIRECTORIES CONFIGURATION              "
+        Write-Output "`tSolutionDirectory ==> $SolutionDirectory"
+        Write-Output "`tScriptsDirectory  ==> $ScriptsDirectory"
+        Write-Output "`tOutputDirectory   ==> $OutputDirectory"
+        Write-Output "=========================================================="
+        [string[]]$deps = . "$ScriptsDirectory\dependencies\GetDependencies.ps1" -Path "$ScriptsDirectory\dependencies"
+        $depscount = $deps.Count
+        $deps | % {
+            $file = $_
+            . "$file"
+            #Write-Output "Include `"$file`""
+        }
+        $Test = Test-Dependencies -Quiet
+        if(! ($Test) ) { throw "dependencies error"} 
+
+        
+        Write-Output "`n=========================================================="
+        Write-Output "                    COPY DEJAINSIGHT LIBRARY                "
+        Write-Output "==========================================================`n"
+        $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
         Copy-Item $DejaInsighDll $OutputDirectory -Force
+
         Write-Output "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
 
-$TextRelease = @"
-           _                     
-  _ __ ___| | ___  __ _ ___  ___ 
- | '__/ _ \ |/ _ \/ _` / __|/ _ \
- | | |  __/ |  __/ (_| \__ \  __/
- |_|  \___|_|\___|\__,_|___/\___|
-
-"@
-
-$TextDebug = @"
-      _      _                 
-   __| | ___| |__  _   _  __ _ 
-  / _` |/ _ \ '_ \| | | |/ _` |
- | (_| |  __/ |_) | |_| | (_| |
-  \__,_|\___|_.__/ \__,_|\__, |
-                         |___/ 
-"@
+        Write-Output "`n=========================================================="
+        Write-Output "                  CONFIGURE VERSION SETTINGS              "
+        Write-Output "==========================================================`n"
+        Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Client"
 
 
-$Text = @"
 
-{0}
-       _ _            _                        _       _ 
-   ___| (_) ___ _ __ | |_   _ __ ___  __ _  __| |_   _| |
-  / __| | |/ _ \ '_ \| __| | '__/ _ \/ _` |/ _` | | | | |
- | (__| | |  __/ | | | |_  | | |  __/ (_| | (_| | |_| |_|
-  \___|_|_|\___|_| |_|\__| |_|  \___|\__,_|\__,_|\__, (_)
-                                                 |___/   
-"@
 
-        if($Script:Configuration -eq "Debug"){
-            $Text = $Text -f $TextDebug
-        }else{
-            $Text = $Text -f $TextRelease
+        ########################
+        # CHECK VERSION PATCHER
+        if([string]::IsNullOrEmpty($ENV:VersionPatcherPath)){
+            Set-EnvironmentVariable -Name "VersionPatcherPath" -Value "$ENV:ToolsRoot\VersionPatcher\verpatch.exe" -Scope Session
+            Write-Output "[warning] VersionPatcherPath is not setup in environment variables"
+            if([string]::IsNullOrEmpty($ENV:VersionPatcherPath)){ throw "cannot configure verpathc path"}
         }
-        
-        Write-Output $Text
+        Write-Output "`n=========================================================="
+        Write-Output "                    COPY DEJAINSIGHT LIBRARY                "
+        Write-Output "==========================================================`n"
+        $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
+        Copy-Item $DejaInsighDll $OutputDirectory -Force
 
-        $dep1 = "$PSScriptRoot\dependencies\Dependencies.ps1"
-        . "$dep1"
+        Write-Output "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
 
-        <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
-        Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
-        Invoke-CmProtek -InputFile "$Script:TargetPath" -OutputFile "$Script:ServicePath"
-        #>
+        Write-Output "`n=========================================================="
+        Write-Output "                  CONFIGURE VERSION SETTINGS              "
+        Write-Output "==========================================================`n"
+        Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Client"
+
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
+
+        $TextConfig = $Script:TextRelease
+        if("$Configuration" -eq "Debug"){
+          $TextConfig = $Script:TextDebug
+        }
+        $OutLog = $Script:TextClientReady -f $TextConfig
+        Write-Output $OutLog
+
     }catch{
         Write-Error "$_"
         $ErrorDetails= "$_"

@@ -10,6 +10,9 @@ param(
     [switch]$GetCPlusPlusCode
 )
 
+$dep1 = "$PSScriptRoot\dependencies\Dependencies.ps1"
+. "$dep1"
+
 
 function Get-TelnetKeyCodes {
    [CmdletBinding(SupportsShouldProcess)]
@@ -80,7 +83,7 @@ function Get-TelnetKeyCodes {
 
         $Json = $KeyCodes | ConvertTo-Json
         Write-Verbose "Writing Json file `"$ExportFile`" " 
-        Set-Content -Path "$ExportFile" -Value "$Json"
+        Set-Content -Path "$ExportFile" -Value "$Json" -Encoding "Windows-1252" -Force
         $Null = Remove-Item "$datafile" -Force
         $KeyCodes
 
@@ -105,7 +108,7 @@ if($FormatTable){
 
 if($GetCPlusPlusCode){
     $SourceFilePath = "F:\Code\Telnet.ClientServer.App\src\common\keycodes_hashtable.cpp"
-    $TmpSourceFilePath = "F:\Code\Telnet.ClientServer.App\src\common\keycodes_hashtable.tmp"
+    $TmpSourceFilePath = "F:\Code\Telnet.ClientServer.App\src\common\temporary-keycodes_hashtable.cpp"
     $SourceFilePathBackup = "$ENV:Temp\keycodes_hashtable.bak"
     $SourceFileContent = Get-SourceFileContent -Path $SourceFilePath
     $InitCode = ""
@@ -114,12 +117,11 @@ if($GetCPlusPlusCode){
         $InitCode += "`t// code for the key event $($entry.Key)`n`tLOG_TRACE(`"Hashtable::InitializeKeyCodes::Put`", `"add \`"$($entry.Key)\`" `");`n`tput(`"$($entry.Key)`", `"$($entry.CodeSource)`");`n`n"
     }
     $NewSourceFileContent = $SourceFileContent.Replace('__SOURCE_CODE_InitializeKeyCodes__',$InitCode)
-
-    Set-Content -Path "$TmpSourceFilePath" -Value "$NewSourceFileContent"
+    Set-Content -Path "$TmpSourceFilePath" -Value $NewSourceFileContent -Encoding "Windows-1252" -Force
     $ExpPath = (Get-Command "explorer.exe").Source
     Write-Host "Opening `"$TmpSourceFilePath`""
-    &"$ExpPath" "$TmpSourceFilePath"
-
+    #&"$ExpPath" "$TmpSourceFilePath"
+    Invoke-AraxisCompare "$SourceFilePath" "$TmpSourceFilePath"
     $confirmation = Read-Host "Replace `"$SourceFilePath`" with `"$TmpSourceFilePath`" ? (y/N)"
     if("$confirmation" -eq 'y'){
         Write-Host "BACKUP to `"$SourceFilePathBackup`"..."

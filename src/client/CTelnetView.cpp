@@ -73,6 +73,19 @@ CTelnetView::~CTelnetView()
 	LOG_TRACE("CTelnetView::~CTelnetView", "DESTRUCTOR");
 }
 
+BOOL WINAPI CTelnetView::ControlHandler(DWORD dwCtrlType) {
+
+	switch (dwCtrlType) {
+	case CTRL_BREAK_EVENT:  // use Ctrl+C or Ctrl+Break to simulate
+		LOG_TRACE("CTelnetView::ControlHandler", "RECEIVED CTRL_BREAK_EVENT");
+		return TRUE;
+	case CTRL_C_EVENT:      // SERVICE_CONTROL_STOP in debug mode
+		LOG_TRACE("CTelnetView::ControlHandler", "RECEIVED CTRL_C_EVENT");
+		return TRUE;
+	}
+	return FALSE;
+}
+
 BOOL CTelnetView::PreCreateWindow(CREATESTRUCT& cs)
 {
 	// TODO: Modify the Window class or styles here by modifying
@@ -134,6 +147,9 @@ void CTelnetView::DoDraw(CDC* pDC)
 void CTelnetView::OnInitialUpdate()
 {
 	LOG_TRACE("CTelnetView::OnInitialUpdate","OnInitialUpdate");
+
+	SetConsoleCtrlHandler(ControlHandler, TRUE);
+
 	CScrollView::OnInitialUpdate();
 	CSize sizeTotal;
 	// TODO: calculate the total size of this view

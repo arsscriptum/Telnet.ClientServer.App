@@ -397,13 +397,11 @@ bool KeyCodesHashTable::Find(const char *first){
 
 		if ( got == htmap.end() ){
 		  	result = false;
-			LOG_TRACE("KeyCodesHashTable::Find", "Find(%s): %s.", first, result ? "FOUND" : "NOT FOUND");
 		}else{
-			LOG_TRACE("KeyCodesHashTable::Find", "Find(%s): %s. Values: %s=%s", first, result ? "FOUND" : "NOT FOUND", got->first, got->second);
 		  	result = true;
 		}
 
-		
+		LOG_TRACE("KeyCodesHashTable::Find","Find(%s): %s. Values: %s=%s",first,result?"FOUND":"NOT FOUND",got->first, got->second);
   	}catch (exception& e){
   		LOG_ERROR("KeyCodesHashTable::Find","Exception Occured. Details %s.",e.what());
   		result = false;
