@@ -155,14 +155,18 @@ BEGIN
     DEFPUSHBUTTON   "OK",IDOK,178,7,32,14,WS_GROUP
 END
 
-IDD_HOST DIALOGEX 0, 0, 186, 50
+IDD_HOST DIALOGEX 0, 0, 219, 87
 STYLE DS_SETFONT | DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
 CAPTION "Host"
 FONT 8, "MS Sans Serif", 0, 0, 0x0
 BEGIN
-    DEFPUSHBUTTON   "Connect",IDOK,100,29,79,14
-    RTEXT           "Host Name:",IDC_STATIC,7,7,38,12,SS_CENTERIMAGE
-    COMBOBOX        IDC_COMBO2,51,7,128,47,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_TABSTOP
+    DEFPUSHBUTTON   "Connect",IDOK,162,66,50,14
+    LTEXT           "Host Name (or IP address)",IDC_STATIC,7,14,109,12,SS_CENTERIMAGE
+    COMBOBOX        IDC_COMBO2,7,31,100,47,CBS_DROPDOWNLIST | CBS_AUTOHSCROLL | CBS_SORT | WS_TABSTOP
+    LTEXT           "Port",IDC_STATIC,117,15,45,12,SS_CENTERIMAGE
+    EDITTEXT        IDC_EDIT_PORT,115,29,40,14,ES_AUTOHSCROLL | ES_NUMBER
+    DEFPUSHBUTTON   "Cancel",IDCANCEL,110,66,50,14
+    DEFPUSHBUTTON   "Clear History",IDCLEAR,163,29,50,14
 END
 
 
@@ -188,12 +192,12 @@ BEGIN
     BEGIN
         BLOCK "040904B0"
         BEGIN
-            VALUE "FileDescription", "CTelnet MFC Application"
+            VALUE "FileDescription", "Client Console Connector"
             VALUE "FileVersion", "1, 0, 0, 1"
-            VALUE "InternalName", "CTelnet"
-            VALUE "LegalCopyright", "Copyright (C) 1999"
-            VALUE "OriginalFilename", "CTelnet.EXE"
-            VALUE "ProductName", "CTelnet Application"
+            VALUE "InternalName", ""
+            VALUE "LegalCopyright", ""
+            VALUE "OriginalFilename", ""
+            VALUE "ProductName", ""
             VALUE "ProductVersion", "1, 0, 0, 1"
         END
     END
@@ -223,9 +227,9 @@ BEGIN
     IDD_HOST, DIALOG
     BEGIN
         LEFTMARGIN, 7
-        RIGHTMARGIN, 179
+        RIGHTMARGIN, 212
         TOPMARGIN, 7
-        BOTTOMMARGIN, 43
+        BOTTOMMARGIN, 80
     END
 END
 #endif    // APSTUDIO_INVOKED
@@ -242,6 +246,10 @@ BEGIN
     0, 0, 0, 0,
     0, 0, 0, 0,
     100, 100, 100, 100
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0,
+    0, 0, 0, 0
 END
 
 

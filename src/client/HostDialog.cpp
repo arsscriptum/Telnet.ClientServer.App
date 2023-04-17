@@ -41,6 +41,9 @@ BEGIN_MESSAGE_MAP(CHostDialog, CDialog)
 	ON_CBN_SETFOCUS(IDC_COMBO2, &CHostDialog::OnCbnSetfocusComboHost)
 	ON_CBN_EDITUPDATE(IDC_COMBO2, &CHostDialog::OnSimpleEditupdate)
 	ON_BN_CLICKED(IDOK, &CHostDialog::OnBnClickedOk)	
+	ON_BN_CLICKED(IDCANCEL, &CHostDialog::OnBnClickedCancel)
+	ON_BN_CLICKED(IDCLEAR, &CHostDialog::OnBnClickedClear)
+	ON_EN_CHANGE(IDC_EDIT_PORT, &CHostDialog::OnEnChangeEditPort)
 	//}}AFX_MSG_MAP
 END_MESSAGE_MAP()
 
@@ -66,6 +69,22 @@ void CHostDialog::OnCbnSetfocusComboHost()
 	
 }
 
+void CHostDialog::OnBnClickedCancel()
+{
+	
+	CDialog::OnCancel();
+}
+
+
+void CHostDialog::OnBnClickedClear()
+{
+}
+
+
+void CHostDialog::OnEnChangeEditPort()
+{
+
+}
 
 void CHostDialog::OnBnClickedOk()
 {

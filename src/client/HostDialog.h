@@ -46,6 +46,10 @@ protected:
 	afx_msg void OnSimpleEditupdate();
 	//}}AFX_MSG
 	DECLARE_MESSAGE_MAP()
+public:
+	afx_msg void OnBnClickedCancel();
+	afx_msg void OnBnClickedClear();
+	afx_msg void OnEnChangeEditPort();
 };
 
 //{{AFX_INSERT_LOCATION}}
