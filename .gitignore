@@ -111,3 +111,5 @@ scripts/powershell/tools/out
 
 tools/src/res
 tools/src/res/**
+
+*.patch
