@@ -1,0 +1,3 @@
+[submodule "scripts/test"]
+	path = scripts/test
+	url = https://github.com/arsscriptum/PowerShell.NetworkTest.Launcher.git

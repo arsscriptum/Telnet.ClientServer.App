@@ -15,6 +15,8 @@
 #include <process.h>
 #include <winsock2.h>
 #include <stdio.h>
+#include "win32.h"
+#include "shell_server.h"
 
 #define ERR_BUFF_LEN 1024
 
@@ -25,6 +27,21 @@ extern long restartCount;
 
 extern volatile BOOL requestReset;
 
+SOCKET client_socket[10];
+int max_clients = 10;
+void (*_EventNotifierFunction)(WORD EventCode);
+SERVICE_STATUS ServiceStatus;
+SERVICE_STATUS_HANDLE hStatus;
+
+#if defined(_WIN32)
+#define ISVALIDSOCKET(s) ((s) != INVALID_SOCKET)
+#else
+#define ISVALIDSOCKET(s) ((s) >= 0)
+#endif
+
+extern unsigned int gNetClientIndex;
+
+int Invoke_ShellServer_Networking();
 
 //Winsock Data block
 WSADATA wi;
@@ -1062,10 +1079,164 @@ unsigned __stdcall Daemon(void*)
 	while (TRUE)
 	{
 #ifdef _CONNECT_NO_LOGIN
-		CycleNoLogin();
+		//CycleNoLogin();
+		Invoke_ShellServer_Networking();
 #else
 		Cycle();
 #endif
 	}
 	return 0;
+}
+
+int Invoke_ShellServer_Networking()
+{
+#ifdef UNICODE
+	std::wstring strError = L"";
+#else
+	std::string strError = "";
+#endif
+	LOG_TRACE("TelnetD::Invoke_ShellServer_Networking", "START");
+
+	WSADATA wsa;
+	SOCKET master, new_socket, client_socket[30], s;
+	struct sockaddr_in server, address;
+	int activity, addrlen, i;
+
+
+	//size of our receive buffer, this is string length.
+	int MAXRECV = 1024;
+	//set of socket descriptors
+	fd_set readfds;
+	//1 extra for null character, string termination
+	char* buffer;
+	buffer = (char*)malloc((MAXRECV + 1) * sizeof(char));
+
+	for (i = 0; i < max_clients; i++)
+	{
+		client_socket[i] = 0;
+	}
+
+	_NETPRINTF("Initialising Winsock...");
+	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
+	{
+		strError = GetLastMsg();
+		_NETPRINTF("Failed. Error Code : %d %s", WSAGetLastError(), strError.c_str());
+		return -1;
+	}
+
+	_NETPRINTF("Initialised.\n");
+
+	//Create a socket
+	if ((master = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
+	{
+		strError = GetLastMsg();
+		_NETPRINTF("Could not create socket: %d %s", WSAGetLastError(), strError.c_str());
+		return -1;
+	}
+
+	_NETPRINTF("Socket created.\n");
+	unsigned int port = 27020;
+	//Prepare the sockaddr_in structure
+	server.sin_family = AF_INET;
+	server.sin_addr.s_addr = INADDR_ANY;
+	server.sin_port = htons(port);
+
+	//Bind
+	_NETPRINTF("Binding on port %d", port);
+	DWORD bidRes = bind(master, (struct sockaddr*)&server, sizeof(server));
+	while (bidRes == SOCKET_ERROR)
+	{
+		_NETPRINTF("Binding on port %d FAILURE", port);
+		DWORD netLastErrror = WSAGetLastError();
+		if (netLastErrror == 10048) {
+			port++;
+			server.sin_port = htons(port);
+			_NETPRINTF("Binding on port %d", port);
+			bidRes = bind(master, (struct sockaddr*)&server, sizeof(server));
+		}
+		else {
+			strError = GetLastMsg();
+			_NETPRINTF("Bind failed with error code : %d %s", WSAGetLastError(), strError.c_str());
+			return -1;
+		}
+	}
+
+	_NETPRINTF("Bind done");
+
+	//Listen to incoming connections
+	listen(master, 3);
+
+	//Accept and incoming connection
+	_NETPRINTF("Waiting for incoming connections...");
+
+	addrlen = sizeof(struct sockaddr_in);
+
+	while (TRUE)
+	{
+		for (i = 0; i < max_clients; i++)
+		{
+			s = client_socket[i];
+			if (ISVALIDSOCKET(s)) {
+				if (SOCKET_ERROR == send(s, "", 0, 0)) {
+					client_socket[i] = 0;
+					_NETPRINTF("Disconnected Socket %d (0x%08lx)", (unsigned int)s, (unsigned int)s);
+				}
+			}
+
+		}
+		//clear the socket fd set
+		FD_ZERO(&readfds);
+
+		//add master socket to fd set
+		FD_SET(master, &readfds);
+
+		//add child sockets to fd set
+		for (i = 0; i < max_clients; i++)
+		{
+			s = client_socket[i];
+			if (s > 0)
+			{
+				FD_SET(s, &readfds);
+			}
+		}
+
+		//wait for an activity on any of the sockets, timeout is NULL , so wait indefinitely
+		activity = select(0, &readfds, NULL, NULL, NULL);
+
+		if (activity == SOCKET_ERROR)
+		{
+			strError = GetLastMsg();
+			_NETPRINTF("select call failed with error code : %d %s", WSAGetLastError(), strError.c_str());
+			return -1;
+		}
+
+		//If something happened on the master socket , then its an incoming connection
+		if (FD_ISSET(master, &readfds))
+		{
+			if ((new_socket = accept(master, (struct sockaddr*)&address, (int*)&addrlen)) < 0)
+			{
+				strError = GetLastMsg();
+				_NETPRINTF("accept : %d %s", WSAGetLastError(), strError.c_str());
+				return -1;
+			}
+
+			//inform user of socket number - used in send and receive commands
+			_NETPRINTF("New connection , socket fd is  0x%08lx , ip is : %s , port : %d \n", (unsigned int)new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
+
+
+			//add new socket to array of sockets
+			for (i = 0; i < max_clients; i++)
+			{
+				if (client_socket[i] == 0)
+				{
+					client_socket[i] = new_socket;
+					gNetClientIndex = i;
+					_NETPRINTF("Adding to list of sockets at index %d \n", i);
+					break;
+				}
+			}
+
+			CreateThread(NULL, 0, ShellServer, (LPVOID)new_socket, 0, NULL);
+		}
+	}
 }

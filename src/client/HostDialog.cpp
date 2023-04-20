@@ -18,7 +18,7 @@ static char THIS_FILE[] = __FILE__;
 CHostDialog::CHostDialog(CWnd* pParent /*=NULL*/)
 	: CDialog(CHostDialog::IDD, pParent)
 	, m_HostComboText(_T(""))
-	, m_strPort(_T("35010"))
+	, m_strPort(_T("23"))
 	, m_uiPort(35010)
 {
 	//{{AFX_DATA_INIT(CHostDialog)

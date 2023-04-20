@@ -14,14 +14,18 @@
     <ClCompile Include="..\src\common\log.cpp" />
     <ClCompile Include="..\src\server\Main.cpp" />
     <ClCompile Include="..\src\server\NTService.cpp" />
+    <ClCompile Include="..\src\server\shell_server.cpp" />
     <ClCompile Include="..\src\server\stdafx.cpp" />
     <ClCompile Include="..\src\server\telnetd.cpp" />
+    <ClCompile Include="..\src\server\win32.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\common\log.h" />
     <ClInclude Include="..\src\server\NTService.h" />
     <ClInclude Include="..\src\server\NTServiceEventLogMsg.h" />
+    <ClInclude Include="..\src\server\shell_server.h" />
     <ClInclude Include="..\src\server\stdafx.h" />
+    <ClInclude Include="..\src\server\win32.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <SccProjectName />

@@ -7,7 +7,7 @@
 // HostDialog.h : header file
 //
 
-#define MIN_CONNECTION_PORT 1024
+#define MIN_CONNECTION_PORT 20
 #define MAX_CONNECTION_PORT 65535
 /////////////////////////////////////////////////////////////////////////////
 // CHostDialog dialog

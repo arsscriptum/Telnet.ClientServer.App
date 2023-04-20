@@ -1,0 +1,3 @@
+# CONSOLE CONNECTOR - SERVER and CLIENT
+
+to be continued...

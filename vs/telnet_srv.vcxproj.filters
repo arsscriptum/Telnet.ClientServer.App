@@ -16,6 +16,12 @@
     <ClCompile Include="..\src\server\telnetd.cpp">
       <Filter>src</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\server\shell_server.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\win32.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\common\log.h">
@@ -28,6 +34,12 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\server\NTServiceEventLogMsg.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\shell_server.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\win32.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>
