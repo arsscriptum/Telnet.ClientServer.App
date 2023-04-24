@@ -6,7 +6,7 @@ function Get-ScriptDirectory {
     Split-Path -Parent $PSCommandPath
 }
       try{
-
+        $ConfigureFirewall=$False
         $IsAdministrator = Invoke-IsAdministrator 
         $ErrorDetails=''
         $ErrorOccured=$False
@@ -62,17 +62,20 @@ function Get-ScriptDirectory {
         Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"
         Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
         Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
-        
-        Write-Output "=========================================================="
-        Write-Output "                CONFIGURE NET FIREWALL RULES              "
-        if($IsAdministrator -eq $True){
-            $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
-            if($FirewallRule -eq $Null){
-                Write-Output "Add New Rule"
-                New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
+        if($ConfigureFirewall){
+            Write-Output "=========================================================="
+            Write-Output "                CONFIGURE NET FIREWALL RULES              "
+             Write-Output "=========================================================="
+            if($IsAdministrator -eq $True){
+                $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
+                if($FirewallRule -eq $Null){
+                    Write-Output "Add New Rule"
+                    New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
+                }
             }
         }
-        Write-Output "=========================================================="
+
+       
 
         $TextConfig = $Script:TextRelease
         if("$Configuration" -eq "Debug"){
