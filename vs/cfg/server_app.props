@@ -16,6 +16,12 @@
     <ProjectObjectDirectory>$(TempRoot)___temp_compilation_files\obj\$(TargetName)\$(Platform)\$(Configuration)</ProjectObjectDirectory>
   </PropertyGroup>
 
+  <PropertyGroup Label="ProjectMacros">
+    <ServerSrcPath>$(ProjectRoot)src\server\</ServerSrcPath>
+    <ServerNetworkSrcPath>$(ServerSrcPath)network</ServerNetworkSrcPath>
+    <ServerServiceSrcPath>$(ServerSrcPath)service</ServerServiceSrcPath>
+  </PropertyGroup>
+
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
@@ -26,8 +32,8 @@
 
    <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ProjectRoot)src;$(ProjectRoot)src\server;$(ProjectRoot)src\common;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ServerSrcPath);$(ProjectRoot)src;$(ProjectRoot)src\server;$(ProjectRoot)src\common;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SERVER;_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
 
@@ -59,7 +65,7 @@
         C5264 = 'const' variable is not used [reported for const in header files]
         C5258 = explicit capture of '' is not required for this use [VS 2019 requires capture of constexpr]
       -->
-      <DisableSpecificWarnings Condition="'$(CHARLS_ALL_WARNINGS)'!=''">4061;4365;4464;4514;4571;4623;4625;4626;4710;4711;4738;4820;5026;5027;5045;5246;5264;5258</DisableSpecificWarnings>
+      <DisableSpecificWarnings Condition="'$(CHARLS_ALL_WARNINGS)'!=''">4061;4244;4365;4464;4514;4571;4623;4625;4626;4710;4711;4738;4820;5026;5027;5045;5246;5264;5258</DisableSpecificWarnings>
 
       <!--
         __cplusplus = Use the correct value for the __cplusplus macro
