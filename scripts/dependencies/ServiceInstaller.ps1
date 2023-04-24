@@ -133,12 +133,53 @@ function Uninstall-WinService{
 
 
 
-function Install-WinService1{
+function Stop-WinService{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, HelpMessage="service Name", Position=0)]
+        [string]$Name
+    )
+
   try{
-    throw "Install-WinService1 error"
+        $service = Get-Service -Name $Name -ErrorAction Ignore
+        
+        if( -not $service )
+        {
+            $Message = '[Stop-WinService] [{0}] SERVICE DOES NOT EXIST' -f $Name
+            Write-Output $Message
+            return
+        }
+
+        $origVerbosePref = $VerbosePreference
+        $VerbosePreference = 'SilentlyContinue'
+
+        $cimService = Get-CimInstance 'Win32_Service' -Filter ('Name = ''{0}''' -f $service.Name)
+        $cimServiceProcessCount = 0
+        if( $cimService )
+        {
+            $cimServiceProcessCount = Get-CimInstance 'Win32_Service' -Filter ('ProcessId = ''{0}''' -f $cimService.ProcessId) |
+                                                Measure-Object |
+                                                Select-Object -ExpandProperty 'Count'
+        }
+        $VerbosePreference = $origVerbosePref
+
+        if( -not $pscmdlet.ShouldProcess( "Service '$Name'", "Stop" ) )
+        {
+            return
+        }
+
+        Stop-Service $Name
+        if( $cimService -and $cimServiceProcessCount -eq 1 )
+        {
+            $process = Get-Process -Id $cimService.ProcessId -ErrorAction Ignore
+            if( $process ){
+                Write-Verbose -Message ('[Stop-WinService] [{0}] Killing service process "{1}".' -f $Name,$process.Id)
+                Stop-Process -Id $process.Id -Force
+            }
+        }    
+ 
      }catch{
          Write-Error $_
-         throw $_
      }
  }
 
