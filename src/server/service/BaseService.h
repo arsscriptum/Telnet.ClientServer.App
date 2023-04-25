@@ -1,31 +1,40 @@
-	/////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 1997 by Joerg Koenig
-// All rights reserved
-//
-// Distribute freely, except: don't remove my name from the source or
-// documentation (don't take credit for my work), mark your changes (don't
-// get me blamed for your possible bugs), don't alter or remove this
-// notice.
-// No warrantee of any kind, express or implied, is included with this
-// software; use at your own risk, responsibility for damages (if any) to
-// anyone resulting from the use of this software rests entirely with the
-// user.
-//
-// Send bug reports, bug fixes, enhancements, requests, flames, etc., and
-// I'll try to keep a version up to date.  I can be reached as follows:
-//    J.Koenig@adg.de                 (company site)
-//    Joerg.Koenig@rhein-neckar.de    (private site)
-/////////////////////////////////////////////////////////////////////////////
-//
-// MODIFIED BY TODD C. WILSON FOR THE ROAD RUNNER NT LOGIN SERVICE.
-// HOWEVER, THESE MODIFICATIONS ARE BROADER IN SCOPE AND USAGE AND CAN BE USED
-// IN OTHER PROJECTS WITH NO CHANGES.
-// MODIFIED LINES FLAGGED/BRACKETED BY "//!! TCW MOD"
-//
-/////////////////////////////////////////////////////////////////////////////
-
-
-// last revised: $Date: 5.05.98 21:22 $, $Revision: 2 $
+﻿/*
+ * ╓──────────────────────────────────────────────────────────────────────────────────────╖
+ * ║                                                                                      ║
+ * ║   Covert Command and Control Service                                                 ║
+ * ║   (integrated command and control program delivered covertly)                        ║
+ * ║                                                                                      ║
+ * ║   Copyright (c) 2017, cybercastor    <cybercastor@icloud.com>                        ║
+ * ║   All rights reserved.                                                               ║
+ * ║                                                                                      ║
+ * ║   Version 1.0.0                                                                      ║
+ * ║   https://cybercastor.github.io/projects/cccservice.html                             ║
+ * ║                                                                                      ║
+ * ╟──────────────────────────────────────────────────────────────────────────────────────╢
+ * ║                                                                                      ║
+ * ║   Redistribution and use in source and binary forms, with or without                 ║
+ * ║   modification, are permitted provided that the following conditions are met:        ║
+ * ║                                                                                      ║
+ * ║   * Redistributions of source code must retain the above copyright notice, this      ║
+ * ║     list of conditions and the following disclaimer.                                 ║
+ * ║                                                                                      ║
+ * ║   * Redistributions in binary form must reproduce the above copyright notice, this   ║
+ * ║     list of conditions and the following disclaimer in the documentation and/or      ║
+ * ║     other materials provided with the distribution.                                  ║
+ * ║                                                                                      ║
+ * ║   THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND    ║
+ * ║   ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED      ║
+ * ║   WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE             ║
+ * ║   DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR   ║
+ * ║   ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES     ║
+ * ║   (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;       ║
+ * ║   LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON     ║
+ * ║   ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT            ║
+ * ║   (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS      ║
+ * ║   SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.                       ║
+ * ║                                                                                      ║
+ * ╙──────────────────────────────────────────────────────────────────────────────────────╜
+ */
 
 
 #ifndef __BASE_SERVICE_H__
@@ -33,14 +42,12 @@
 
 
 class BaseService {
-	static BOOL				m_bInstance;			// only one CNTService object per application
-	
-	public:		// construction/destruction
-			
+
+	public:		
 		BaseService(LPCSTR ServiceName, LPCSTR DisplayName, LPCSTR szAccountName, LPCSTR szPassword);
 		~BaseService();
 
-	private:	// forbidden functions
+	private:	
 		BaseService( const BaseService & );
 		BaseService & operator=( const BaseService & );
 
@@ -64,34 +71,25 @@ class BaseService {
 		virtual bool StopReceived() = 0;
 		virtual bool PauseReceived() = 0;
 		virtual bool ContinueReceived() = 0;
-		virtual bool IsDebugging() = 0;
+		virtual bool IsInteractive() = 0;
 
-	protected:	// data members
+	protected:	
 
 		virtual void	AddToMessageLog(const char* Message, WORD EventType = EVENTLOG_ERROR_TYPE, DWORD dwEventID = DWORD(-1));
 		virtual void	RegisterApplicationLog(LPCTSTR lpszProposedMessageFile, DWORD dwProposedTypes);
 		virtual void	DeregisterApplicationLog();
 
+		void			SetupConsole();
+		LPTSTR			GetLastErrorText(LPTSTR Buf, DWORD Size);
+
 	protected:	// data members
 		LPCTSTR					m_lpServiceName;
 		LPCTSTR					m_lpDisplayName;
 
-		// parameters to the "CreateService()" function:
-		DWORD			m_dwDesiredAccess;		// default: SERVICE_ALL_ACCESS
-		DWORD			m_dwServiceType;		// default: SERVICE_WIN32_OWN_PROCESS
-		DWORD			m_dwStartType;			// default: SERVICE_AUTO_START
-		DWORD			m_dwErrorControl;		// default: SERVICE_ERROR_NORMAL
-		LPCTSTR			m_pszLoadOrderGroup;	// default: NULL
-		DWORD			m_dwTagID;				// retrieves the tag identifier
-		LPCTSTR			m_pszDependencies;		// default: NULL
-		LPCTSTR			m_pszAccountName;
-		LPCTSTR			m_pszPassword;			// default: NULL
-		bool			m_Debugging;
-		bool			m_fConsoleReady;
-	protected:	// helpers
-		void			SetupConsole();
-		LPTSTR			GetLastErrorText(LPTSTR Buf, DWORD Size);
-		BOOL			ReportStatus(DWORD CurState, DWORD WaitHint = 3000, DWORD ErrExit = 0);
+		bool					m_bInteractiveMode;
+		bool					m_fConsoleReady;
+
+
 
 };
 

@@ -84,8 +84,6 @@
 	#define RSP_UNREGISTER_SERVICE 0
 #endif
 
-BOOL BaseService :: m_bInstance = FALSE;
-
 static BaseService * gpTheService = 0;			// the one and only instance
 
 BaseService * AfxGetService() { return gpTheService; }
@@ -103,21 +101,10 @@ static LPCTSTR gszWin95ServKey=TEXT("Software\\Microsoft\\Windows\\CurrentVersio
 BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR lpAccountName, LPCSTR lpPassword )
 	: m_lpServiceName(lpServiceName)
 	, m_lpDisplayName(lpDisplayName)
-	, m_pszAccountName(lpAccountName)
-	, m_pszPassword(lpPassword)
-	// parameters to the "CreateService()" function:
-	, m_dwDesiredAccess(SERVICE_ALL_ACCESS)
-	, m_dwServiceType(SERVICE_WIN32_OWN_PROCESS)
-	, m_dwStartType(SERVICE_AUTO_START)
-	, m_dwErrorControl(SERVICE_ERROR_NORMAL)
-	, m_pszLoadOrderGroup(0)
-	, m_dwTagID(0)
-	, m_pszDependencies(0)
-	, m_Debugging(false)
+	, m_bInteractiveMode(false)
 	, m_fConsoleReady(false)
-
 {
-	m_bInstance = TRUE;
+
 	gpTheService = this;
 
 		/////////////////////////////////////////////////////////////////////////
@@ -167,8 +154,8 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 
 
 BaseService :: ~BaseService() {
-	_ASSERTE( m_bInstance );
-	m_bInstance = FALSE;
+
+
 	gpTheService = 0;
 }
 
@@ -201,9 +188,19 @@ BOOL BaseService :: InstallService() {
 		if( schSCManager ) {
 			STD_STRING tmpServiceBinaryPath = GetService_DevelopmentPath();
 			cprint_b("Creating new service named \"%s\". Path: %s\n", Service_Name(), tmpServiceBinaryPath.c_str());
-			SC_HANDLE schService = CreateService(schSCManager, Service_Name(), Service_Display_Name(), Service_DesiredAccess(), Service_Type(), 
-				Service_StartType(), Service_ErrorControl(),tmpServiceBinaryPath.c_str(), nullptr, 0, nullptr, Service_AccountName(), Service_Password());
-						
+			LOG_TRACE("BaseService::InstallService", "SERVICE INSTALL. \"%s\", \"%s\", %d, %d, %d, %d, \"%s\", %d, \"%s\", \"%s\"", Service_Name(), Service_Display_Name(), Service_DesiredAccess(), Service_Type(),
+				Service_StartType(), Service_ErrorControl(), tmpServiceBinaryPath.c_str(), 0, Service_AccountName(), Service_Password());
+
+			SC_HANDLE schService = nullptr;
+
+			if (!_STRCMP(Service_Password(), _T(""))) {
+				schService = CreateService(schSCManager, Service_Name(), Service_Display_Name(), Service_DesiredAccess(), Service_Type(),
+					Service_StartType(), Service_ErrorControl(), tmpServiceBinaryPath.c_str(), nullptr, 0, nullptr, Service_AccountName(), nullptr);
+			}
+			else {
+				schService = CreateService(schSCManager, Service_Name(), Service_Display_Name(), Service_DesiredAccess(), Service_Type(),
+					Service_StartType(), Service_ErrorControl(), tmpServiceBinaryPath.c_str(), nullptr, 0, nullptr, Service_AccountName(), Service_Password());
+			}
 
 			if( schService ) {
 				LOG_TRACE("BaseService::InstallService", "%s installed.", Service_Name() );

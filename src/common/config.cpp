@@ -37,6 +37,11 @@ void Global_Settings::Defaults(){
 	_STRNCPY(Service_AccountName, DEFAULT_SERVCE_ACCOUNTNAME, ARRAYSIZE(Service_AccountName));
 	_STRNCPY(Service_Password, DEFAULT_SERVCE_PASSWORD, ARRAYSIZE(Service_Password));
 	_STRNCPY(ServiceBinaryPath, DEFAULT_SERVCE_PASSWORD, ARRAYSIZE(ServiceBinaryPath));
+
+	ServiceDesiredAccess = SERVICE_ALL_ACCESS;
+	ServiceType = SERVICE_WIN32_OWN_PROCESS;
+	ServiceStartType = SERVICE_AUTO_START;
+	ServiceErrorControl = SERVICE_ERROR_IGNORE;
 }
 void Global_Settings::FlushToDisk(){
 	auto config = GetExePath() + "\\" + CONFIGFILE_NAME;

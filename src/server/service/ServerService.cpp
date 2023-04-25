@@ -46,23 +46,13 @@ void ServerService::CheckAndHandlePauseResume(long SleepTime, void (CCC_CALL_CON
 
 CCC_RETURN_CODES CCC_CALL_CONV ServerService::Step()
 {
-	LOG_PROFILE("ServerService::Step");
-	LOG_TRACE("ServerService::Step", "Running");
-
-#ifdef DEBUGGER_DETECTION
-	bool debuggerDetected = mDebuggerSpy.CheckDebugger();
-	if (debuggerDetected) {
-		LOG_TRACE("ccc-service::Step", "Debugger Connection Detected! RUN!!!");
-		return CCC_RETURN_CODE_DEBUGGER_DETECTED;
-	}
-#endif //DEBUGGER_DETECTION
 	return CCC_RETURN_CODE_SUCCESS;
 }
 
 
 long CCC_CALL_CONV ServerService::StartInBackground()
 {
-	LOG_INFO("ccc-service::StartInBackground", "StartInBackground");
+	LOG_INFO("ServerService::StartInBackground", "StartInBackground");
 
 	SERVICE_TABLE_ENTRY DispatchTable[] = {
 		  {Service_Name(), (LPSERVICE_MAIN_FUNCTION)ServiceMain},
@@ -75,8 +65,6 @@ long CCC_CALL_CONV ServerService::StartInBackground()
 		return CCC_ERROR_START;
 	}
 	return CCC_NO_ERROR;
-
-
 }
 
 long CCC_CALL_CONV ServerService::StartInForeground(int argc, char* argv[])
@@ -90,7 +78,6 @@ long CCC_CALL_CONV ServerService::StartInForeground(int argc, char* argv[])
 		}
 
 		RetVal = _MainFunction(argc, argv);
-
 	}
 
 	return RetVal;

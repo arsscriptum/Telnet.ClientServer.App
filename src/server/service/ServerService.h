@@ -61,7 +61,7 @@ public:
 	virtual bool StopReceived() { return (mCurrentStatus.CurrentState == SERVICE_STOP_PENDING); }
 	virtual bool PauseReceived() { return (mCurrentStatus.CurrentState == SERVICE_PAUSE_PENDING); }
 	virtual bool ContinueReceived() { return (mCurrentStatus.CurrentState == SERVICE_CONTINUE_PENDING); }
-	virtual bool IsDebugging() { return (IsRunning() && m_Debugging); };
+	virtual bool IsInteractive() { return (IsRunning() && m_bInteractiveMode); };
 	//==============================================================================
 //  Starting and running the service
 //==============================================================================

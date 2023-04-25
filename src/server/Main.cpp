@@ -40,10 +40,8 @@ static char THIS_FILE[] = __FILE__;
 ServerService *pServiceControllerInst = nullptr;
 
 static int  CCC_CALL_CONV ServerMain(int argc, char* argv[]);
-static void CCC_CALL_CONV ExtraPauseFunction();
-static void CCC_CALL_CONV EventNotifier(CCC_CONTROL EventCode);
+static void CCC_CALL_CONV ServerEventHandler(CCC_CONTROL EventCode);
 
-BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType);	
 void banner() {
 	std::wcout << std::endl;
 	cprint_cb("recon_srv v2.1 - Remote Shell Service\n");
@@ -64,18 +62,6 @@ void usage() {
 	std::wcout << std::endl;
 }
 
-
-
-//----------------------------------------------------------------
-
-bool ArgsToString(int args_count, char** args, STD_STRING &OutString) {
-	
-	for (int i = 0; i < args_count; i++) {
-		char* cursor = args[i];
-		OutString = _INTERNAL::std_string_format("%s %s ", OutString, cursor);
-	}
-	return true;
-}
 
 
 int main( int argc, char ** argv )
@@ -124,7 +110,7 @@ int main( int argc, char ** argv )
 	bool optServiceDebug = inputParser->isSet(cmdlineOptionDebug);
 	bool optTest = inputParser->isSet(cmdlineOptionTest);
 
-	SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+	//SetConsoleCtrlHandler(HandlerRoutine, TRUE);
 	bool gExitRequested = false;
 	if (optHelp) {
 		usage();
@@ -133,47 +119,48 @@ int main( int argc, char ** argv )
 	if (!optNoBanner) {
 		banner();
 	}
-	ServerService service(ServerMain,0);
+	
+	ServerService service(ServerMain, ServerEventHandler);
 	pServiceControllerInst = &service;
 
 	BOOL ret = TRUE;
 
 	if (optServiceInstall) {
 		LOG_TRACE("main", "InstallService;");
-		cprint_y("Command: ");
+		
 		cprint_r("InstallService\n");
 		ret = service.InstallService();
 		return (ret ? 0 : -1);
 	}
 	else if (optServiceUninstall) {
 		LOG_TRACE("main", "UninstallService;");
-		cprint_y("Command: ");
+		
 		cprint_r("Uninstall Service\n");
 		ret = service.RemoveService();
 		return (ret ? 0 : -2);
 	}
 	else if (optServiceStop) {
 		LOG_TRACE("main", "StopService;");
-		cprint_y("Command: ");
+		
 		cprint_r("Stop Service\n");
 		ret = service.EndService();
 		return (ret ? 0 : -3);
 	}
 	else if (optServiceDebug) {
 		LOG_TRACE("main", "StartInForeground;");
-		cprint_y("Command: ");
-		cprint_r("Debug (start service in foreground)\n");
+		
+		cprint_r("Debug (start service in foreground)\nCTRL-C to QUIT.");
 		ret = service.StartInForeground(argc, argv);
 		return (ret ? 0 : -3);
 	}
 	else if (optTest) {
 		LOG_TRACE("main", "Test;");
-		cprint_y("Command: ");
+	
 		cprint_r("Test Mode\n");
 	}
 
 	LOG_TRACE("Main", "StartInBackground");
-	cprint_y("Command: ");
+	
 	cprint_r("Start Service (in background mode)\n");
 	ret = service.StartInBackground();
 	return (ret ? 0 : -6);
@@ -189,15 +176,11 @@ static int CCC_CALL_CONV ServerMain(int argc, char* argv[])
 {
 	LOG_TRACE("ServerMain", "Entry Point");
 
-	SetConsoleCtrlHandler(HandlerRoutine, TRUE);
-
 	pServiceControllerInst->Start();
 
 	while (pServiceControllerInst->StopReceived() == false)
 	{
-		
-		LOG_TRACE("ServerMain", "Current State %s", pServiceControllerInst->CurrentStateString().c_str());
-		pServiceControllerInst->CheckAndHandlePauseResume(1000, &ExtraPauseFunction);
+		pServiceControllerInst->CheckAndHandlePauseResume(1000, 0);
 		Sleep(1000);
 		pServiceControllerInst->Step();
 	}
@@ -207,47 +190,43 @@ static int CCC_CALL_CONV ServerMain(int argc, char* argv[])
 	return 0;
 }
 
-
-
-//==============================================================================
-// ExtraPauseFunction
-//==============================================================================
-// This OPTIONAL function can be used to do some special actions while the   
-// program is pausing. It is called repeatedly until the program is resumed  
-// again. The time between to consecutive calls is specified with the        
-// parameter SleepTime in the CheckAndHandlePauseResume function.  .  
-//==============================================================================
-
-static void CCC_CALL_CONV ExtraPauseFunction()
+static void CCC_CALL_CONV ServerEventHandler(CCC_CONTROL EventCode)
 {
-	
-}
+	LOG_INFO("ServerEventHandler", "Received Service Control Event: %d", EventCode);
 
-
-
-BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType) {
-	switch (dwCtrlType)
+	switch (EventCode)
 	{
-	case CTRL_BREAK_EVENT:
-		LOG_WARNING("HandlerRoutine", "CTRL-BREAK RECEIVED");
-		if (pServiceControllerInst->IsDebugging() == true) {
-			cprint_c("BREAK: Emergency stop. Terminating service.\n");
-			pServiceControllerInst->Stop();
-		}
-		LOG_TRACE("HandlerRoutine", "BREAK: Emergency stop. Terminating service.");
-		return TRUE;
-	case CTRL_C_EVENT:
-		LOG_TRACE("HandlerRoutine", "CTRL-C RECEIVED");
-		if (pServiceControllerInst->IsDebugging() == true) {
+	case CCC_CONTROL_UNKNOWN:               break;
+	case CCC_CONTROL_STOP:                  break;
+	case CCC_CONTROL_PAUSE:                 break;
+	case CCC_CONTROL_CONTINUE:              break;
+	case CCC_CONTROL_INTERROGATE:           break;
+	case CCC_CONTROL_SHUTDOWN:              break;
+	case CCC_CONTROL_PARAMCHANGE:           break;
+	case CCC_CONTROL_NETBINDADD:            break;
+	case CCC_CONTROL_NETBINDREMOVE:         break;
+	case CCC_CONTROL_NETBINDENABLE:         break;
+	case CCC_CONTROL_NETBINDDISABLE:        break;
+	case CCC_CONTROL_DEVICEEVENT:           break;
+	case CCC_CONTROL_HARDWAREPROFILECHANGE: break;
+	case CCC_CONTROL_POWEREVENT:            break;
+	case CCC_CONTROL_SESSIONCHANGE:         break;
+	case CCC_CONTROL_PRESHUTDOWN:           break;
+	case CCC_CONTROL_CTRL_BREAK:            break;
+	case CCC_CONTROL_CTRL_C:                
+		LOG_TRACE("ServerEventHandler", "CTRL-C: Gracefully terminating service...");
+		if (pServiceControllerInst->IsInteractive() == true) {
 			cprint_c("CTRL-C: Gracefully terminating service...\n");
 		}
-		LOG_TRACE("ccc-service::HandlerRoutine", "CTRL-C: Gracefully terminating service...");
 		pServiceControllerInst->Stop();
 		// Signal is handled - don't pass it on to the next handler
 		Sleep(1000);
-		return TRUE;
+		break;
+	case CCC_CONTROL_CTRL_CLOSE:            break;
+	case CCC_CONTROL_CTRL_LOGOFF:           break;
+	case CCC_CONTROL_CTRL_SHUTDOWN:         break;
+	case CCC_CONTROL_CTRL_UNKNOWN:          break;
 	default:
-		// Pass signal on to the next handler
-		return FALSE;
+		break;
 	}
 }
