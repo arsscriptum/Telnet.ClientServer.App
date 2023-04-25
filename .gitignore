@@ -115,3 +115,5 @@ tools/src/res/**
 *.patch
 
 src/client/CTelnet.aps
+
+*.htm

@@ -17,7 +17,9 @@
   </PropertyGroup>
 
   <PropertyGroup Label="ProjectMacros">
-    <ServerSrcPath>$(ProjectRoot)src\server\</ServerSrcPath>
+    <ProjectSrcPath>$(ProjectRoot)src\</ProjectSrcPath>
+    <ServerSrcPath>$(ProjectSrcPath)server\</ServerSrcPath>
+    <CommonSrcPath>$(ProjectSrcPath)common\</CommonSrcPath>
     <ServerNetworkSrcPath>$(ServerSrcPath)network</ServerNetworkSrcPath>
     <ServerServiceSrcPath>$(ServerSrcPath)service</ServerServiceSrcPath>
   </PropertyGroup>
@@ -32,7 +34,7 @@
 
    <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ServerSrcPath);$(ProjectRoot)src;$(ProjectRoot)src\server;$(ProjectRoot)src\common;$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ProjectSrcPath);$(ServerSrcPath);$(CommonSrcPath);$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <PreprocessorDefinitions>_SERVER;_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
@@ -84,7 +86,7 @@
       <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(SolutionRootDirectory)</Command>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
 

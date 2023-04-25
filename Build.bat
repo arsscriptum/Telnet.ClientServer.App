@@ -17,7 +17,8 @@ goto :init
     set "__scripts_root=%AutomationScriptsRoot%"
     call :read_script_root development\build-automation  BuildAutomation
     set "__script_file=%~0"
-    set "__target=%~1"
+    set "__target_platform=%~2"
+    set "__target_configuration=%~1"
     set "__script_path=%~dp0"
     set "__makefile=%__scripts_root%\make\make.bat"
     set "__lib_date=%__scripts_root%\batlibs\date.bat"
@@ -61,7 +62,7 @@ goto :init
     if not exist %__lib_out%  call :error_missing_script "%__lib_out%" & goto :eof
     if not exist %__build_cfg_server%  call :error_missing_script "%__build_cfg_server%" & goto :eof
     if not exist %__build_cfg_client%  call :error_missing_script "%__build_cfg_client%" & goto :eof
-    goto :prebuild_header
+    goto :test
 
 
 
@@ -69,9 +70,8 @@ goto :init
 :prebuild_header
     call %__lib_date% :getbuilddate
     call %__lib_out% :__out_d_red " ======================================================================="
-    call %__lib_out% :__out_l_red " Compilation started for %cd%  %__target%"  
+    call %__lib_out% :__out_l_red " Compilation started for %cd%  %__target_configuration% %__target_platform%"  
     call %__lib_out% :__out_d_red " ======================================================================="
-    call :build
     goto :eof
 
 
@@ -153,8 +153,15 @@ goto :init
     call :build_server_release
     goto :eof
 
+:test 
+    if "%__target_configuration%" == "" ( set __target_configuration=Release )
+    if "%__target_platform%" == "" ( set __target_platform=x64 )
+    call :prebuild_header
+    call :build
+    goto :eof
+
 :build
-    call :build_debug
+    call :call_make_build_server %__target_configuration% %__target_platform%
     goto :eof
 
 :error_missing_path

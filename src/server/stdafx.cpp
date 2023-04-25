@@ -10,6 +10,7 @@
 
 #include "stdafx.h"
 
+
 #ifndef __DEJA_INSIGHT_BUILD_INFO
 #define __DEJA_INSIGHT_BUILD_INFO 0x01
 #ifdef DEJA_DISABLED
@@ -19,7 +20,11 @@
 #pragma message("-------------------------------")
 #pragma message("DEJA INSIGHT IS ENABLED")
 #endif 
-
+#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
+#pragma message("BYTE ORDER ==> LITTLE ENDIAN")
+#else
+#pragma message("BYTE ORDER ==> BIG ENDIAN")
+#endif
 #endif
 
 

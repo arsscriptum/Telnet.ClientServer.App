@@ -1,54 +1,92 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="Current" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
+    <Filter Include="common">
+      <UniqueIdentifier>{01b1eff1-3a52-44bf-aff6-8b7810dc78cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="service">
+      <UniqueIdentifier>{f3f20422-e42f-46ed-ac17-11d77cf76c34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="network">
+      <UniqueIdentifier>{31a90ca0-9c88-4e0d-a08f-4c2f2b4c9bc9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="server">
+      <UniqueIdentifier>{0379c0c2-6847-4fbf-825c-7ee7f83048c5}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="..\src\common\keycodes_hashtable.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
     <ClCompile Include="..\src\common\log.cpp">
-      <Filter>src</Filter>
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\log_scope.cpp">
+      <Filter>common</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\Main.cpp">
-      <Filter>src</Filter>
+      <Filter>server</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\NTService.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\server\stdafx.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\server\telnetd.cpp">
-      <Filter>src</Filter>
+      <Filter>server</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\shell_server.cpp">
-      <Filter>src</Filter>
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\stdafx.cpp">
+      <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\telnetd.cpp">
+      <Filter>server</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\win32.cpp">
-      <Filter>src</Filter>
+      <Filter>server</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\src\common\log.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\NTService.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\stdafx.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\shell_server.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\win32.h">
-      <Filter>headers</Filter>
-    </ClInclude>
+    <None Include="..\src\common\keycodes_hashtable.tmp">
+      <Filter>common</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="src">
-      <UniqueIdentifier>{33ef26d6-e27b-4d4b-88f4-714eb97a6ad7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="headers">
-      <UniqueIdentifier>{a1f6e2bc-5630-410d-a025-2032c229d3be}</UniqueIdentifier>
-    </Filter>
+    <ClInclude Include="..\src\common\custom_assert.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\hashtable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\keycodes_hashtable.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\log.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\log_scope.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\macros.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\myexception.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\nowarns.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\NTService.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\shell_server.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\stdafx.h">
+      <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\win32.h">
+      <Filter>server</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

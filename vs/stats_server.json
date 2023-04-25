@@ -1,0 +1,98 @@
+{
+  "Debug": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "Release": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "DebugDLL": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "ReleaseDLL": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "DebugDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "ReleaseDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ]
+}

@@ -22,9 +22,6 @@
     <ClCompile Include="..\src\client\MainFrm.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\common\ScoppedLogger.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\client\StdAfx.cpp">
       <Filter>src</Filter>
     </ClCompile>
@@ -35,6 +32,9 @@
       <Filter>src</Filter>
     </ClCompile>
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp">
+      <Filter>src</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\log_scope.cpp">
       <Filter>src</Filter>
     </ClCompile>
   </ItemGroup>
@@ -66,9 +66,6 @@
     <ClInclude Include="..\src\common\custom_assert.h">
       <Filter>headers</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\common\ScopedLogger.h">
-      <Filter>headers</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\client\StdAfx.h">
       <Filter>headers</Filter>
     </ClInclude>
@@ -85,6 +82,9 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\myexception.h">
+      <Filter>headers</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\log_scope.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

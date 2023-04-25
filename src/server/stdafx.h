@@ -19,14 +19,29 @@
 
 #include <windows.h>
 
+#include "nowarns.h"
 #include "log.h"
+#define PRINT_OUT
+
+#define WIN32_LEAN_AND_MEAN
+#include "targetver.h"
+
+#include <windows.h>
+#include <process.h>
+#include <iostream>
+#include <tchar.h>
+#include <stdio.h>
+#include <AccCtrl.h>
+#include <winbase.h>
+#include <wtsapi32.h>
+#include <userenv.h>
+#include <windowsx.h>
+#include <shlobj.h>
+
+#include <commctrl.h>       // InitCommonControlsEx, etc.
+#include <stdexcept>
 
 
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#pragma message("BYTE ORDER ==> LITTLE ENDIAN")
-#else
-#pragma message("BYTE ORDER ==> BIG ENDIAN")
-#endif
 #ifdef UNICODE
 #  define           _PRINTF         wprintf
 #  define			_STRCMP		    wstrcmp
@@ -53,6 +68,20 @@
 #endif
 
 
+#define DESKTOP_ALL (DESKTOP_READOBJECTS | DESKTOP_CREATEWINDOW | \
+DESKTOP_CREATEMENU | DESKTOP_HOOKCONTROL | DESKTOP_JOURNALRECORD | \
+DESKTOP_JOURNALPLAYBACK | DESKTOP_ENUMERATE | DESKTOP_WRITEOBJECTS | \
+DESKTOP_SWITCHDESKTOP | STANDARD_RIGHTS_REQUIRED)
+
+#define WINSTA_ALL (WINSTA_ENUMDESKTOPS | WINSTA_READATTRIBUTES | \
+WINSTA_ACCESSCLIPBOARD | WINSTA_CREATEDESKTOP | \
+WINSTA_WRITEATTRIBUTES | WINSTA_ACCESSGLOBALATOMS | \
+WINSTA_EXITWINDOWS | WINSTA_ENUMERATE | WINSTA_READSCREEN | \
+STANDARD_RIGHTS_REQUIRED)
+
+
+#define GENERIC_ACCESS (GENERIC_READ | GENERIC_WRITE | \
+GENERIC_EXECUTE | GENERIC_ALL)
 
 
 #define bzero(a) memset(a,0,sizeof(a)) //easier -- shortcut

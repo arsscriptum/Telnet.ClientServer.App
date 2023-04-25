@@ -9,7 +9,7 @@
 
 
 #include "stdafx.h"
-#include "ScopedLogger.h"
+#include "log_scope.h"
 
 ScoppedLogger::ScoppedLogger(const char* pId)
 {

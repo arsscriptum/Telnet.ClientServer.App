@@ -22,7 +22,7 @@
     <ClCompile Include="..\src\client\TTComboBox.cpp" />
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
-    <ClCompile Include="..\src\common\ScoppedLogger.cpp" />
+    <ClCompile Include="..\src\common\log_scope.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\client\CachedScrollView.h" />
@@ -39,8 +39,8 @@
     <ClInclude Include="..\src\common\hashtable.h" />
     <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
+    <ClInclude Include="..\src\common\log_scope.h" />
     <ClInclude Include="..\src\common\myexception.h" />
-    <ClInclude Include="..\src\common\ScopedLogger.h" />
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="..\src\client\CTelnet.rc" />
