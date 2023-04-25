@@ -90,7 +90,7 @@
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
-    <ThisProjectName>telnet_srv</ThisProjectName>
+    <ThisProjectName>recon_srv</ThisProjectName>
     <Keyword>MFCProj</Keyword>
     <ProjectGuid>{A0F4011B-C0CB-4DEA-828E-C972ECFEE7D2}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>

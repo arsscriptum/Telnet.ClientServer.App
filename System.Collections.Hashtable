@@ -26,10 +26,10 @@ PROJECT_NAME=recon_srv
 PROJECT_PATH=vs
 
 [Version]
-LastBuildTime=April 25, 2023 5:10:59 AM
-MD5=68E06BC962AB85FC1855F74D1FF04233
-Revision=560cea73ceca57912fdc7ebfaa5612e410fc808e
-Version=1.0.1.86
+LastBuildTime=April 25, 2023 5:05:25 AM
+MD5=TESTTEST
+Revision=0011
+Version=1.0.1.85
 
 [FirewallRule_000]
 Action=Allow

@@ -36,7 +36,7 @@ function New-StatsFile{
     Set-Content $Path $NewStatsJson
 }
       try{
-        $ConfigureFirewall=$False
+        [System.Boolean]$ConfigureFirewall=$False
         $IsAdministrator = Invoke-IsAdministrator 
         $ErrorDetails=''
         $ErrorOccured=$False
@@ -60,6 +60,10 @@ function New-StatsFile{
         }else{
             throw "missing argument 2"
         }
+        if(!([string]::IsNullOrEmpty($args[3]))){
+            [System.Boolean]$ConfigureFirewall = $args[3]
+            Write-Host "ConfigureFirewall ==> $ConfigureFirewall"
+        }
         $Script:OutFile = "telnet_srv.exe"
         if($Script:Configuration -match "DLL") { $Script:OutFile = "telnet_srv.dll" }
         
@@ -70,9 +74,11 @@ function New-StatsFile{
         $ProjectsPath = Join-Path $SolutionDirectory 'vs'
         $BuiltExecutable = Join-Path "$OutputDirectory" "$Script:OutFile"
         $ReadmeFile  = Join-Path "$SolutionDirectory" "usage.txt"
+        $ServerCfgIniFile  = Join-Path "$SolutionDirectory" "servercfg.ini"
         $VersionFile  = Join-Path "$ProjectsPath" "version_server.nfo"
         $StatsFile  = Join-Path "$ProjectsPath" "stats_server.json"
         $TmpStatsFile  = Join-Path "$ENV:TEMP" "stats_server.json"
+        $MD5HASH = (Get-FileHash -Path "$BuiltExecutable" -Algorithm MD5).Hash
 
         Write-Host "=========================================================="
         Write-Host "                   DIRECTORIES CONFIGURATION              "
@@ -96,25 +102,35 @@ function New-StatsFile{
         }
         
 
+        $ServerConfig = Get-IniContent "$ServerCfgIniFile"
 
+        Write-Host "=========================================================="
+        Write-Host "                   SERVER CONFIGURATION INI               "
+        Write-Host "  FileName          $($ServerConfig.General.Filename)"
+        Write-Host "  ProductName       $($ServerConfig.General.ProductName)"
+        Write-Host "  CompanyName       $($ServerConfig.General.CompanyName)"
+        Write-Host "  FileDescription   $($ServerConfig.General.FileDescription)"
+        Write-Host "  LegalCopyright    $($ServerConfig.General.LegalCopyright)"
+        Write-Host "  PrivateBuild      $($ServerConfig.General.PrivateBuild)"
+        Write-Host "=========================================================="
 
         Write-Host "`n`n==============================================================================="
         Write-Host "GETTING MODULE VERSION"
         Write-Host "==============================================================================="   
         $HeadRev                        = git log --format=%h -1 | select -Last 1
         $LastRev                        = git log --format=%h -2 | select -Last 1
+        $HeadRevisionLong = git log --format=%H -1
+        ##if(-not(Test-Path $VersionFile)){
+        #    throw "Missing Version File $VersionFile"
+        #}
 
-        if(-not(Test-Path $VersionFile)){
-            throw "Missing Version File $VersionFile"
-        }
-
-        [string]$VersionString = '99.99.98'
-        if(Test-Path $VersionFile){
-            [string]$VersionString = (Get-Content -Path $VersionFile -Raw)
-        }else{
-            throw "Missing Version File $VersionFile"
-        }
-
+        #[string]$VersionString = '99.99.98'
+        #if(Test-Path $VersionFile){
+        #    [string]$VersionString = (Get-Content -Path $VersionFile -Raw)
+        #}else{
+        #    throw "Missing Version File $VersionFile"
+        #}  
+        [string]$VersionString = $($ServerConfig.Version.Version)
         [Version]$CurrentVersion = $VersionString
         [Version]$NewVersion = $VersionString
         $NewVersionRevision = $NewVersion.Revision
@@ -123,14 +139,21 @@ function New-StatsFile{
         [string]$NewVersionString = $NewVersion.ToString()
         
         
-        Set-Content -Path $VersionFile -Value $NewVersionString
+        #Set-Content -Path $VersionFile -Value $NewVersionString
+        $ServerConfig.Version.MD5 = $MD5HASH
+        $ServerConfig.Version.Version = $NewVersionString
+        $ServerConfig.Version.Revision = $HeadRevisionLong 
         $UpdatedVersion = $NewVersionString
 
 
         $inf = Get-Item "$BuiltExecutable"
+        [DateTime]$LastWriteDate = $inf.LastWriteTime
+        [String]$LastWriteTime = $LastWriteDate.GetDateTimeFormats()[26]
         $FileLengthBytes = $inf.Length 
         $SizePretty = Convert-Bytes -Size $FileLengthBytes -Format MB
-
+        $ServerConfig.Version.LastBuildTime = $LastWriteTime
+        Write-Host "UPDATING `"$ServerCfgIniFile`""
+        Out-IniFile -Path "$ServerCfgIniFile" -InputObject $ServerConfig
 
         if(!(Test-Path "$StatsFile")){
             Write-Host "[ERROR] : NO STATS FILE! CREATING"
@@ -148,8 +171,7 @@ function New-StatsFile{
         
 
         $FileName = $inf.Name 
-        [DateTime]$LastWriteDate = $inf.LastWriteTime
-        [String]$LastWriteTime = $LastWriteDate.GetDateTimeFormats()[26]
+        
         $LastBytes = $Stats[$Stats.Count-1].Bytes
         $DiffBytes = $LastBytes - $FileLengthBytes
         $DiffPretty = Convert-Bytes -Size ([math]::Abs($DiffBytes)) -Format MB
@@ -206,22 +228,35 @@ function New-StatsFile{
         Write-Host "==========================================================`n"
         Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Server" -VersionString "$NewVersion"
 
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"  
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "$($ServerConfig.General.CompanyName)"  
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "$($ServerConfig.General.LegalCopyright)"  
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "$($ServerConfig.General.LegalTrademarks)"  
         if($Script:Configuration -match "Debug") { 
-            Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "PrivateBuild" -PropertyValue "Development Debug Build"
+            Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "PrivateBuild" -PropertyValue "$($ServerConfig.General.PrivateBuild)"  
         }
-        if($ConfigureFirewall){
+        if ( ($ConfigureFirewall -eq $True) -eq ($IsAdministrator -eq $True) ){
+
             Write-Host "=========================================================="
             Write-Host "                CONFIGURE NET FIREWALL RULES              "
-             Write-Host "=========================================================="
-            if($IsAdministrator -eq $True){
-                $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
-                if($FirewallRule -eq $Null){
-                    Write-Host "Add New Rule"
-                    New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
+            Write-Host "=========================================================="
+            0 .. 20 | % {
+                $id = $_ 
+                $SectionName = "FirewallRule_{0:d3}" -f $id 
+                $FirewallRule = ($ServerConfig.$SectionName  -as 'Hashtable')
+                if($FirewallRule -eq $Null) { break }
+                $Rule = Get-NetFirewallRule -Name "$($FirewallRule.Name)" -ErrorAction Ignore
+                if($Rule -ne $Null){
+                    Write-Host "------------------------------------------------"
+                    Write-Host "REMOVING FIREWALL RULE `"$($FirewallRule.Name)`""
+                    Get-NetFirewallRule -Name "$($FirewallRule.Name)" | Remove-NetFirewallRule
+                    Write-Host "------------------------------------------------`n"
                 }
+                Write-Host "------------------------------------------------"
+                Write-Host "ADDING FIREWALL RULE `"$($FirewallRule.Name)`""
+                Write-Host "New-NetFirewallRule -Name `"$($FirewallRule.Name)`" -DisplayName `"$($FirewallRule.DisplayName)`" -Enabled True -Direction `"$($FirewallRule.Direction)`" -Protocol `"$($FirewallRule.Protocol)`" -Action `"$($FirewallRule.Action)`" -LocalPort `"$($FirewallRule.LocalPort)`" -Description `"$($FirewallRule.Description)`""       
+                Write-Host "------------------------------------------------`n"
+                $Res = New-NetFirewallRule -Name "$($FirewallRule.Name)" -DisplayName "$($FirewallRule.DisplayName)" -Enabled True -Direction "$($FirewallRule.Direction)" -Protocol "$($FirewallRule.Protocol)" -Action "$($FirewallRule.Action)" -LocalPort "$($FirewallRule.LocalPort)" -Description "$($FirewallRule.Description)"
+                Write-Output "Rule $($Res.Name) : $($Res.Status)"
             }
         }
 

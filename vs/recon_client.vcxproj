@@ -56,7 +56,7 @@
   <PropertyGroup Label="Globals">
     <SccProjectName />
     <SccLocalPath />
-    <ThisProjectName>telnet_client</ThisProjectName>
+    <ThisProjectName>recon_client</ThisProjectName>
     <Keyword>MFCProj</Keyword>
     <ProjectGuid>{96EF12AA-6EEE-4984-A7B0-4A6C6FA478D6}</ProjectGuid>
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
