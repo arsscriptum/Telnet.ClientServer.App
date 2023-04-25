@@ -95,55 +95,7 @@ function New-StatsFile{
             exit -1
         }
         
-        Write-Host "`n=========================================================="
-        Write-Host "                    COPY DEJAINSIGHT LIBRARY                "
-        Write-Host "==========================================================`n"
-        $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
-        Copy-Item $DejaInsighDll $OutputDirectory -Force
 
-        Write-Host "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
-
-        Write-Host "`n=========================================================="
-        Write-Host "                  CONFIGURE VERSION SETTINGS              "
-        Write-Host "==========================================================`n"
-        Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Server"
-
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
-        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
-        if($ConfigureFirewall){
-            Write-Host "=========================================================="
-            Write-Host "                CONFIGURE NET FIREWALL RULES              "
-             Write-Host "=========================================================="
-            if($IsAdministrator -eq $True){
-                $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
-                if($FirewallRule -eq $Null){
-                    Write-Host "Add New Rule"
-                    New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
-                }
-            }
-        }
-
-       
-
-        $TextConfig = $Script:TextRelease
-        if("$Configuration" -eq "Debug"){
-          $TextConfig = $Script:TextDebug
-        }
-        $OutLog = $Script:TextServerReady -f $TextConfig
-        Write-Host $OutLog
-
-        Write-Host "=========================================================="
-        Write-Host "              CONFIGURE SERVICE REGISTRATION              "
-        Write-Host "=========================================================="
-        <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
-        Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
-        Invoke-CmProtek -InputFile "$Script:TargetPath" -HostFile "$Script:ServicePath"
-        #>
-        
 
 
         Write-Host "`n`n==============================================================================="
@@ -248,6 +200,58 @@ function New-StatsFile{
         Write-Host "Diff Size       `t$DiffPretty ( $DiffBytes bytes)" ;
         Write-Host "===============================================================================" 
 
+
+        Write-Host "`n=========================================================="
+        Write-Host "                  CONFIGURE VERSION SETTINGS              "
+        Write-Host "==========================================================`n"
+        Set-BinaryFileVersionSettings -Path "$BuiltExecutable" -Description "Remote Shell Server" -VersionString "$NewVersion"
+
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "company" -PropertyValue "arsscriptum"  
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "copyright" -PropertyValue "(c) arsscriptum 2022"
+        Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "LegalTrademarks" -PropertyValue "(tm) arsscriptum"
+        if($Script:Configuration -match "Debug") { 
+            Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "PrivateBuild" -PropertyValue "Development Debug Build"
+        }
+        if($ConfigureFirewall){
+            Write-Host "=========================================================="
+            Write-Host "                CONFIGURE NET FIREWALL RULES              "
+             Write-Host "=========================================================="
+            if($IsAdministrator -eq $True){
+                $FirewallRule = Get-NetFirewallRule -Name 'remote_shell_server' -ErrorAction Ignore
+                if($FirewallRule -eq $Null){
+                    Write-Host "Add New Rule"
+                    New-NetFirewallRule -Name "remote_shell_server" -DisplayName 'remote_shell_server' -Enabled True -Direction Inbound -Protocol TCP -Action Allow -LocalPort 34010-34050
+                }
+            }
+        }
+
+       
+
+        $TextConfig = $Script:TextRelease
+        if("$Configuration" -eq "Debug"){
+          $TextConfig = $Script:TextDebug
+        }
+        $OutLog = $Script:TextServerReady -f $TextConfig
+        Write-Host $OutLog
+
+        Write-Host "=========================================================="
+        Write-Host "              CONFIGURE SERVICE REGISTRATION              "
+        Write-Host "=========================================================="
+        <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
+        Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
+        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
+        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
+        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+        Invoke-CmProtek -InputFile "$Script:TargetPath" -HostFile "$Script:ServicePath"
+        #>
+        
+        Write-Host "`n=========================================================="
+        Write-Host "                    COPY DEJAINSIGHT LIBRARY                "
+        Write-Host "==========================================================`n"
+        $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
+        Copy-Item $DejaInsighDll $OutputDirectory -Force
+
+        Write-Host "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
 
 
     }catch{
