@@ -69,6 +69,9 @@
     <ClCompile Include="..\src\common\targetver.cpp">
       <Filter>common</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\server\network\firewall.cpp">
+      <Filter>network</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\common\keycodes_hashtable.tmp">
@@ -153,6 +156,9 @@
     </ClInclude>
     <ClInclude Include="..\src\common\targetver.h">
       <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\network\firewall.h">
+      <Filter>network</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

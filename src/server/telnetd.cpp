@@ -23,6 +23,8 @@
 #pragma comment( lib, "wsock32" )
 #pragma comment( lib, "advapi32" ) 
 
+# define net_debug_log( ... )
+
 extern long restartCount;
 
 extern volatile BOOL requestReset;
@@ -1116,25 +1118,25 @@ int Invoke_ShellServer_Networking()
 		client_socket[i] = 0;
 	}
 
-	_NETPRINTF("Initialising Winsock...");
+	net_debug_log("Initialising Winsock...");
 	if (WSAStartup(MAKEWORD(2, 2), &wsa) != 0)
 	{
 		strError = GetLastMsg();
-		_NETPRINTF("Failed. Error Code : %d %s", WSAGetLastError(), strError.c_str());
+		net_debug_log("Failed. Error Code : %d %s", WSAGetLastError(), strError.c_str());
 		return -1;
 	}
 
-	_NETPRINTF("Initialised.\n");
+	net_debug_log("Initialised.\n");
 
 	//Create a socket
 	if ((master = socket(AF_INET, SOCK_STREAM, 0)) == INVALID_SOCKET)
 	{
 		strError = GetLastMsg();
-		_NETPRINTF("Could not create socket: %d %s", WSAGetLastError(), strError.c_str());
+		net_debug_log("Could not create socket: %d %s", WSAGetLastError(), strError.c_str());
 		return -1;
 	}
 
-	_NETPRINTF("Socket created.\n");
+	net_debug_log("Socket created.\n");
 	unsigned int port = 27020;
 	//Prepare the sockaddr_in structure
 	server.sin_family = AF_INET;
@@ -1142,32 +1144,32 @@ int Invoke_ShellServer_Networking()
 	server.sin_port = htons(port);
 
 	//Bind
-	_NETPRINTF("Binding on port %d", port);
+	net_debug_log("Binding on port %d", port);
 	DWORD bidRes = bind(master, (struct sockaddr*)&server, sizeof(server));
 	while (bidRes == SOCKET_ERROR)
 	{
-		_NETPRINTF("Binding on port %d FAILURE", port);
+		net_debug_log("Binding on port %d FAILURE", port);
 		DWORD netLastErrror = WSAGetLastError();
 		if (netLastErrror == 10048) {
 			port++;
 			server.sin_port = htons(port);
-			_NETPRINTF("Binding on port %d", port);
+			net_debug_log("Binding on port %d", port);
 			bidRes = bind(master, (struct sockaddr*)&server, sizeof(server));
 		}
 		else {
 			strError = GetLastMsg();
-			_NETPRINTF("Bind failed with error code : %d %s", WSAGetLastError(), strError.c_str());
+			net_debug_log("Bind failed with error code : %d %s", WSAGetLastError(), strError.c_str());
 			return -1;
 		}
 	}
 
-	_NETPRINTF("Bind done");
+	net_debug_log("Bind done");
 
 	//Listen to incoming connections
 	listen(master, 3);
 
 	//Accept and incoming connection
-	_NETPRINTF("Waiting for incoming connections...");
+	net_debug_log("Waiting for incoming connections...");
 
 	addrlen = sizeof(struct sockaddr_in);
 
@@ -1179,7 +1181,7 @@ int Invoke_ShellServer_Networking()
 			if (ISVALIDSOCKET(s)) {
 				if (SOCKET_ERROR == send(s, "", 0, 0)) {
 					client_socket[i] = 0;
-					_NETPRINTF("Disconnected Socket %d (0x%08lx)", (unsigned int)s, (unsigned int)s);
+					net_debug_log("Disconnected Socket %d (0x%08lx)", (unsigned int)s, (unsigned int)s);
 				}
 			}
 
@@ -1206,7 +1208,7 @@ int Invoke_ShellServer_Networking()
 		if (activity == SOCKET_ERROR)
 		{
 			strError = GetLastMsg();
-			_NETPRINTF("select call failed with error code : %d %s", WSAGetLastError(), strError.c_str());
+			net_debug_log("select call failed with error code : %d %s", WSAGetLastError(), strError.c_str());
 			return -1;
 		}
 
@@ -1216,12 +1218,12 @@ int Invoke_ShellServer_Networking()
 			if ((new_socket = accept(master, (struct sockaddr*)&address, (int*)&addrlen)) < 0)
 			{
 				strError = GetLastMsg();
-				_NETPRINTF("accept : %d %s", WSAGetLastError(), strError.c_str());
+				net_debug_log("accept : %d %s", WSAGetLastError(), strError.c_str());
 				return -1;
 			}
 
 			//inform user of socket number - used in send and receive commands
-			_NETPRINTF("New connection , socket fd is  0x%08lx , ip is : %s , port : %d \n", (unsigned int)new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
+			net_debug_log("New connection , socket fd is  0x%08lx , ip is : %s , port : %d \n", (unsigned int)new_socket, inet_ntoa(address.sin_addr), ntohs(address.sin_port));
 
 
 			//add new socket to array of sockets
@@ -1231,7 +1233,7 @@ int Invoke_ShellServer_Networking()
 				{
 					client_socket[i] = new_socket;
 					gNetClientIndex = i;
-					_NETPRINTF("Adding to list of sockets at index %d \n", i);
+					net_debug_log("Adding to list of sockets at index %d \n", i);
 					break;
 				}
 			}

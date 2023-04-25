@@ -15,6 +15,7 @@
 #define _WIN32_WINNT 0x601
 #endif
 
+
 #include <afx.h>
 
 #include <windows.h>
@@ -68,6 +69,7 @@
 
 #ifdef UNICODE
 #  define           _PRINTF         wprintf
+#  define			_STRCPY		    wstrcpy
 #  define			_STRCMP		    wstrcmp
 #  define			_STRRCHR		wcsrchr
 #  define			_STRLEN			wcslen
@@ -81,6 +83,7 @@
 #  define			STD_STRING		std::wstring
 #else
 #  define           _PRINTF         printf
+#  define			_STRCPY		    strcpy
 #  define			_STRCMP		    strcmp
 #  define			_STRRCHR		strrchr
 #  define			_STRLEN			strlen

@@ -108,22 +108,19 @@ const std::string CONSOLE_COLOR_YELLOW = "\u001b[33m";
 void __cdecl ConsoleOut( std::string color, const char *format, ...);
 void __cdecl ConsoleDebugLog(const char *format, ...);
 void __cdecl ConsoleErrorLog(const char *format, ...);
-# define COUTCMD( ... )     { ConsoleLog(  __VA_ARGS__ );  }	
 
-# define cprint_r( ... )      { ConsoleOut(CONSOLE_COLOR_RED,  __VA_ARGS__ );  }	
+# define cprint_r( ... )        { ConsoleOut(CONSOLE_COLOR_RED,  __VA_ARGS__ );  }	
 # define cprint_rb( ... )       { ConsoleOut(CONSOLE_COLOR_RED_BRIGHT,  __VA_ARGS__ );  }	
-# define cprint_y( ... )       { ConsoleOut(CONSOLE_COLOR_YELLOW,  __VA_ARGS__ );  }	
+# define cprint_y( ... )        { ConsoleOut(CONSOLE_COLOR_YELLOW,  __VA_ARGS__ );  }	
 # define cprint_yb( ... )       { ConsoleOut(CONSOLE_COLOR_YELLOW_BRIGHT,  __VA_ARGS__ );  }	
-# define cprint_g( ... )       { ConsoleOut(CONSOLE_COLOR_GREEN,  __VA_ARGS__ );  }	
-# define cprint_c( ... )      { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
-# define cprint_cb( ... )      { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
-# define cprint_m( ... )       { ConsoleOut(CONSOLE_COLOR_MAGENTA,  __VA_ARGS__ );  }	
-# define cprint_b( ... )      { ConsoleOut(CONSOLE_COLOR_BLUE,  __VA_ARGS__ );  }	
-# define cprint_bb( ... )      { ConsoleOut(ANSI_TEXT_COLOR_BLUE_BRIGHT,  __VA_ARGS__ );  }	
-# define cprint_info( ... )    { ConsoleOut( CONSOLE_COLOR_BKGRND_WHITE, __VA_ARGS__ );  }	
+# define cprint_g( ... )        { ConsoleOut(CONSOLE_COLOR_GREEN,  __VA_ARGS__ );  }	
+# define cprint_c( ... )        { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
+# define cprint_cb( ... )       { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
+# define cprint_m( ... )        { ConsoleOut(CONSOLE_COLOR_MAGENTA,  __VA_ARGS__ );  }	
+# define cprint_b( ... )        { ConsoleOut(CONSOLE_COLOR_BLUE,  __VA_ARGS__ );  }	
+# define cprint_bb( ... )       { ConsoleOut(ANSI_TEXT_COLOR_BLUE_BRIGHT,  __VA_ARGS__ );  }	
+# define cprint_info( ... )     { ConsoleOut( CONSOLE_COLOR_BKGRND_WHITE, __VA_ARGS__ );  }	
 
-#define ASSERT_TRACE_ERROR ConsoleErrorLog
-#define _NETPRINTF ConsoleDebugLog
 int WriteToLog(char* str);
 #ifndef DEJA_DISABLED
 	# define LOG_TRACE DEJA_TRACE	

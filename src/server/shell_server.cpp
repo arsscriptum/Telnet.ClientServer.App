@@ -16,6 +16,8 @@ unsigned int gNetClientIndex = 0;
 extern SOCKET client_socket[10];
 extern int max_clients;
 
+# define net_debug_log( ... )
+
 DWORD WINAPI ShellServer(LPVOID lpParam)
 {
   char buf[1024];           //i/o buffer
@@ -130,18 +132,18 @@ DWORD WINAPI ShellServer(LPVOID lpParam)
       if (error_code == WSAECONNRESET)
       {
           //Somebody disconnected , get his details and print
-          _NETPRINTF("Host disconnected unexpectedly\n");
+          net_debug_log("Host disconnected unexpectedly\n");
           goto closeSck; 
       }
       else
       {
-          _NETPRINTF("recv failed with error code : %d", error_code);
+          net_debug_log("recv failed with error code : %d", error_code);
       }
     }
     else if (receivedBytes == 0)
     {
         //Somebody disconnected , get his details and print
-        _NETPRINTF("Host disconnected\n");
+        net_debug_log("Host disconnected\n");
         goto closeSck; 
     }
     else if (receivedBytes)      //check for user input.
