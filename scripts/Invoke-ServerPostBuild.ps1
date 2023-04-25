@@ -23,8 +23,8 @@ function New-StatsFile{
     [System.Collections.Generic.List[PsCustomObject]]$a = [System.Collections.Generic.List[PsCustomObject]]::new()
     $a.Add($o)
     $a.Add($o)
-    $all = [PsCustomObject]@{
-        'Debug' = $a
+    $all = @{
+        "Debug" = $a
         'Release' = $a
         'DebugDLL' = $a
         'ReleaseDLL' = $a
@@ -160,7 +160,7 @@ function New-StatsFile{
             New-StatsFile -Path "$StatsFile" -Version "$NewVersion"
         }
         try{
-            [PsCustomObject[]]$Stats = Get-Content $StatsFile | ConvertFrom-Json
+            [PsCustomObject]$Stats = Get-Content $StatsFile | ConvertFrom-Json
             if($($Stats.Count) -eq 0){ Write-Host "EMPTY FILE . NEW SATS FILE CREATED"
             New-StatsFile -Path "$StatsFile" -Version "$NewVersion" }
         }catch{
@@ -172,7 +172,7 @@ function New-StatsFile{
 
         $FileName = $inf.Name 
         
-        $LastBytes = $Stats[$Stats.Count-1].Bytes
+        $LastBytes = $Stats.$Script:Configuration[$Stats.$Script:Configuration.Count-1].Bytes
         $DiffBytes = $LastBytes - $FileLengthBytes
         $DiffPretty = Convert-Bytes -Size ([math]::Abs($DiffBytes)) -Format MB
         $SizeType = 'EQUAL'
@@ -188,7 +188,7 @@ function New-StatsFile{
         $o = [PsCustomObject]@{
             Filename = $Name 
             LastWriteTime = $LastWriteTime
-            Revision = "$HeadRev"
+            Revision = "$HeadRevisionLong"
             Version = "$NewVersion"
             Configuration = "$Configuration"
             Platform = "$Platform"
@@ -196,13 +196,76 @@ function New-StatsFile{
             DiffBytes = $DiffBytes
             Size = "$SizePretty"
         }
+        [System.Collections.Generic.List[PsCustomObject]]$NewEntry = $Stats.$Script:Configuration
+        $NewEntry.Add($o)
+        switch($Script:Configuration){
+            'Debug'     {
+                            $NewStats = @{
+                                "Debug" = $NewEntry
+                                'Release' = $Stats.Release
+                                'DebugDLL' = $Stats.DebugDLL
+                                'ReleaseDLL' = $Stats.ReleaseDLL
+                                'DebugDLL_DynamicMFC' = $Stats.DebugDLL_DynamicMFC
+                                'ReleaseDLL_DynamicMFC' = $Stats.ReleaseDLL_DynamicMFC
+                            }
+                        }
+            'Release'   {
+                            $NewStats = @{
+                                "Debug" = $Stats.Debug
+                                'Release' = $NewEntry
+                                'DebugDLL' = $Stats.DebugDLL
+                                'ReleaseDLL' = $Stats.ReleaseDLL
+                                'DebugDLL_DynamicMFC' = $Stats.DebugDLL_DynamicMFC
+                                'ReleaseDLL_DynamicMFC' = $Stats.ReleaseDLL_DynamicMFC
+                            }
+                        }
+            'DebugDLL'  {
+                            $NewStats = @{
+                                "Debug" = $Stats.Debug
+                                'Release' = $Stats.Release
+                                'DebugDLL' = $NewEntry
+                                'ReleaseDLL' = $Stats.ReleaseDLL
+                                'DebugDLL_DynamicMFC' = $Stats.DebugDLL_DynamicMFC
+                                'ReleaseDLL_DynamicMFC' = $Stats.ReleaseDLL_DynamicMFC
+                            }
+                        }
+            'ReleaseDLL'  {
+                            $NewStats = @{
+                                "Debug" = $Stats.Debug
+                                'Release' = $Stats.Release
+                                'DebugDLL' = $Stats.DebugDLL
+                                'ReleaseDLL' = $NewEntry
+                                'DebugDLL_DynamicMFC' = $Stats.DebugDLL_DynamicMFC
+                                'ReleaseDLL_DynamicMFC' = $Stats.ReleaseDLL_DynamicMFC
+                            }
+                        }
+            'DebugDLL_DynamicMFC'     {
+                            $NewStats = @{
+                                "Debug" = $Stats.Debug
+                                'Release' = $Stats.Release
+                                'DebugDLL' = $Stats.DebugDLL
+                                'ReleaseDLL' = $Stats.ReleaseDLL
+                                'DebugDLL_DynamicMFC' = $NewEntry
+                                'ReleaseDLL_DynamicMFC' = $Stats.ReleaseDLL_DynamicMFC
+                            }
+                        }
+            'ReleaseDLL_DynamicMFC'     {
+                            $NewStats = @{
+                                "Debug" = $Stats.Debug
+                                'Release' = $Stats.Release
+                                'DebugDLL' = $Stats.DebugDLL
+                                'ReleaseDLL' = $Stats.ReleaseDLL
+                                'DebugDLL_DynamicMFC' = $Stats.DebugDLL_DynamicMFC
+                                'ReleaseDLL_DynamicMFC' = $NewEntry
+                            }
+                        } 
+                  
+            }
+        
 
-        $subobj = $Script:Configuration
-        ($Stats.$subobj -as [System.Collections.Generic.List[PsCustomObject]]).Add($o)
-    
-        $StatsJson = $Stats | ConvertTo-Json
-        Set-Content $TmpStatsFile $StatsJson
-      
+        $NewStatsJson = $NewStats | ConvertTo-Json
+        Set-Content $TmpStatsFile $NewStatsJson
+        Set-Content $StatsFile $NewStatsJson
         Write-Host "`n`n==============================================================================="
         Write-Host "INFORMATION"
         Write-Host "==============================================================================="   
