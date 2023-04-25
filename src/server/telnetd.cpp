@@ -757,7 +757,7 @@ void CycleNoLogin(void)
 		}
 		else {
 			bindSuccess = true;
-			PRINT_C("Successfully binded to local address %s:%d", inet_ntoa((in_addr)myaddr.sin_addr), localPort);
+			cprint_b("Successfully binded to local address %s:%d", inet_ntoa((in_addr)myaddr.sin_addr), localPort);
 		}
 	} while (!bindSuccess);
 

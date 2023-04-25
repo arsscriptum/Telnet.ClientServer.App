@@ -21,6 +21,7 @@
 #include "macros.h"
 #include "nowarns.h"
 #include "log.h"
+#include "service_types.h"
 #define PRINT_OUT
 
 #define WIN32_LEAN_AND_MEAN
@@ -63,11 +64,6 @@
 #  endif
 #endif
 
-enum CCC_RETURN_CODES {
-    CCC_RETURN_CODE_SUCCESS
-    , CCC_RETURN_CODE_MINOR_ERROR
-    , CCC_RETURN_CODE_DEBUGGER_DETECTED
-};
 
 
 #ifdef UNICODE

@@ -1,4 +1,4 @@
-/////////////////////////////////////////////////////////////////////////////
+	/////////////////////////////////////////////////////////////////////////////
 // Copyright (C) 1997 by Joerg Koenig
 // All rights reserved
 //
@@ -49,26 +49,22 @@ class BaseService {
 		virtual void	Start() = 0;
 		virtual void	Stop() = 0;
 
-		virtual void	Pause();
-		virtual void	Continue();
-		virtual void	Shutdown();
-		virtual BOOL	RegisterService();
-		virtual BOOL	StartDispatcher();
+		virtual void	Pause() = 0;
+		virtual void	Continue() = 0;
+		virtual void	Shutdown() = 0;
+
 		virtual BOOL	InstallService();
 		virtual BOOL	RemoveService();
 		virtual BOOL	EndService();
 		virtual BOOL	StartupService();
-		virtual BOOL	DebugService(int argc, char **argv);	//!! TCW MOD - added FACELESS parm to allow Win95 usage.
 
-		static void WINAPI	ServiceCtrl(DWORD CtrlCode);
-		static void WINAPI	ServiceMain(DWORD argc, LPTSTR* argv);
-		static BOOL WINAPI	ControlHandler(DWORD CtrlType);
 
-		bool IsRunning() { return (m_ssStatus.dwCurrentState == SERVICE_RUNNING); }
-		bool StopReceived() { return (m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING); }
-		bool PauseReceived() { return (m_ssStatus.dwCurrentState == SERVICE_PAUSE_PENDING); }
-		bool ContinueReceived() { return (m_ssStatus.dwCurrentState == SERVICE_CONTINUE_PENDING); }
-		bool IsDebugging() { return (IsRunning() && m_Debugging); };
+		virtual STD_STRING CurrentStateString() = 0;
+		virtual bool IsRunning() = 0;
+		virtual bool StopReceived() = 0;
+		virtual bool PauseReceived() = 0;
+		virtual bool ContinueReceived() = 0;
+		virtual bool IsDebugging() = 0;
 
 	protected:	// data members
 
@@ -79,17 +75,6 @@ class BaseService {
 	protected:	// data members
 		LPCTSTR					m_lpServiceName;
 		LPCTSTR					m_lpDisplayName;
-		DWORD					m_dwCheckPoint;
-		DWORD					m_dwErr;
-		BOOL					m_bDebug;			// TRUE if -d was passed to the program
-		SERVICE_STATUS			m_ssStatus;			// current status of the service
-		SERVICE_STATUS_HANDLE	m_sshStatusHandle;
-		DWORD					m_dwControlsAccepted;	// bit-field of what control requests the
-														// service will accept
-														// (dflt: SERVICE_ACCEPT_STOP)
-		PSID					m_pUserSID;			// the current user's security identifier
-		
-		BOOL					m_fConsoleReady;
 
 		// parameters to the "CreateService()" function:
 		DWORD			m_dwDesiredAccess;		// default: SERVICE_ALL_ACCESS
@@ -102,6 +87,7 @@ class BaseService {
 		LPCTSTR			m_pszAccountName;
 		LPCTSTR			m_pszPassword;			// default: NULL
 		bool			m_Debugging;
+		bool			m_fConsoleReady;
 	protected:	// helpers
 		void			SetupConsole();
 		LPTSTR			GetLastErrorText(LPTSTR Buf, DWORD Size);

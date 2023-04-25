@@ -127,7 +127,29 @@ inline std::wstring FormatBytes(long long bytes)
 	return L"0 Bytes";
 }
 
+#include <stdarg.h>  // For va_start, etc.
+#include <memory>    // For std::unique_ptr
 
+namespace _INTERNAL {
+
+	inline STD_STRING std_string_format(const STD_STRING fmt_str, ...) {
+		int final_n, n = ((int)fmt_str.size()) * 2; /* Reserve two times as much as the length of the fmt_str */
+		std::unique_ptr<TCHAR[]> formatted;
+		va_list ap;
+		while (1) {
+			formatted.reset(new TCHAR[n]); /* Wrap the plain char array into the unique_ptr */
+			strcpy(&formatted[0], fmt_str.c_str());
+			va_start(ap, fmt_str);
+			final_n = vsnprintf(&formatted[0], n, fmt_str.c_str(), ap);
+			va_end(ap);
+			if (final_n < 0 || final_n >= n)
+				n += abs(final_n - n + 1);
+			else
+				break;
+		}
+		return STD_STRING(formatted.get());
+	}
+}
 // no need to check if(x), in c++, delete always checks that before deleting
 #ifndef RELEASECOM
 #define RELEASECOM(x) { if(x) x->Release(); x=0; }

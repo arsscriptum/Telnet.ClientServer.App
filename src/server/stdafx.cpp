@@ -14,26 +14,28 @@
 #ifndef __DEJA_INSIGHT_BUILD_INFO
 #define __DEJA_INSIGHT_BUILD_INFO 0x01
 #ifdef DEJA_DISABLED
-#pragma message("-------------------------------")
-#pragma message("DEJA INSIGHT IS DISABLED")
+#  pragma message("DEJA INSIGHT IS DISABLED")
 #else
-#pragma message("-------------------------------")
-#pragma message("DEJA INSIGHT IS ENABLED")
+#  pragma message("DEJA INSIGHT IS ENABLED")
 #endif 
-#if __BYTE_ORDER__ == __ORDER_LITTLE_ENDIAN__
-#pragma message("BYTE ORDER ==> LITTLE ENDIAN")
+#ifdef _SERVICE_EXECUTABLE
+#  pragma message("COMPILING STANDALONE SERVICE EXECUTABLE")
+#elif _SERVICE_DLL
+#  pragma message("COMPILING SERVICE DLL")
 #else
-#pragma message("BYTE ORDER ==> BIG ENDIAN")
-#endif
-#endif
+#  pragma message("SERVICE TYPE UNDEFINED")
+#endif // _SERVICE_DLL _SERVICE_EXECUTABLE
 
-
-#ifdef _CONNECT_NO_LOGIN
-#pragma message("LOGIN DISABLED")
+#ifdef _MFC_LIBS_STATIC
+#  pragma message("USING MFC STATIC LIBS")
+#elif _MFC_LIBS_DYNAMIC
+#  pragma message("USING MFC DLLs DYNAMIC LIBS")
 #else
-#pragma message("LOGIN ENABLED")
-#endif
+#  pragma message("MFC LINKAGE UNDEFINED")
+#endif // _SERVICE_DLL _SERVICE_EXECUTABLE
 
+
+#endif
 
 
 

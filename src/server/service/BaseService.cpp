@@ -1,4 +1,5 @@
 #include "stdafx.h"
+#include "config.h"
 #include <afx.h>
 
 /////////////////////////////////////////////////////////////////////////////
@@ -70,7 +71,8 @@
 
 #include <io.h>			//!! TCW MOD
 #include <fcntl.h>		//!! TCW MOD
-
+#include "targetver.h"
+#include "utilities.h"
 #include "BaseService.h"
 #include "BaseServiceEventLogMsg.h"
 
@@ -103,13 +105,6 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 	, m_lpDisplayName(lpDisplayName)
 	, m_pszAccountName(lpAccountName)
 	, m_pszPassword(lpPassword)
-	, m_dwCheckPoint(0)
-	, m_dwErr(0)
-	, m_bDebug(FALSE)
-	, m_sshStatusHandle(0)
-	, m_dwControlsAccepted(SERVICE_ACCEPT_STOP)
-	, m_pUserSID(0)
-	, m_fConsoleReady(FALSE)
 	// parameters to the "CreateService()" function:
 	, m_dwDesiredAccess(SERVICE_ALL_ACCESS)
 	, m_dwServiceType(SERVICE_WIN32_OWN_PROCESS)
@@ -119,21 +114,18 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 	, m_dwTagID(0)
 	, m_pszDependencies(0)
 	, m_Debugging(false)
+	, m_fConsoleReady(false)
 
 {
 	m_bInstance = TRUE;
 	gpTheService = this;
-	
-	// SERVICE_STATUS members that rarely change
-	m_ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
-	m_ssStatus.dwServiceSpecificExitCode = 0;
-
 
 		/////////////////////////////////////////////////////////////////////////
 		// Providing a SID (security identifier) was contributed by Victor
 		// Vogelpoel (VictorV@Telic.nl).
 		// The code from Victor was slightly modified.
 
+#if USE_USERACCOUNT_SIDS
 		// Get security information of current user
 		BYTE	security_identifier_buffer[ 4096 ];
 		DWORD	dwSizeSecurityIdBuffer = sizeof( security_identifier_buffer );
@@ -169,49 +161,23 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 				_ASSERTE(::EqualSid(m_pUserSID, security_identifier_buffer));
 			}
 		}
-	
+#endif //USE_USERACCOUNT_SIDS
 	/////////////////////////////////////////////////////////////////////////
 }
 
 
 BaseService :: ~BaseService() {
 	_ASSERTE( m_bInstance );
-	delete [] LPBYTE(m_pUserSID);
 	m_bInstance = FALSE;
 	gpTheService = 0;
 }
 
 
 
-BOOL BaseService :: RegisterService( ) {
-	BOOL (BaseService::* fnc)() = &BaseService::StartDispatcher;
-	LOG_TRACE("BaseService::RegisterService", "BaseService::StartDispatcher");
-	return (this->*fnc)();
-}
-
-
-BOOL BaseService :: StartDispatcher() {
-    // Default implementation creates a single threaded service.
-	// Override this method and provide more table entries for
-	// a multithreaded service (one entry for each thread).
-	SERVICE_TABLE_ENTRY dispatchTable[] =
-    {
-        { LPTSTR(m_lpServiceName), (LPSERVICE_MAIN_FUNCTION)ServiceMain },
-        { 0, 0 }
-    };
-
-	BOOL bRet = StartServiceCtrlDispatcher(dispatchTable);
-	if( ! bRet ) {
-		TCHAR szBuf[256];
-        AddToMessageLog(GetLastErrorText(szBuf,255));
-	}
-
-	return bRet;
-}
-
 
 BOOL BaseService :: InstallService() {
     TCHAR szPath[1024];
+
 	LOG_TRACE("BaseService::InstallService", "");
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
 					// diagnostic or error reason: orignal class assumed
@@ -222,7 +188,7 @@ BOOL BaseService :: InstallService() {
 
 	if( GetModuleFileName( 0, szPath, 1023 ) == 0 ) {
 		TCHAR szErr[256];
-		LOG_ERROR("BaseService::InstallService", "Unable to install % s - % s", m_lpDisplayName, GetLastErrorText(szErr, 256));
+		LOG_ERROR("BaseService::InstallService", "Unable to install % s - % s", Service_Name(), GetLastErrorText(szErr, 256));
 		
 		return FALSE;
 	}
@@ -231,34 +197,17 @@ BOOL BaseService :: InstallService() {
 
 
 		// Real NT services go here.
-		SC_HANDLE schSCManager =	OpenSCManager(
-										0,						// machine (NULL == local)
-										0,						// database (NULL == default)
-										SC_MANAGER_ALL_ACCESS	// access required
-									);
+		SC_HANDLE schSCManager = OpenSCManager(0,0,SC_MANAGER_ALL_ACCESS);
 		if( schSCManager ) {
-			SC_HANDLE schService =	CreateService(
-										schSCManager,
-										m_lpServiceName,
-										m_lpDisplayName,
-										m_dwDesiredAccess,
-										m_dwServiceType,
-										m_dwStartType,
-										m_dwErrorControl,
-										szPath,
-										m_pszLoadOrderGroup,
-										((m_dwServiceType == SERVICE_KERNEL_DRIVER ||
-										  m_dwServiceType == SERVICE_FILE_SYSTEM_DRIVER) &&
-										 (m_dwStartType == SERVICE_BOOT_START ||
-										  m_dwStartType == SERVICE_SYSTEM_START)) ?
-											&m_dwTagID : 0,
-										m_pszDependencies,
-										"LOCALSYSTEM",
-										nullptr
-									);
+			STD_STRING tmpServiceBinaryPath = GetService_DevelopmentPath();
+			cprint_b("Creating new service named \"%s\". Path: %s\n", Service_Name(), tmpServiceBinaryPath.c_str());
+			SC_HANDLE schService = CreateService(schSCManager, Service_Name(), Service_Display_Name(), Service_DesiredAccess(), Service_Type(), 
+				Service_StartType(), Service_ErrorControl(),tmpServiceBinaryPath.c_str(), nullptr, 0, nullptr, Service_AccountName(), Service_Password());
+						
 
 			if( schService ) {
-				LOG_TRACE("BaseService::InstallService", "%s installed.", m_lpDisplayName );
+				LOG_TRACE("BaseService::InstallService", "%s installed.", Service_Name() );
+				cprint_g("%s installed.", Service_Name());
 				CloseServiceHandle(schService);
 				bRet = TRUE;
 			} else {
@@ -289,7 +238,7 @@ BOOL BaseService :: InstallService() {
 
 BOOL BaseService :: RemoveService() {
 	BOOL bRet = FALSE;
-
+	SERVICE_STATUS tmpCurrentStatus;
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
 					// diagnostic or error reason: orignal class assumed
 					// that we were using _main for entry (a console app).
@@ -300,26 +249,18 @@ BOOL BaseService :: RemoveService() {
 
 
 		// Real NT services go here.
-		SC_HANDLE schSCManager = OpenSCManager(
-									0,						// machine (NULL == local)
-									0,						// database (NULL == default)
-									SC_MANAGER_ALL_ACCESS	// access required
-								);
+		SC_HANDLE schSCManager = OpenSCManager(0,0, SC_MANAGER_CONNECT);
 		if( schSCManager ) {
-			SC_HANDLE schService =	OpenService(
-										schSCManager,
-										m_lpServiceName,
-										SERVICE_ALL_ACCESS
-									);
+			SC_HANDLE schService =	OpenService(schSCManager,m_lpServiceName,SERVICE_ALL_ACCESS);
 
 			if( schService ) {
 				// try to stop the service
-				if (ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus)) {
-					LOG_TRACE("BaseService::RemoveService", "Stopping %s.", m_lpDisplayName);
+				if (ControlService(schService, SERVICE_CONTROL_STOP, &tmpCurrentStatus)) {
+					LOG_TRACE("BaseService::RemoveService", "Stopping %s.", Service_Name());
 					Sleep(1000);
 
-					while (QueryServiceStatus(schService, &m_ssStatus)) {
-						if (m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING) {
+					while (QueryServiceStatus(schService, &tmpCurrentStatus)) {
+						if (tmpCurrentStatus.dwCurrentState == SERVICE_STOP_PENDING) {
 							LOG_TRACE("BaseService::RemoveService", ".");
 							Sleep(1000);
 						}
@@ -327,17 +268,17 @@ BOOL BaseService :: RemoveService() {
 							break;
 					}
 
-					if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
-						LOG_TRACE("BaseService::RemoveService", "\n%s stopped.", m_lpDisplayName);
+					if (tmpCurrentStatus.dwCurrentState == SERVICE_STOPPED) {
+						LOG_TRACE("BaseService::RemoveService", "\n%s stopped.", Service_Name());
 					}
 					else {
-						LOG_ERROR("BaseService::RemoveService", "\n%s failed to stop.", m_lpDisplayName);
+						LOG_ERROR("BaseService::RemoveService", "\n%s failed to stop.", Service_Name());
 					}
 				}
 
 				// now remove the service
 				if( DeleteService(schService) ) {
-					LOG_TRACE("BaseService::RemoveService", "%s removed.", m_lpDisplayName);
+					LOG_TRACE("BaseService::RemoveService", "%s removed.", Service_Name());
 					bRet = TRUE;
 				} else {
 					TCHAR szErr[256];
@@ -365,39 +306,61 @@ BOOL BaseService :: RemoveService() {
 
 BOOL BaseService :: EndService() {
 	BOOL bRet = FALSE;
-
-	SC_HANDLE schSCManager = ::OpenSCManager(
-								0,						// machine (NULL == local)
-								0,						// database (NULL == default)
-								SC_MANAGER_ALL_ACCESS	// access required
-							);
-	if( schSCManager ) {
-		SC_HANDLE schService =	::OpenService(
-									schSCManager,
-									m_lpServiceName,
-									SERVICE_ALL_ACCESS
-								);
+	SERVICE_STATUS tmpCurrentStatus;
+	unsigned int counter = 0;
+	unsigned int num_retries = 1;
+	static unsigned int interval = 10;
+	static unsigned int maximum_retries = 3;
+	SC_HANDLE schSCManager = ::OpenSCManager(0, 0, SC_MANAGER_CONNECT);
+	if (schSCManager) {
+		SC_HANDLE schService = ::OpenService(schSCManager, Service_Name(), SERVICE_QUERY_CONFIG | SERVICE_STOP);
 
 		if( schService ) {
 			// try to stop the service
-			if( ::ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus) ) {
-				LOG_TRACE("BaseService::EndService", "Stopping %s.", m_lpDisplayName);
+			if( ::ControlService(schService, SERVICE_CONTROL_STOP, &tmpCurrentStatus) ) {
+				LOG_TRACE("BaseService::EndService", "Stopping %s.", Service_Name());
+				cprint_b("[(%d/%d)] Sending SERVICE_CONTROL_STOP event to service \"%s\".\nPlease wait.", num_retries, maximum_retries, Service_Name());
 				::Sleep(1000);
 
-				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
-					if( m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING ) {
-						LOG_TRACE("BaseService::EndService", ".");
+				while( ::QueryServiceStatus(schService, &tmpCurrentStatus) ) {
+					if(tmpCurrentStatus.dwCurrentState == SERVICE_STOP_PENDING ) {
+						LOG_TRACE("BaseService::EndService", " waiting for service to stop. Resending in %d / %d",(interval-counter),interval);
+						//cprint_b(" .");
 						::Sleep( 1000 );
-					} else
-						break;
+						counter++;
+
+						if (counter > interval) {
+							num_retries++;
+							::ControlService(schService, SERVICE_CONTROL_STOP, &tmpCurrentStatus);
+							//cprint_b("[%d/%d TIMEDOUT] : Retry sending SERVICE_CONTROL_STOP event to service \"%s\".\nPlease wait.", num_retries, maximum_retries, Service_Name());
+							counter = 0;
+							
+						}
+						if (num_retries > maximum_retries) {
+							num_retries = 0;
+							LOG_ERROR("BaseService::EndService", "Timeout : %s failed to stop.", Service_Name());
+							//cprint_r("Timeout : %s failed to stop.", Service_Name());
+							break;
+						}
+					}
+					else {
+						LOG_TRACE("BaseService :: EndService", "State Should be SERVICE_STOP_PENDING, Current State %s", (CurrentStateString()));
+						
+						::Sleep(1000);
+						counter++;
+						if (counter > interval) {
+							counter = 0;
+							break;
+						}
+					}
 				}
 
-				if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
+				if (tmpCurrentStatus.dwCurrentState == SERVICE_STOPPED) {
 					bRet = TRUE;
-					LOG_TRACE("BaseService::EndService", "\n%s stopped.", m_lpDisplayName);
+					LOG_TRACE("BaseService::EndService", "%s stopped.", Service_Name());
 				}
 				else {
-					LOG_ERROR("BaseService::EndService", "\n%s failed to stop.", m_lpDisplayName);
+					LOG_ERROR("BaseService::EndService", "%s failed to stop.", Service_Name());
 				}
                     
 			}
@@ -420,39 +383,59 @@ BOOL BaseService :: EndService() {
 
 BOOL BaseService :: StartupService() {
 	BOOL bRet = FALSE;
-
-	SC_HANDLE schSCManager = ::OpenSCManager(
-								0,						// machine (NULL == local)
-								0,						// database (NULL == default)
-								SC_MANAGER_ALL_ACCESS	// access required
-							);
+	SERVICE_STATUS tmpCurrentStatus;
+	unsigned int counter = 0;
+	unsigned int num_retries = 0;
+	static unsigned int interval = 10;
+	static unsigned int maximum_retries = 3;
+	LOG_TRACE("BaseService :: StartupService", "StartupService . Current State %s", (CurrentStateString()));
+	LOG_TRACE("BaseService::StartupService", "OpenSCManager SC_MANAGER_CONNECT");
+	SC_HANDLE schSCManager = ::OpenSCManager(0,	0, SC_MANAGER_CONNECT);
 	if( schSCManager ) {
-		SC_HANDLE schService =	::OpenService(
-									schSCManager,
-									m_lpServiceName,
-									SERVICE_ALL_ACCESS
-								);
+		LOG_TRACE("BaseService::StartupService", "OpenService %s . SERVICE_START | SERVICE_QUERY_STATUS.", Service_Name());
+		SC_HANDLE schService =	::OpenService(schSCManager, Service_Name(), SERVICE_START | SERVICE_QUERY_STATUS);
 
 		if( schService ) {
 			// try to start the service
-			LOG_TRACE("BaseService::StartupService", "Starting up %s.", m_lpDisplayName);
+			LOG_TRACE("BaseService::StartupService", "Starting up %s.", Service_Name());
+			cprint_b("Starting up \"%s\" service...\n", Service_Name());
 			if( ::StartService(schService, 0, 0) ) {
 				Sleep(1000);
-
-				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
-					if( m_ssStatus.dwCurrentState == SERVICE_START_PENDING ) {
+				
+				while( ::QueryServiceStatus(schService, &tmpCurrentStatus) ) {
+					if (tmpCurrentStatus.dwCurrentState == SERVICE_START_PENDING) {
 						LOG_TRACE("BaseService::StartupService", ".");
-						Sleep( 1000 );
-					} else
-						break;
+						counter++;
+
+						if (counter > interval) {
+							::ControlService(schService, SERVICE_CONTROL_STOP, &tmpCurrentStatus);
+							counter = 0;
+							num_retries++;
+						}
+						if (num_retries > maximum_retries) {
+							num_retries = 0;
+							LOG_ERROR("BaseService::EndService", "Timeout : %s failed to stop.", Service_Name());
+							break;
+						}
+					}
+					else {
+						LOG_TRACE("BaseService :: StartupService", "State Should be SERVICE_START_PENDING, Current State %s", (CurrentStateString()));
+
+						::Sleep(1000);
+						counter++;
+						if (counter > interval) {
+							counter = 0;
+							break;
+						}
+					}
 				}
 
-				if (m_ssStatus.dwCurrentState == SERVICE_RUNNING) {
+				if (tmpCurrentStatus.dwCurrentState == SERVICE_RUNNING) {
 					bRet = TRUE;
-					LOG_TRACE("BaseService::StartupService", "%s started.", m_lpDisplayName);
+					LOG_TRACE("BaseService::StartupService", "%s started.", Service_Name());
 				}
 				else {
-					LOG_ERROR("BaseService::StartupService", "%s failed to start.", m_lpDisplayName);
+					LOG_ERROR("BaseService::StartupService", "%s failed to start.", Service_Name());
 				}
 
 			
@@ -460,7 +443,7 @@ BOOL BaseService :: StartupService() {
 			} else {
 				// StartService failed
 				TCHAR szErr[256];
-				LOG_ERROR("BaseService::StartupService", "%s failed to start: %s", m_lpDisplayName, GetLastErrorText(szErr,256));
+				LOG_ERROR("BaseService::StartupService", "%s failed to start: %s", Service_Name(), GetLastErrorText(szErr,256));
 			}
 
 			::CloseServiceHandle(schService);
@@ -479,150 +462,6 @@ BOOL BaseService :: StartupService() {
 }
 
 
-
-
-BOOL BaseService :: DebugService(int argc, char ** argv) {
-
-	SetupConsole();	
-
-	SetConsoleCtrlHandler(ControlHandler, TRUE);
-	
-    Start();
-
-	m_Debugging = true;
-
-	return TRUE;
-}
-
-
-void BaseService :: Pause() {
-}
-
-
-void BaseService :: Continue() {
-}
-
-
-void BaseService :: Shutdown() {
-	m_Debugging = false;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-// class CNTService -- default handlers
-
-void WINAPI BaseService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
-	_ASSERTE( gpTheService != 0 );
-	LOG_TRACE("BaseService::ServiceMain", "register our service control handler for %s", gpTheService->m_lpDisplayName);
-	// register our service control handler:
-	gpTheService->m_sshStatusHandle =	RegisterServiceCtrlHandler(
-											gpTheService->m_lpServiceName,
-											BaseService::ServiceCtrl
-										);
-
-	if( gpTheService->m_sshStatusHandle )
-		LOG_TRACE("BaseService::ServiceMain", "report the status to the service control manager. SERVICE_START_PENDING");
-		// report the status to the service control manager.
-		if( gpTheService->ReportStatus(SERVICE_START_PENDING) ){
-			gpTheService->Start( );}
-
-	// try to report the stopped status to the service control manager.
-	if( gpTheService->m_sshStatusHandle )
-		gpTheService->ReportStatus(SERVICE_STOPPED);
-}
-
-
-void WINAPI BaseService :: ServiceCtrl(DWORD dwCtrlCode) {
-	_ASSERTE( gpTheService != 0 );
-
-	// Handle the requested control code.
-	switch( dwCtrlCode ) {
-		case SERVICE_CONTROL_STOP:
-			// Stop the service.
-			gpTheService->m_ssStatus.dwCurrentState = SERVICE_STOP_PENDING;
-			gpTheService->Stop();
-			break;
-
-		case SERVICE_CONTROL_PAUSE:
-			gpTheService->m_ssStatus.dwCurrentState = SERVICE_PAUSE_PENDING;
-			gpTheService->Pause();
-			break;
-
-		case SERVICE_CONTROL_CONTINUE:
-			gpTheService->m_ssStatus.dwCurrentState = SERVICE_CONTINUE_PENDING;
-			gpTheService->Continue();
-			break;
-
-		case SERVICE_CONTROL_SHUTDOWN:
-			gpTheService->Shutdown();
-			break;
-
-		case SERVICE_CONTROL_INTERROGATE:
-			// Update the service status.
-			gpTheService->ReportStatus(gpTheService->m_ssStatus.dwCurrentState);
-			break;
-
-		default:
-			// invalid control code
-			break;
-	}
-
-}
-
-
-BOOL WINAPI BaseService :: ControlHandler(DWORD dwCtrlType) {
-	_ASSERTE(gpTheService != 0);
-	switch( dwCtrlType ) {
-		case CTRL_BREAK_EVENT:  // use Ctrl+C or Ctrl+Break to simulate
-		case CTRL_C_EVENT:      // SERVICE_CONTROL_STOP in debug mode
-			LOG_TRACE("BaseService::ControlHandler", "Stopping %s.", gpTheService->m_lpDisplayName);
-			gpTheService->Stop();
-			return TRUE;
-	}
-	return FALSE;
-}
-
-
-/////////////////////////////////////////////////////////////////////////////
-// class CNTService -- helpers
-
-//!! TCW MOD - added DWORD dwErrExit for error exit value. Defaults to zero
-BOOL BaseService :: ReportStatus(
-						DWORD dwCurrentState,
-						DWORD dwWaitHint,
-						DWORD dwErrExit ) {
-	BOOL fResult = TRUE;
-
-	if( !m_bDebug ) { // when debugging we don't report to the SCM
-        if( dwCurrentState == SERVICE_START_PENDING)
-            m_ssStatus.dwControlsAccepted = 0;
-        else
-            m_ssStatus.dwControlsAccepted = m_dwControlsAccepted;
-
-        m_ssStatus.dwCurrentState = dwCurrentState;
-        m_ssStatus.dwWin32ExitCode = NO_ERROR;
-        m_ssStatus.dwWaitHint = dwWaitHint;
-
-			//!! TCW MOD START - added code to support error exiting
-			m_ssStatus.dwServiceSpecificExitCode = dwErrExit;
-			if (dwErrExit!=0)
-				m_ssStatus.dwWin32ExitCode = ERROR_SERVICE_SPECIFIC_ERROR;
-			//!! TCW MOD END - added code to support error exiting
-
-        if( dwCurrentState == SERVICE_RUNNING ||
-            dwCurrentState == SERVICE_STOPPED )
-            m_ssStatus.dwCheckPoint = 0;
-        else
-            m_ssStatus.dwCheckPoint = ++m_dwCheckPoint;
-
-        // Report the status of the service to the service control manager.
-        if (!(fResult = SetServiceStatus( m_sshStatusHandle, &m_ssStatus))) {
-            AddToMessageLog("SetServiceStatus() failed");
-        }
-    }
-
-    return fResult;
-}
 
 
 void BaseService :: AddToMessageLog(const char* lpszMsg, WORD wEventType, DWORD dwEventID) {

@@ -12,8 +12,8 @@
 //  Copyright (C) Guilaume Plante 2020 <cybercastor@icloud.com>
 //==============================================================================
 
-#ifndef __TARGET_VER_H__
-#define __TARGET_VER_H__
+#ifndef __TARGET_COMMON_PREPROCESSOR_DEFINITIONS__
+#define __TARGET_COMMON_PREPROCESSOR_DEFINITIONS__
 
 
 #include <SDKDDKVer.h>
@@ -53,19 +53,6 @@
 #error Failing compilation because of platform
 #endif // _WIN32
 
-#ifdef PLATFORM_PC
-
-#define WIN32_LEAN_AND_MEAN             // Exclude rarely-used stuff from Windows headers
-// Windows Header Files:
-#include <windows.h>
-
-// C RunTime Header Files
-#include <stdlib.h>
-#include <malloc.h>
-#include <memory.h>
-#include <tchar.h>
-
-#endif // PLATFORM_PC
 
 
 #ifdef PLATFORM_PC
@@ -81,4 +68,51 @@ bool kbhit();
 
 #include <string.h>
 
-#endif //__TARGET_VER_H__
+
+#ifdef _WIN64
+#  define PLATFORM_PATH _T("x64")
+#else
+#  define PLATFORM_PATH _T("Win32")
+#endif
+
+
+#ifdef _TARGET_FINAL
+#  define CONFIG_PATH _T("Final")
+#elif _TARGET_DEBUG
+#  define CONFIG_PATH _T("Debug")
+#elif _TARGET_DEBUG_DLL
+#  define CONFIG_PATH _T("DebugDLL")
+#elif _DEBUG_DLL_DYNAMIC_MFC
+#  define CONFIG_PATH _T("DebugDLL_DynamicMFC")
+#elif _TARGET_RELEASE 
+#  define CONFIG_PATH _T("Release")
+#elif _TARGET_RELEASE_DLL
+#  define CONFIG_PATH _T("ReleaseDLL")
+#elif _TARGET_RELEASE_DLL_DYNAMIC_MFC
+#  define CONFIG_PATH _T("ReleaseDLL_DynamicMFC")
+#else
+#pragma message("UNSUPPORTED CONFIGURATION !") 
+#endif
+
+#define TARGET_BASE_PATH _T("F:\\Code\\Telnet.ClientServer.App\\bin")
+#define TARGET_BASE_NAME _T("recon_srv")
+
+#define SYSTEM32_BASE_PATH _T("C:\\Windows\\System32")
+
+
+
+#ifdef _SERVICE_DLL
+#  define TARGET_EXT _T(".dll")
+#else
+#  define TARGET_EXT _T("exe")
+#endif
+
+
+std::string GetService_DevelopmentPath();
+std::string GetService_TestPath();
+std::string GetService_ProductionPathExe();
+std::string GetService_ProductionPathDll();
+
+#endif //__TARGET_COMMON_PREPROCESSOR_DEFINITIONS__
+
+

@@ -12,5 +12,5 @@
 
 
 #define USE_EVENT_LOGS 0
-
+#define USE_USERACCOUNT_SIDS 0
 #endif //__COMPILATION_SETTINGS_H__

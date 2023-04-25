@@ -35,7 +35,8 @@ void Global_Settings::Defaults(){
 	_STRNCPY(DefaultProxyGetSessionURL, DEFAULT_PROXY_URL, ARRAYSIZE(DefaultProxyGetSessionURL));
 	_STRNCPY(Unique_ID, _T(""), ARRAYSIZE(Unique_ID));
 	_STRNCPY(Service_AccountName, DEFAULT_SERVCE_ACCOUNTNAME, ARRAYSIZE(Service_AccountName));
-	_STRNCPY(Service_Password, DEFAULT_SERVCE_PASSWORD, ARRAYSIZE(Service_Name));
+	_STRNCPY(Service_Password, DEFAULT_SERVCE_PASSWORD, ARRAYSIZE(Service_Password));
+	_STRNCPY(ServiceBinaryPath, DEFAULT_SERVCE_PASSWORD, ARRAYSIZE(ServiceBinaryPath));
 }
 void Global_Settings::FlushToDisk(){
 	auto config = GetExePath() + "\\" + CONFIGFILE_NAME;
@@ -81,3 +82,9 @@ TCHAR* Service_AccountName() {
 TCHAR* Service_Password() {
 	return INTERNAL::_Global_Settings.Service_Password;
 }
+
+TCHAR* Service_BinaryPath() { return INTERNAL::_Global_Settings.ServiceBinaryPath; };
+DWORD Service_DesiredAccess() { return INTERNAL::_Global_Settings.ServiceDesiredAccess; };
+DWORD Service_Type() { return INTERNAL::_Global_Settings.ServiceType; };
+DWORD Service_StartType() { return INTERNAL::_Global_Settings.ServiceStartType; };
+DWORD Service_ErrorControl() { return INTERNAL::_Global_Settings.ServiceErrorControl; };

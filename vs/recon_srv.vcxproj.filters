@@ -66,6 +66,9 @@
     <ClCompile Include="..\src\server\service\ServerService.cpp">
       <Filter>service</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\common\targetver.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\common\keycodes_hashtable.tmp">
@@ -141,6 +144,15 @@
     </ClInclude>
     <ClInclude Include="..\src\server\service\ServerService.h">
       <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\enum_to_string.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\service\service_types.h">
+      <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\targetver.h">
+      <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

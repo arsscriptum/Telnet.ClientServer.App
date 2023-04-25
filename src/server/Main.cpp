@@ -21,7 +21,7 @@
 
 #include "cmdline.h"
 #include "ServerService.h"
-
+#include "utilities.h"
 
 #pragma NOTE("LINKING WITH wsock32.lib")
 #pragma NOTE("LINKING WITH advapi32.lib")
@@ -39,25 +39,28 @@ static char THIS_FILE[] = __FILE__;
 
 ServerService *pServiceControllerInst = nullptr;
 
+static int  CCC_CALL_CONV ServerMain(int argc, char* argv[]);
 static void CCC_CALL_CONV ExtraPauseFunction();
+static void CCC_CALL_CONV EventNotifier(CCC_CONTROL EventCode);
+
 BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType);	
 void banner() {
 	std::wcout << std::endl;
-	PRINT_C("recon_srv v2.1 - Remote Shell Service\n");
-	PRINT_C("Built on %s\n", __TIMESTAMP__);
-	PRINT_C("Copyright (C) 2000-2021 Guillaume Plante\n");
+	cprint_cb("recon_srv v2.1 - Remote Shell Service\n");
+	cprint_c("Built on %s\n", __TIMESTAMP__);
+	cprint_c("Copyright (C) 2000-2021 Guillaume Plante\n");
 	std::wcout << std::endl;
 }
 void usage() {
-	PRINT_C("Usage: recon_srv.exe [-h][-p][-a][-n][-s]\n");
-	PRINT_C("   -p          Print process executable pats\n");
-	PRINT_C("   -v          Verbose Show All process even access denied\n");
-	PRINT_C("   -h          Help\n");
-	PRINT_C("   -n          No banner\n");
-	PRINT_C("   -i          Install Service\n");
-	PRINT_C("   -u          Uninstall Service\n");
-	PRINT_C("   -d          Debug Service\n");
-	PRINT_C("   -s          Stop Service\n");
+	cprint_cb("Usage: recon_srv.exe [-h][-p][-a][-n][-s]\n");
+	cprint_c("   -p          Print process executable pats\n");
+	cprint_c("   -v          Verbose Show All process even access denied\n");
+	cprint_c("   -h          Help\n");
+	cprint_c("   -n          No banner\n");
+	cprint_c("   -i          Install Service\n");
+	cprint_c("   -u          Uninstall Service\n");
+	cprint_c("   -d          Debug Service\n");
+	cprint_c("   -s          Stop Service\n");
 	std::wcout << std::endl;
 }
 
@@ -65,6 +68,14 @@ void usage() {
 
 //----------------------------------------------------------------
 
+bool ArgsToString(int args_count, char** args, STD_STRING &OutString) {
+	
+	for (int i = 0; i < args_count; i++) {
+		char* cursor = args[i];
+		OutString = _INTERNAL::std_string_format("%s %s ", OutString, cursor);
+	}
+	return true;
+}
 
 
 int main( int argc, char ** argv )
@@ -122,58 +133,80 @@ int main( int argc, char ** argv )
 	if (!optNoBanner) {
 		banner();
 	}
-	ServerService service;
+	ServerService service(ServerMain,0);
 	pServiceControllerInst = &service;
-
-	LOG_TRACE("main", "RegisterService;");
-	service.RegisterService();
 
 	BOOL ret = TRUE;
 
 	if (optServiceInstall) {
 		LOG_TRACE("main", "InstallService;");
+		cprint_y("Command: ");
+		cprint_r("InstallService\n");
 		ret = service.InstallService();
 		return (ret ? 0 : -1);
 	}
 	else if (optServiceUninstall) {
 		LOG_TRACE("main", "UninstallService;");
+		cprint_y("Command: ");
+		cprint_r("Uninstall Service\n");
 		ret = service.RemoveService();
 		return (ret ? 0 : -2);
 	}
 	else if (optServiceStop) {
 		LOG_TRACE("main", "StopService;");
-		service.Stop();
-		return 0;
+		cprint_y("Command: ");
+		cprint_r("Stop Service\n");
+		ret = service.EndService();
+		return (ret ? 0 : -3);
 	}
 	else if (optServiceDebug) {
-		LOG_TRACE("main", "DebugService;");
-		ret = service.DebugService(argc, argv); 
+		LOG_TRACE("main", "StartInForeground;");
+		cprint_y("Command: ");
+		cprint_r("Debug (start service in foreground)\n");
+		ret = service.StartInForeground(argc, argv);
 		return (ret ? 0 : -3);
 	}
 	else if (optTest) {
 		LOG_TRACE("main", "Test;");
+		cprint_y("Command: ");
+		cprint_r("Test Mode\n");
 	}
+
+	LOG_TRACE("Main", "StartInBackground");
+	cprint_y("Command: ");
+	cprint_r("Start Service (in background mode)\n");
+	ret = service.StartInBackground();
+	return (ret ? 0 : -6);
+
+	
+	LOG_TRACE("Main", "Exiting in 1 second");
+	Sleep(1000);
+	return 0;
+}
+
+
+static int CCC_CALL_CONV ServerMain(int argc, char* argv[])
+{
+	LOG_TRACE("ServerMain", "Entry Point");
+
+	SetConsoleCtrlHandler(HandlerRoutine, TRUE);
 
 	pServiceControllerInst->Start();
 
 	while (pServiceControllerInst->StopReceived() == false)
 	{
-		LOG_TRACE("Main", "Running...");
+		
+		LOG_TRACE("ServerMain", "Current State %s", pServiceControllerInst->CurrentStateString().c_str());
 		pServiceControllerInst->CheckAndHandlePauseResume(1000, &ExtraPauseFunction);
 		Sleep(1000);
-		CCC_RETURN_CODES ret = pServiceControllerInst->Step();
-
-		if (gExitRequested) {
-			LOG_TRACE("Main", "EmergencyExitRequested");
-
-			return -5;
-		}
+		pServiceControllerInst->Step();
 	}
 
-	LOG_TRACE("Main", "Exiting...");
-	Sleep(1000);
+	LOG_TRACE("ServerMain", "Exiting...");
+
 	return 0;
 }
+
 
 
 //==============================================================================
@@ -187,8 +220,10 @@ int main( int argc, char ** argv )
 
 static void CCC_CALL_CONV ExtraPauseFunction()
 {
-	COUTY("pause");
+	
 }
+
+
 
 BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType) {
 	switch (dwCtrlType)
@@ -196,7 +231,7 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType) {
 	case CTRL_BREAK_EVENT:
 		LOG_WARNING("HandlerRoutine", "CTRL-BREAK RECEIVED");
 		if (pServiceControllerInst->IsDebugging() == true) {
-			PRINT_C("BREAK: Emergency stop. Terminating service.\n");
+			cprint_c("BREAK: Emergency stop. Terminating service.\n");
 			pServiceControllerInst->Stop();
 		}
 		LOG_TRACE("HandlerRoutine", "BREAK: Emergency stop. Terminating service.");
@@ -204,7 +239,7 @@ BOOL WINAPI HandlerRoutine(_In_ DWORD dwCtrlType) {
 	case CTRL_C_EVENT:
 		LOG_TRACE("HandlerRoutine", "CTRL-C RECEIVED");
 		if (pServiceControllerInst->IsDebugging() == true) {
-			PRINT_C("CTRL-C: Gracefully terminating service...\n");
+			cprint_c("CTRL-C: Gracefully terminating service...\n");
 		}
 		LOG_TRACE("ccc-service::HandlerRoutine", "CTRL-C: Gracefully terminating service...");
 		pServiceControllerInst->Stop();
