@@ -85,6 +85,18 @@ function Out-IniFile {
     }
     try{
         $outFile = New-Item -ItemType file -Path $Path
+
+        $numindex = 0
+        $InputObject.keys | % { $val=$($InputObject[$_]).Index
+            if($val -ne $Null){$numindex++ }
+        }
+        $sortbyindex = ($numindex -eq $cnt.keys.Count)
+        if($sortbyindex){
+            $InputObject.keys = $InputObject.keys | Sort -Property @{Expression={[int]($($InputObject[$_]).Index)}}
+        }else{
+            $InputObject.keys =  $InputObject.keys | sort -Descending
+        }
+        
         foreach ($i in $InputObject.keys)
         {
             if (!($($InputObject[$i].GetType().Name) -eq "Hashtable"))

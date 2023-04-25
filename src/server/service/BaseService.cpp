@@ -71,8 +71,8 @@
 #include <io.h>			//!! TCW MOD
 #include <fcntl.h>		//!! TCW MOD
 
-#include "NTService.h"
-#include "NTServiceEventLogMsg.h"
+#include "BaseService.h"
+#include "BaseServiceEventLogMsg.h"
 
 
 #ifndef RSP_SIMPLE_SERVICE
@@ -82,11 +82,11 @@
 	#define RSP_UNREGISTER_SERVICE 0
 #endif
 
-BOOL CNTService :: m_bInstance = FALSE;
+BOOL BaseService :: m_bInstance = FALSE;
 
-static CNTService * gpTheService = 0;			// the one and only instance
+static BaseService * gpTheService = 0;			// the one and only instance
 
-CNTService * AfxGetService() { return gpTheService; }
+BaseService * AfxGetService() { return gpTheService; }
 
 
 
@@ -98,9 +98,11 @@ static LPCTSTR gszWin95ServKey=TEXT("Software\\Microsoft\\Windows\\CurrentVersio
 /////////////////////////////////////////////////////////////////////////////
 // class CNTService -- construction/destruction
 
-CNTService :: CNTService( LPCTSTR lpServiceName, LPCTSTR lpDisplayName )
+BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR lpAccountName, LPCSTR lpPassword )
 	: m_lpServiceName(lpServiceName)
-	, m_lpDisplayName(lpDisplayName ? lpDisplayName : lpServiceName)
+	, m_lpDisplayName(lpDisplayName)
+	, m_pszAccountName(lpAccountName)
+	, m_pszPassword(lpPassword)
 	, m_dwCheckPoint(0)
 	, m_dwErr(0)
 	, m_bDebug(FALSE)
@@ -116,12 +118,9 @@ CNTService :: CNTService( LPCTSTR lpServiceName, LPCTSTR lpDisplayName )
 	, m_pszLoadOrderGroup(0)
 	, m_dwTagID(0)
 	, m_pszDependencies(0)
-	, m_pszStartName(0)
-	, m_pszPassword(0)
-{
-	_ASSERTE( ! m_bInstance );
-	m_bWinNT = true;
+	, m_Debugging(false)
 
+{
 	m_bInstance = TRUE;
 	gpTheService = this;
 	
@@ -129,7 +128,7 @@ CNTService :: CNTService( LPCTSTR lpServiceName, LPCTSTR lpDisplayName )
 	m_ssStatus.dwServiceType = SERVICE_WIN32_OWN_PROCESS;
 	m_ssStatus.dwServiceSpecificExitCode = 0;
 
-	if( m_bWinNT ) {
+
 		/////////////////////////////////////////////////////////////////////////
 		// Providing a SID (security identifier) was contributed by Victor
 		// Vogelpoel (VictorV@Telic.nl).
@@ -170,12 +169,12 @@ CNTService :: CNTService( LPCTSTR lpServiceName, LPCTSTR lpDisplayName )
 				_ASSERTE(::EqualSid(m_pUserSID, security_identifier_buffer));
 			}
 		}
-	}
+	
 	/////////////////////////////////////////////////////////////////////////
 }
 
 
-CNTService :: ~CNTService() {
+BaseService :: ~BaseService() {
 	_ASSERTE( m_bInstance );
 	delete [] LPBYTE(m_pUserSID);
 	m_bInstance = FALSE;
@@ -184,75 +183,14 @@ CNTService :: ~CNTService() {
 
 
 
-/////////////////////////////////////////////////////////////////////////////
-// class CNTService -- overridables
-
-#define NEXT_ARG ((((*Argv)[2])==TEXT('\0'))?(--Argc,*++Argv):(*Argv)+2)
-
-
-BOOL CNTService :: RegisterService( int argc, char ** argv ) {
-	BOOL (CNTService::* fnc)() = &CNTService::StartDispatcher;
-    DWORD Argc;
-    LPTSTR * Argv;
-
-#ifdef UNICODE
-    Argv = CommandLineToArgvW(GetCommandLineW(), &Argc );
-#else
-    Argc = (DWORD) argc;
-    Argv = argv;
-#endif
-
-    while( ++Argv, --Argc ) {
-		if( Argv[0][0] == TEXT('-') ) {
-			switch( Argv[0][1] ) {
-				case TEXT('i'):	// install the service
-					fnc = &CNTService::InstallService;
-					break;
-				case TEXT('l'):	// login-account (only useful with -i)
-					m_pszStartName = NEXT_ARG;
-					break;
-				case TEXT('p'):	// password (only useful with -i)
-					m_pszPassword = NEXT_ARG;
-					break;
-				case TEXT('u'):	// uninstall the service
-					fnc = &CNTService::RemoveService;
-					break;
-				case TEXT('s'):	// start the service
-					fnc = &CNTService::StartupService;
-					break;
-				case TEXT('e'):	// end the service
-					fnc = &CNTService::EndService;
-					break;
-				case TEXT('d'):	// debug the service
-				case TEXT('f'):	//!! TCW MOD faceless non-service (Win95) mode
-					#ifdef UNICODE
-						::GlobalFree(HGLOBAL)Argv);
-					#endif
-
-					m_bDebug = TRUE;
-					// pass original parameters to DebugService()
-					return DebugService(argc, argv,(Argv[0][1]==TEXT('f'))); //!! TCW MOD faceless non-service (Win95) mode
-			}
-		}
-	}
-
-#ifdef UNICODE
-	::GlobalFree(HGLOBAL)Argv);
-#endif
-
-	//!! TCW MOD START - if Win95, run as faceless app.
-	if( fnc == &CNTService::StartDispatcher && OsIsWin95() ) {
-		// act as if -f was passed anyways.
-		m_bDebug = TRUE;
-		return DebugService(argc, argv, TRUE);
-	}
-	//!! TCW MOD END - if Win95, run as faceless app.
-
+BOOL BaseService :: RegisterService( ) {
+	BOOL (BaseService::* fnc)() = &BaseService::StartDispatcher;
+	LOG_TRACE("BaseService::RegisterService", "BaseService::StartDispatcher");
 	return (this->*fnc)();
 }
 
 
-BOOL CNTService :: StartDispatcher() {
+BOOL BaseService :: StartDispatcher() {
     // Default implementation creates a single threaded service.
 	// Override this method and provide more table entries for
 	// a multithreaded service (one entry for each thread).
@@ -272,9 +210,9 @@ BOOL CNTService :: StartDispatcher() {
 }
 
 
-BOOL CNTService :: InstallService() {
+BOOL BaseService :: InstallService() {
     TCHAR szPath[1024];
-	LOG_TRACE("CNTService::InstallService", "");
+	LOG_TRACE("BaseService::InstallService", "");
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
 					// diagnostic or error reason: orignal class assumed
 					// that we were using _main for entry (a console app).
@@ -284,31 +222,14 @@ BOOL CNTService :: InstallService() {
 
 	if( GetModuleFileName( 0, szPath, 1023 ) == 0 ) {
 		TCHAR szErr[256];
-		LOG_ERROR("CNTService::InstallService", "Unable to install % s - % s", m_lpDisplayName, GetLastErrorText(szErr, 256));
+		LOG_ERROR("BaseService::InstallService", "Unable to install % s - % s", m_lpDisplayName, GetLastErrorText(szErr, 256));
 		
 		return FALSE;
 	}
 
 	BOOL bRet = FALSE;
 
-	if( OsIsWin95() ) {	//!! TCW MOD - code added to install as Win95 service
-		// Create a key for that application and insert values for
-		// "EventMessageFile" and "TypesSupported"
-		HKEY hKey = 0;
-		LONG lRet = ERROR_SUCCESS;
-		if( ::RegCreateKey(HKEY_LOCAL_MACHINE, gszWin95ServKey , &hKey) == ERROR_SUCCESS ) {
-			lRet =	::RegSetValueEx(
-						hKey,				// handle of key to set value for
-						m_lpServiceName,	// address of value to set (NAME OF SERVICE)
-						0,					// reserved
-						REG_EXPAND_SZ,		// flag for value type
-						(CONST BYTE*)szPath,// address of value data
-						_tcslen(szPath) + 1	// size of value data
-					);
-			::RegCloseKey(hKey);
-			bRet=TRUE;
-		}
-	} else {
+
 		// Real NT services go here.
 		SC_HANDLE schSCManager =	OpenSCManager(
 										0,						// machine (NULL == local)
@@ -337,18 +258,18 @@ BOOL CNTService :: InstallService() {
 									);
 
 			if( schService ) {
-				LOG_TRACE("CNTService::InstallService", "%s installed.", m_lpDisplayName );
+				LOG_TRACE("BaseService::InstallService", "%s installed.", m_lpDisplayName );
 				CloseServiceHandle(schService);
 				bRet = TRUE;
 			} else {
 				TCHAR szErr[256];
-				LOG_ERROR("CNTService::InstallService", "CreateService failed - %s", GetLastErrorText(szErr, 256));
+				LOG_ERROR("BaseService::InstallService", "CreateService failed - %s", GetLastErrorText(szErr, 256));
 			}
 
 			CloseServiceHandle(schSCManager);
 		 } else {
 			TCHAR szErr[256];
-			LOG_ERROR("CNTService::InstallService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
+			LOG_ERROR("BaseService::InstallService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
 		if( bRet ) {
@@ -360,13 +281,13 @@ BOOL CNTService :: InstallService() {
 
 			AddToMessageLog("Service installed",EVENTLOG_INFORMATION_TYPE);
 		}
-	}	//!! TCW MOD
+
 
 	return bRet;
 }
 
 
-BOOL CNTService :: RemoveService() {
+BOOL BaseService :: RemoveService() {
 	BOOL bRet = FALSE;
 
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
@@ -377,15 +298,7 @@ BOOL CNTService :: RemoveService() {
 					// is ok - does nothing, since you only get one console.
 
 
-	if( OsIsWin95() ) {	//!! TCW MOD - code added to install as Win95 service
-		HKEY hKey = 0;
-		LONG lRet = ERROR_SUCCESS;
-		if( ::RegCreateKey(HKEY_LOCAL_MACHINE, gszWin95ServKey , &hKey) == ERROR_SUCCESS ) {
-			lRet = ::RegDeleteValue(hKey, m_lpServiceName);
-			::RegCloseKey(hKey);
-			bRet=TRUE;
-		}
-	} else {
+
 		// Real NT services go here.
 		SC_HANDLE schSCManager = OpenSCManager(
 									0,						// machine (NULL == local)
@@ -402,12 +315,12 @@ BOOL CNTService :: RemoveService() {
 			if( schService ) {
 				// try to stop the service
 				if (ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus)) {
-					LOG_TRACE("CNTService::RemoveService", "Stopping %s.", m_lpDisplayName);
+					LOG_TRACE("BaseService::RemoveService", "Stopping %s.", m_lpDisplayName);
 					Sleep(1000);
 
 					while (QueryServiceStatus(schService, &m_ssStatus)) {
 						if (m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING) {
-							LOG_TRACE("CNTService::RemoveService", ".");
+							LOG_TRACE("BaseService::RemoveService", ".");
 							Sleep(1000);
 						}
 						else
@@ -415,43 +328,42 @@ BOOL CNTService :: RemoveService() {
 					}
 
 					if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
-						LOG_TRACE("CNTService::RemoveService", "\n%s stopped.", m_lpDisplayName);
+						LOG_TRACE("BaseService::RemoveService", "\n%s stopped.", m_lpDisplayName);
 					}
 					else {
-						LOG_ERROR("CNTService::RemoveService", "\n%s failed to stop.", m_lpDisplayName);
+						LOG_ERROR("BaseService::RemoveService", "\n%s failed to stop.", m_lpDisplayName);
 					}
 				}
 
 				// now remove the service
 				if( DeleteService(schService) ) {
-					LOG_TRACE("CNTService::RemoveService", "%s removed.", m_lpDisplayName);
+					LOG_TRACE("BaseService::RemoveService", "%s removed.", m_lpDisplayName);
 					bRet = TRUE;
 				} else {
 					TCHAR szErr[256];
-					LOG_ERROR("CNTService::RemoveService", "DeleteService failed - %s", GetLastErrorText(szErr,256));
+					LOG_ERROR("BaseService::RemoveService", "DeleteService failed - %s", GetLastErrorText(szErr,256));
 				}
 
 				CloseServiceHandle(schService);
 			} else {
 				TCHAR szErr[256];
-				LOG_ERROR("CNTService::RemoveService", "OpenService failed - %s", GetLastErrorText(szErr,256));
+				LOG_ERROR("BaseService::RemoveService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 			}
 
 			  CloseServiceHandle(schSCManager);
 		 } else {
 			TCHAR szErr[256];
-			LOG_ERROR("CNTService::RemoveService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
+			LOG_ERROR("BaseService::RemoveService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
 		if( bRet )
 			DeregisterApplicationLog();
-	}
 
 	return bRet;
 }
 
 
-BOOL CNTService :: EndService() {
+BOOL BaseService :: EndService() {
 	BOOL bRet = FALSE;
 
 	SC_HANDLE schSCManager = ::OpenSCManager(
@@ -469,12 +381,12 @@ BOOL CNTService :: EndService() {
 		if( schService ) {
 			// try to stop the service
 			if( ::ControlService(schService, SERVICE_CONTROL_STOP, &m_ssStatus) ) {
-				LOG_TRACE("CNTService::EndService", "Stopping %s.", m_lpDisplayName);
+				LOG_TRACE("BaseService::EndService", "Stopping %s.", m_lpDisplayName);
 				::Sleep(1000);
 
 				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
 					if( m_ssStatus.dwCurrentState == SERVICE_STOP_PENDING ) {
-						LOG_TRACE("CNTService::EndService", ".");
+						LOG_TRACE("BaseService::EndService", ".");
 						::Sleep( 1000 );
 					} else
 						break;
@@ -482,10 +394,10 @@ BOOL CNTService :: EndService() {
 
 				if (m_ssStatus.dwCurrentState == SERVICE_STOPPED) {
 					bRet = TRUE;
-					LOG_TRACE("CNTService::EndService", "\n%s stopped.", m_lpDisplayName);
+					LOG_TRACE("BaseService::EndService", "\n%s stopped.", m_lpDisplayName);
 				}
 				else {
-					LOG_ERROR("CNTService::EndService", "\n%s failed to stop.", m_lpDisplayName);
+					LOG_ERROR("BaseService::EndService", "\n%s failed to stop.", m_lpDisplayName);
 				}
                     
 			}
@@ -493,20 +405,20 @@ BOOL CNTService :: EndService() {
 			::CloseServiceHandle(schService);
 		} else {
 			TCHAR szErr[256];
-			LOG_ERROR("CNTService::EndService", "OpenService failed - %s", GetLastErrorText(szErr,256));
+			LOG_ERROR("BaseService::EndService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
 		TCHAR szErr[256];
-		LOG_ERROR("CNTService::EndService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
+		LOG_ERROR("BaseService::EndService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 
 	return bRet;
 }
 
 
-BOOL CNTService :: StartupService() {
+BOOL BaseService :: StartupService() {
 	BOOL bRet = FALSE;
 
 	SC_HANDLE schSCManager = ::OpenSCManager(
@@ -523,13 +435,13 @@ BOOL CNTService :: StartupService() {
 
 		if( schService ) {
 			// try to start the service
-			LOG_TRACE("CNTService::StartupService", "Starting up %s.", m_lpDisplayName);
+			LOG_TRACE("BaseService::StartupService", "Starting up %s.", m_lpDisplayName);
 			if( ::StartService(schService, 0, 0) ) {
 				Sleep(1000);
 
 				while( ::QueryServiceStatus(schService, &m_ssStatus) ) {
 					if( m_ssStatus.dwCurrentState == SERVICE_START_PENDING ) {
-						LOG_TRACE("CNTService::StartupService", ".");
+						LOG_TRACE("BaseService::StartupService", ".");
 						Sleep( 1000 );
 					} else
 						break;
@@ -537,10 +449,10 @@ BOOL CNTService :: StartupService() {
 
 				if (m_ssStatus.dwCurrentState == SERVICE_RUNNING) {
 					bRet = TRUE;
-					LOG_TRACE("CNTService::StartupService", "%s started.", m_lpDisplayName);
+					LOG_TRACE("BaseService::StartupService", "%s started.", m_lpDisplayName);
 				}
 				else {
-					LOG_ERROR("CNTService::StartupService", "%s failed to start.", m_lpDisplayName);
+					LOG_ERROR("BaseService::StartupService", "%s failed to start.", m_lpDisplayName);
 				}
 
 			
@@ -548,123 +460,71 @@ BOOL CNTService :: StartupService() {
 			} else {
 				// StartService failed
 				TCHAR szErr[256];
-				LOG_ERROR("CNTService::StartupService", "%s failed to start: %s", m_lpDisplayName, GetLastErrorText(szErr,256));
+				LOG_ERROR("BaseService::StartupService", "%s failed to start: %s", m_lpDisplayName, GetLastErrorText(szErr,256));
 			}
 
 			::CloseServiceHandle(schService);
 		} else {
 			TCHAR szErr[256];
-			LOG_ERROR("CNTService::StartupService", "OpenService failed - %s", GetLastErrorText(szErr,256));
+			LOG_ERROR("BaseService::StartupService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
 		TCHAR szErr[256];
-		LOG_ERROR("CNTService::StartupService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
+		LOG_ERROR("BaseService::StartupService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 
 	return bRet;
 }
 
 
-////////////////////////////////////////////////////////////////////////////
-//!! TCW MOD - faceless window procedure for usage within Win95 (mostly),
-// but can be invoked under NT by using -f
-LRESULT CALLBACK _FacelessWndProc_( HWND hwnd, UINT uMsg, WPARAM wParam, LPARAM lParam ) {
-	if (uMsg==WM_QUERYENDSESSION || uMsg==WM_ENDSESSION || uMsg==WM_QUIT) {
-		if (lParam==NULL || uMsg==WM_QUIT) {
-			DestroyWindow(hwnd);	// kill me
-			if (AfxGetService()!=NULL)
-				AfxGetService()->Stop();	// stop me.
-			return TRUE;
-		}
-	}
-	return DefWindowProc(hwnd,uMsg,wParam,lParam);
-}
-////////////////////////////////////////////////////////////////////////////
 
 
-BOOL CNTService :: DebugService(int argc, char ** argv, BOOL faceless) {
-    DWORD dwArgc;
-    LPTSTR *lpszArgv;
+BOOL BaseService :: DebugService(int argc, char ** argv) {
 
-#ifdef UNICODE
-    lpszArgv = CommandLineToArgvW(GetCommandLineW(), &(dwArgc) );
-#else
-    dwArgc   = (DWORD) argc;
-    lpszArgv = argv;
-#endif
+	SetupConsole();	
 
-	if( !faceless ) {	//!! TCW MOD - no faceless, so give it a face.
-		SetupConsole();	//!! TCW MOD - make the console for debugging
-	   LOG_TRACE("CNTService::DebugService", "Debugging %s.", m_lpDisplayName);
+	SetConsoleCtrlHandler(ControlHandler, TRUE);
+	
+    Start();
 
-		SetConsoleCtrlHandler(ControlHandler, TRUE);
-	}
-
-	//!! TCW MOD START - if Win95, register server
-	typedef DWORD (WINAPI *fp_RegServProc)(DWORD dwProcessId,DWORD dwType);
-	fp_RegServProc fncptr=NULL;
-
-	if( faceless /*&& OsIsWin95()*/ ) {
-		WNDCLASS wndclass;
-		memset(&wndclass,0,sizeof(WNDCLASS));
-		wndclass.lpfnWndProc = _FacelessWndProc_;
-		wndclass.hInstance = HINSTANCE(::GetModuleHandle(0));
-		wndclass.lpszClassName = TEXT("RRL__FacelessWndProc_");
-		ATOM atom = ::RegisterClass(&wndclass);
-		HWND hwnd = ::CreateWindow(wndclass.lpszClassName,TEXT(""),0,0,0,0,0,0,0,wndclass.hInstance,0);
-		HMODULE hModule = ::GetModuleHandle(TEXT("kernel32.dll"));
-		// punch F1 on "RegisterServiceProcess" for what it does and when to use it.
-		fncptr=(fp_RegServProc)::GetProcAddress(hModule, "RegisterServiceProcess");
-		if (fncptr!=NULL)
-			(*fncptr)(0, RSP_SIMPLE_SERVICE);
-	}
-	//!! TCW MOD END - if Win95, register server
-
-
-    Run(dwArgc, lpszArgv);
-
-#ifdef UNICODE
-	::GlobalFree(HGLOBAL)lpszArgv);
-#endif
-
-	if (fncptr!=NULL)		//!! TCW MOD - if it's there, remove it: our run is over
-		(*fncptr)(0, RSP_UNREGISTER_SERVICE);
+	m_Debugging = true;
 
 	return TRUE;
 }
 
 
-void CNTService :: Pause() {
+void BaseService :: Pause() {
 }
 
 
-void CNTService :: Continue() {
+void BaseService :: Continue() {
 }
 
 
-void CNTService :: Shutdown() {
+void BaseService :: Shutdown() {
+	m_Debugging = false;
 }
 
 
 /////////////////////////////////////////////////////////////////////////////
 // class CNTService -- default handlers
 
-void WINAPI CNTService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
+void WINAPI BaseService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
 	_ASSERTE( gpTheService != 0 );
-	LOG_TRACE("CNTService::ServiceMain", "register our service control handler for %s", gpTheService->m_lpDisplayName);
+	LOG_TRACE("BaseService::ServiceMain", "register our service control handler for %s", gpTheService->m_lpDisplayName);
 	// register our service control handler:
 	gpTheService->m_sshStatusHandle =	RegisterServiceCtrlHandler(
 											gpTheService->m_lpServiceName,
-											CNTService::ServiceCtrl
+											BaseService::ServiceCtrl
 										);
 
 	if( gpTheService->m_sshStatusHandle )
-		LOG_TRACE("CNTService::ServiceMain", "report the status to the service control manager. SERVICE_START_PENDING");
+		LOG_TRACE("BaseService::ServiceMain", "report the status to the service control manager. SERVICE_START_PENDING");
 		// report the status to the service control manager.
 		if( gpTheService->ReportStatus(SERVICE_START_PENDING) ){
-			gpTheService->Run( dwArgc, lpszArgv );}
+			gpTheService->Start( );}
 
 	// try to report the stopped status to the service control manager.
 	if( gpTheService->m_sshStatusHandle )
@@ -672,7 +532,7 @@ void WINAPI CNTService :: ServiceMain(DWORD dwArgc, LPTSTR *lpszArgv) {
 }
 
 
-void WINAPI CNTService :: ServiceCtrl(DWORD dwCtrlCode) {
+void WINAPI BaseService :: ServiceCtrl(DWORD dwCtrlCode) {
 	_ASSERTE( gpTheService != 0 );
 
 	// Handle the requested control code.
@@ -710,12 +570,12 @@ void WINAPI CNTService :: ServiceCtrl(DWORD dwCtrlCode) {
 }
 
 
-BOOL WINAPI CNTService :: ControlHandler(DWORD dwCtrlType) {
+BOOL WINAPI BaseService :: ControlHandler(DWORD dwCtrlType) {
 	_ASSERTE(gpTheService != 0);
 	switch( dwCtrlType ) {
 		case CTRL_BREAK_EVENT:  // use Ctrl+C or Ctrl+Break to simulate
 		case CTRL_C_EVENT:      // SERVICE_CONTROL_STOP in debug mode
-			LOG_TRACE("CNTService::ControlHandler", "Stopping %s.", gpTheService->m_lpDisplayName);
+			LOG_TRACE("BaseService::ControlHandler", "Stopping %s.", gpTheService->m_lpDisplayName);
 			gpTheService->Stop();
 			return TRUE;
 	}
@@ -727,7 +587,7 @@ BOOL WINAPI CNTService :: ControlHandler(DWORD dwCtrlType) {
 // class CNTService -- helpers
 
 //!! TCW MOD - added DWORD dwErrExit for error exit value. Defaults to zero
-BOOL CNTService :: ReportStatus(
+BOOL BaseService :: ReportStatus(
 						DWORD dwCurrentState,
 						DWORD dwWaitHint,
 						DWORD dwErrExit ) {
@@ -765,7 +625,8 @@ BOOL CNTService :: ReportStatus(
 }
 
 
-void CNTService :: AddToMessageLog(const char* lpszMsg, WORD wEventType, DWORD dwEventID) {
+void BaseService :: AddToMessageLog(const char* lpszMsg, WORD wEventType, DWORD dwEventID) {
+#if USE_EVENT_LOGS
 	m_dwErr = GetLastError();
 
 	// use default message-IDs
@@ -812,10 +673,11 @@ void CNTService :: AddToMessageLog(const char* lpszMsg, WORD wEventType, DWORD d
 
 		::DeregisterEventSource(hEventSource);
     }
+#endif
 }
 
 
-LPTSTR CNTService :: GetLastErrorText( LPTSTR lpszBuf, DWORD dwSize ) {
+LPTSTR BaseService :: GetLastErrorText( LPTSTR lpszBuf, DWORD dwSize ) {
     LPTSTR lpszTemp = 0;
 
     DWORD dwRet =	::FormatMessage(
@@ -844,7 +706,9 @@ LPTSTR CNTService :: GetLastErrorText( LPTSTR lpszBuf, DWORD dwSize ) {
 /////////////////////////////////////////////////////////////////////////////
 // class CNTService -- implementation
 
-void CNTService :: RegisterApplicationLog( LPCTSTR lpszFileName, DWORD dwTypes ) {
+
+void BaseService :: RegisterApplicationLog( LPCTSTR lpszFileName, DWORD dwTypes ) {
+#if USE_EVENT_LOGS
 	TCHAR szKey[256];
 	_tcscpy(szKey, gszAppRegKey);
 	_tcscat(szKey, m_lpServiceName);
@@ -947,10 +811,12 @@ void CNTService :: RegisterApplicationLog( LPCTSTR lpszFileName, DWORD dwTypes )
 
 		::RegCloseKey(hKey);
 	}
+#endif
 }
 
 
-void CNTService :: DeregisterApplicationLog() {
+void BaseService :: DeregisterApplicationLog() {
+#if USE_EVENT_LOGS
 	TCHAR szKey[256];
 	_tcscpy(szKey, gszAppRegKey);
 	_tcscat(szKey, m_lpServiceName);
@@ -1030,12 +896,13 @@ void CNTService :: DeregisterApplicationLog() {
 
 		::RegCloseKey(hKey);
 	}
+#endif
 }
 
 ////////////////////////////////////////////////////////
 
 //!! TCW MOD - function to create console for faceless apps if not already there
-void CNTService::SetupConsole() {
+void BaseService::SetupConsole() {
 	if( !m_fConsoleReady ) {
 		AllocConsole();	// you only get 1 console.
 

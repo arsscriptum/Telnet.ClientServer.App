@@ -35,6 +35,10 @@
 #include <shellapi.h>
 #include <wincrypt.h>
 
+#pragma NOTE("LINKING WITH Wtsapi32.lib")
+#pragma NOTE("LINKING WITH Userenv.lib")
+#pragma NOTE("LINKING WITH netapi32.lib")
+
 #pragma comment(lib, "Wtsapi32.lib")
 #pragma comment(lib, "Userenv.lib")
 #pragma comment(lib, "netapi32.lib")

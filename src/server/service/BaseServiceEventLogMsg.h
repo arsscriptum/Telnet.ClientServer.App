@@ -19,8 +19,8 @@
 //////////////////////////////////////////////////////////////////////////
 
 
-#ifndef __NTSERVICEEVENTLOGMSG_H__
-#define __NTSERVICEEVENTLOGMSG_H__
+#ifndef __BASE_SERVICE_EVENT_LOG_H__
+#define __BASE_SERVICE_EVENT_LOG_H__
 
 //
 //  Values are 32 bit values layed out as follows:
@@ -98,4 +98,4 @@
 //
 #define MSG_SUCCESS_1                    ((DWORD)0x00000003L)
 
-#endif // __NTSERVICEEVENTLOGMSG_H__
+#endif // __BASE_SERVICE_EVENT_LOG_H__

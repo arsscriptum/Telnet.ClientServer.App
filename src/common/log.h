@@ -115,7 +115,7 @@ void __cdecl ConsoleErrorLog(const char *format, ...);
 # define COUTY( ... )       { ConsoleOut(CONSOLE_COLOR_YELLOW,  __VA_ARGS__ );  }	
 # define COUTM( ... )       { ConsoleOut(CONSOLE_COLOR_MAGENTA_BRIGHT,  __VA_ARGS__ );  }	
 # define COUTC( ... )       { ConsoleOut(CONSOLE_COLOR_CYAN_BRIGHT,  __VA_ARGS__ );  }	
-# define COUTCS( ... )      { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
+# define PRINT_C( ... )      { ConsoleOut(CONSOLE_COLOR_CYAN,  __VA_ARGS__ );  }
 # define COUTINFO( ... )    { ConsoleOut( CONSOLE_COLOR_BKGRND_WHITE, __VA_ARGS__ );  }	
 #define ASSERT_TRACE_ERROR ConsoleErrorLog
 #define _NETPRINTF ConsoleDebugLog

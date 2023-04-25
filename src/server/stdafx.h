@@ -18,7 +18,7 @@
 #include <afx.h>
 
 #include <windows.h>
-
+#include "macros.h"
 #include "nowarns.h"
 #include "log.h"
 #define PRINT_OUT
@@ -41,6 +41,34 @@
 #include <commctrl.h>       // InitCommonControlsEx, etc.
 #include <stdexcept>
 
+#undef CCC_CALL_CONV
+#undef CCC_INTERFACE_DEF_NOCC
+#undef CCC_INTERFACE_DEF
+
+#define CCC_STATIC_LINKING
+
+#ifdef CCC_STATIC_LINKING
+#  define CCC_CALL_CONV
+#  define CCC_INTERFACE_DEF_NOCC
+#  define CCC_INTERFACE_DEF(x)   x
+#else
+//#  define CCC_CALL_CONV  __stdcall
+#  define CCC_CALL_CONV  __cdecl
+#  ifdef CCC_EXPORTS
+#    define CCC_INTERFACE_DEF_NOCC __declspec(dllexport)                    
+#    define CCC_INTERFACE_DEF(x)   __declspec(dllexport) x CCC_CALL_CONV 
+#  else
+#    define CCC_INTERFACE_DEF_NOCC __declspec(dllimport)                    
+#    define CCC_INTERFACE_DEF(x)   __declspec(dllimport) x CCC_CALL_CONV
+#  endif
+#endif
+
+enum CCC_RETURN_CODES {
+    CCC_RETURN_CODE_SUCCESS
+    , CCC_RETURN_CODE_MINOR_ERROR
+    , CCC_RETURN_CODE_DEBUGGER_DETECTED
+};
+
 
 #ifdef UNICODE
 #  define           _PRINTF         wprintf
@@ -51,6 +79,10 @@
 #  define			__SPRINTF		_swprintf
 #define				_STRNCPY		wcsncpy
 #  define			_STRNLEN		wcsnlen
+#  define			_STRNCPY_S		wcsncpy_s
+#  define			_STRNCAT_S		wcsncat_s
+#  define			TO_STD_STRING	std::to_string
+#  define			STD_STRING		std::wstring
 #else
 #  define           _PRINTF         printf
 #  define			_STRCMP		    strcmp
@@ -60,6 +92,8 @@
 #  define			__SPRINTF		_sprintf
 #  define			_STRNCPY		strncpy
 #  define			_STRNLEN		strnlen
+#  define			TO_STD_STRING	std::to_string
+#  define			STD_STRING		std::string
 #endif
 #if defined _WIN32
 #  define			__PATH_SEPARATOR  _T('\\')

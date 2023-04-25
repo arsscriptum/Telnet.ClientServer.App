@@ -15,6 +15,76 @@
       "Size": 0
     }
   ],
+  "ReleaseDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "ReleaseDLL": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "Release": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 5:16:30 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.118",
+      "Configuration": "Release",
+      "Platform": "x64",
+      "Bytes": 2650112,
+      "DiffBytes": -2650112,
+      "Size": "2.53 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 5:59:33 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.119",
+      "Configuration": "Release",
+      "Platform": "x64",
+      "Bytes": 2650112,
+      "DiffBytes": 0,
+      "Size": "2.53 MB"
+    }
+  ],
   "Debug": [
     {
       "Filename": null,
@@ -70,57 +140,207 @@
       "Bytes": 9675264,
       "DiffBytes": 0,
       "Size": "9.23 MB"
-    }
-  ],
-  "ReleaseDLL_DynamicMFC": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
     },
     {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 5:58:31 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.120",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
       "DiffBytes": 0,
-      "Size": 0
-    }
-  ],
-  "ReleaseDLL": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
+      "Size": "9.23 MB"
     },
     {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 6:12:30 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.121",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
       "DiffBytes": 0,
-      "Size": 0
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 1:43:22 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.122",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": -2263040,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 7:23:37 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.123",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 7:34:06 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.124",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 7:39:11 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.125",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 8:08:09 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.126",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 8:51:35 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.127",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 8:55:01 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.128",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:02:28 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.129",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:37:58 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.130",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:45:47 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.131",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:49:33 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.132",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:51:31 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.133",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 9:52:30 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.134",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 10:03:04 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.135",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 10:04:19 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.136",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 25, 2023 10:11:11 AM",
+      "Revision": "3b9ae80d7342cf26a8f5fc3d6f1873a2f8eb401f",
+      "Version": "1.0.1.137",
+      "Configuration": "Debug",
+      "Platform": "Win32",
+      "Bytes": 7412224,
+      "DiffBytes": 0,
+      "Size": "7.07 MB"
     }
   ],
   "DebugDLL_DynamicMFC": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
-    },
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
-    }
-  ],
-  "Release": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",

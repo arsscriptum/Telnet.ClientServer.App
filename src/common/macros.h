@@ -18,16 +18,16 @@
 #define QUOTE(x) _QUOTE(x)
 #define __FILE__LINE__ __FILE__ "(" QUOTE(__LINE__) ") : "
 
-#define NOTE( x )  message( x )
+
 #define FILE_LINE  message( __FILE__LINE__ )
 
 #define TODO( x )  message( __FILE__LINE__"\n"           \
         " ------------------------------------------------\n" \
         "|  TODO :   " #x "\n" \
         " -------------------------------------------------\n" )
-#define FIXME( x )  message(  __FILE__LINE__"\n"           \
+#define NOTE( x )  message(  __FILE__LINE__"\n"           \
         " ------------------------------------------------\n" \
-        "|  FIXME :  " #x "\n" \
+        "|  NOTE :  " #x "\n" \
         " -------------------------------------------------\n" )
 #define PLATFORM_FILE( x , y,z)  message( __FILE__LINE__"\n"           \
         " -----------------------------------------------------------------------------\n" \

@@ -59,11 +59,19 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\src\common\cdll.cpp" />
+    <ClCompile Include="..\src\common\cmdline.cpp" />
+    <ClCompile Include="..\src\common\config.cpp" />
+    <ClCompile Include="..\src\common\critsec.cpp" />
+    <ClCompile Include="..\src\common\cthread.cpp" />
+    <ClCompile Include="..\src\common\handle_wrappers.cpp" />
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
     <ClCompile Include="..\src\common\log_scope.cpp" />
+    <ClCompile Include="..\src\common\windows-api-ex.cpp" />
     <ClCompile Include="..\src\server\Main.cpp" />
-    <ClCompile Include="..\src\server\NTService.cpp" />
+    <ClCompile Include="..\src\server\service\BaseService.cpp" />
+    <ClCompile Include="..\src\server\service\ServerService.cpp" />
     <ClCompile Include="..\src\server\shell_server.cpp" />
     <ClCompile Include="..\src\server\stdafx.cpp" />
     <ClCompile Include="..\src\server\telnetd.cpp" />
@@ -73,7 +81,14 @@
     <None Include="..\src\common\keycodes_hashtable.tmp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\src\common\cdll.h" />
+    <ClInclude Include="..\src\common\cmdline.h" />
+    <ClInclude Include="..\src\common\compilation_settings.h" />
+    <ClInclude Include="..\src\common\config.h" />
+    <ClInclude Include="..\src\common\critsec.h" />
+    <ClInclude Include="..\src\common\cthread.h" />
     <ClInclude Include="..\src\common\custom_assert.h" />
+    <ClInclude Include="..\src\common\handle_wrappers.h" />
     <ClInclude Include="..\src\common\hashtable.h" />
     <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
@@ -81,8 +96,11 @@
     <ClInclude Include="..\src\common\macros.h" />
     <ClInclude Include="..\src\common\myexception.h" />
     <ClInclude Include="..\src\common\nowarns.h" />
-    <ClInclude Include="..\src\server\NTService.h" />
-    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h" />
+    <ClInclude Include="..\src\common\utilities.h" />
+    <ClInclude Include="..\src\common\windows-api-ex.h" />
+    <ClInclude Include="..\src\server\service\BaseService.h" />
+    <ClInclude Include="..\src\server\service\BaseServiceEventLogMsg.h" />
+    <ClInclude Include="..\src\server\service\ServerService.h" />
     <ClInclude Include="..\src\server\shell_server.h" />
     <ClInclude Include="..\src\server\stdafx.h" />
     <ClInclude Include="..\src\server\win32.h" />

@@ -27,9 +27,6 @@
     <ClCompile Include="..\src\server\Main.cpp">
       <Filter>server</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\server\NTService.cpp">
-      <Filter>server</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\server\shell_server.cpp">
       <Filter>server</Filter>
     </ClCompile>
@@ -41,6 +38,33 @@
     </ClCompile>
     <ClCompile Include="..\src\server\win32.cpp">
       <Filter>server</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\cdll.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\cmdline.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\config.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\critsec.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\cthread.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\handle_wrappers.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\common\windows-api-ex.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\service\BaseService.cpp">
+      <Filter>service</Filter>
+    </ClCompile>
+    <ClCompile Include="..\src\server\service\ServerService.cpp">
+      <Filter>service</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -73,12 +97,6 @@
     <ClInclude Include="..\src\common\nowarns.h">
       <Filter>common</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\server\NTService.h">
-      <Filter>server</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\NTServiceEventLogMsg.h">
-      <Filter>server</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\server\shell_server.h">
       <Filter>server</Filter>
     </ClInclude>
@@ -87,6 +105,42 @@
     </ClInclude>
     <ClInclude Include="..\src\server\win32.h">
       <Filter>server</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\cdll.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\cmdline.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\config.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\critsec.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\cthread.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\handle_wrappers.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\windows-api-ex.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\utilities.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\compilation_settings.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\service\BaseService.h">
+      <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\service\BaseServiceEventLogMsg.h">
+      <Filter>service</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\server\service\ServerService.h">
+      <Filter>service</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
