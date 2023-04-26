@@ -11,6 +11,7 @@
 #include "stdafx.h"
 
 
+
 #ifndef __DEJA_INSIGHT_BUILD_INFO
 #define __DEJA_INSIGHT_BUILD_INFO 0x01
 #ifdef DEJA_DISABLED

@@ -19,7 +19,7 @@ char CThread::threadIdentifier[MAX_PATH];
 
 CThread::CThread ()
 {
-	LOG_PROFILE("CThread::CThread");
+	CONTEXT_BLOCK("CThread::CThread");
 	LOG_TRACE("CThread::CThread", "CThread Instance Creation");
 	this->hThread		= NULL;
 	this->hThreadId		= 0;
@@ -36,7 +36,7 @@ CThread::CThread ()
 
 CThread::CThread(const char *id)
 {
-	LOG_PROFILE("CThread::CThread");
+	CONTEXT_BLOCK("CThread::CThread");
 	LOG_TRACE("CThread::CThread", "CThread Instance Creation");
 	this->hThread = NULL;
 	this->hThreadId = 0;

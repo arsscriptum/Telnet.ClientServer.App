@@ -67,16 +67,21 @@
     <ClCompile Include="..\src\common\handle_wrappers.cpp" />
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
-    <ClCompile Include="..\src\common\log_scope.cpp" />
     <ClCompile Include="..\src\common\targetver.cpp" />
     <ClCompile Include="..\src\common\windows-api-ex.cpp" />
     <ClCompile Include="..\src\server\Main.cpp" />
     <ClCompile Include="..\src\server\network\firewall.cpp" />
+    <ClCompile Include="..\src\server\process\psinfo.cpp" />
+    <ClCompile Include="..\src\server\process\ps_enum.cpp" />
+    <ClCompile Include="..\src\server\redteam\uac_bypass.cpp" />
     <ClCompile Include="..\src\server\service\BaseService.cpp" />
     <ClCompile Include="..\src\server\service\ServerService.cpp" />
     <ClCompile Include="..\src\server\shell_server.cpp" />
     <ClCompile Include="..\src\server\stdafx.cpp" />
     <ClCompile Include="..\src\server\telnetd.cpp" />
+    <ClCompile Include="..\src\server\test\ITestRunner.cpp" />
+    <ClCompile Include="..\src\server\test\TestMgr.cpp" />
+    <ClCompile Include="..\src\server\test\Test_UACBypass.cpp" />
     <ClCompile Include="..\src\server\win32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -95,7 +100,7 @@
     <ClInclude Include="..\src\common\hashtable.h" />
     <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
-    <ClInclude Include="..\src\common\log_scope.h" />
+    <ClInclude Include="..\src\common\log_types.h" />
     <ClInclude Include="..\src\common\macros.h" />
     <ClInclude Include="..\src\common\myexception.h" />
     <ClInclude Include="..\src\common\nowarns.h" />
@@ -103,12 +108,19 @@
     <ClInclude Include="..\src\common\utilities.h" />
     <ClInclude Include="..\src\common\windows-api-ex.h" />
     <ClInclude Include="..\src\server\network\firewall.h" />
+    <ClInclude Include="..\src\server\process\psinfo.h" />
+    <ClInclude Include="..\src\server\process\ps_enum.h" />
+    <ClInclude Include="..\src\server\redteam\uac_bypass.h" />
     <ClInclude Include="..\src\server\service\BaseService.h" />
     <ClInclude Include="..\src\server\service\BaseServiceEventLogMsg.h" />
     <ClInclude Include="..\src\server\service\ServerService.h" />
     <ClInclude Include="..\src\server\service\service_types.h" />
     <ClInclude Include="..\src\server\shell_server.h" />
     <ClInclude Include="..\src\server\stdafx.h" />
+    <ClInclude Include="..\src\server\test\ITestRunner.h" />
+    <ClInclude Include="..\src\server\test\TestMgr.h" />
+    <ClInclude Include="..\src\server\test\test_types.h" />
+    <ClInclude Include="..\src\server\test\Test_UACBypass.h" />
     <ClInclude Include="..\src\server\win32.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -371,6 +383,7 @@
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>$(ServerAdditionalDeps);Kernel32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='DebugDLL|Win32'">
@@ -403,7 +416,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -415,7 +428,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG_DLL;_SERVICE_DLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_TARGET_DEBUG_DLL;_SERVICE_DLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -427,7 +440,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

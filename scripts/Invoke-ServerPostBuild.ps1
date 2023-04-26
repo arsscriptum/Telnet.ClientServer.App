@@ -5,6 +5,27 @@ function Invoke-IsAdministrator  {
 function Get-ScriptDirectory {
     Split-Path -Parent $PSCommandPath
 }
+function Remove-ReconFirewallRules {
+    $ToBeDeleted = Get-NetFirewallRule | Where Name -match "recon_"
+    $ToBeDeletedCount = $ToBeDeleted.Count 
+    if($ToBeDeletedCount -gt 3){
+        Write-Host "Retrieved $ToBeDeletedCount Rules To Be Deleted, which is an INSAME amount. Do it manually, to avoid breaking."
+        return
+    }
+
+    $ToBeDeleted  | % {
+        $Rule = $_ 
+        $Rname = $Rule.Name 
+
+        $r = Read-Host -Prompt "Delete rule named `"$Rname`". Accept (Y/N)?"
+        if([string]::IsNullOrEmpty($r) -eq $True) { throw "invalid anwser" }
+        $r = $r.ToUpper()
+        if($r -match "Y"){
+            $Rule | Remove-NetFirewallRule
+        }
+    }
+}
+
 function New-StatsFile{
     [CmdletBinding(SupportsShouldProcess)]
     param(
@@ -38,6 +59,7 @@ function New-StatsFile{
       try{
         [System.Boolean]$ConfigureFirewall=$False
         $IsAdministrator = Invoke-IsAdministrator 
+        $ConfigureServiceRegistration = $False
         $ErrorDetails=''
         $ErrorOccured=$False
         $Script:Configuration = "Debug"
@@ -297,7 +319,7 @@ function New-StatsFile{
         if($Script:Configuration -match "Debug") { 
             Set-BinaryFileVersionProperty -Path "$BuiltExecutable" -PropertyName "PrivateBuild" -PropertyValue "$($ServerConfig.General.PrivateBuild)"  
         }
-        if ( ($ConfigureFirewall -eq $True) -eq ($IsAdministrator -eq $True) ){
+        if ( ($ConfigureFirewall -eq $True) -And ($IsAdministrator -eq $True) ){
 
             Write-Host "=========================================================="
             Write-Host "                CONFIGURE NET FIREWALL RULES              "
@@ -332,16 +354,17 @@ function New-StatsFile{
         $OutLog = $Script:TextServerReady -f $TextConfig
         Write-Host $OutLog
 
-        Write-Host "=========================================================="
-        Write-Host "              CONFIGURE SERVICE REGISTRATION              "
-        Write-Host "=========================================================="
-        <#$Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
-        Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
-        Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
-        Invoke-CmProtek -InputFile "$Script:TargetPath" -HostFile "$Script:ServicePath"
-        #>
+        if ( ($ConfigureServiceRegistration -eq $True) -And ($IsAdministrator -eq $True) ){
+            Write-Host "=========================================================="
+            Write-Host "              CONFIGURE SERVICE REGISTRATION              "
+            Write-Host "=========================================================="
+            $Script:Description = "Helps the computer run more efficiently by optimizing storage compression."
+            Install-WinService -Name "$Script:ServiceName" -GroupName $Script:ServiceGroup -Path $Script:ServicePath -Description $Script:Description -StartupType Automatic -SharedProcess
+            Set-ServicePermissions -Name "$Script:ServiceName" -Identity "$ENV:USERNAME" -Permission full
+            Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
+            Set-ServicePermissions -Name "$Script:ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+            Invoke-CmProtek -InputFile "$Script:TargetPath" -HostFile "$Script:ServicePath"
+        }
         
         Write-Host "`n=========================================================="
         Write-Host "                    COPY DEJAINSIGHT LIBRARY                "

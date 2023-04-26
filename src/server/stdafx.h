@@ -43,6 +43,8 @@
 #include <commctrl.h>       // InitCommonControlsEx, etc.
 #include <stdexcept>
 
+#define __USE_CUSTOM_WINAPI_EX__
+
 #undef CCC_CALL_CONV
 #undef CCC_INTERFACE_DEF_NOCC
 #undef CCC_INTERFACE_DEF

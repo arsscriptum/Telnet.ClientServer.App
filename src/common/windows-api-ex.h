@@ -243,6 +243,15 @@ namespace C
 #define ThreadQuerySetWin32StartAddress 9
 	namespace Process
 	{
+
+		typedef enum _PROCESS_INTEGRITY_LEVEL {
+			INTEGRITY_UNKNOWN = 0
+			, LOW_INTEGRITY
+			, MEDIUM_INTEGRITY
+			, HIGH_INTEGRITY
+		} PROCESS_INTEGRITY_LEVEL, *PPROCESS_INTEGRITY_LEVEL;
+
+
 		typedef struct _CLIENT_ID {
 			HANDLE UniqueProcess;
 			HANDLE UniqueThread;
@@ -336,6 +345,11 @@ namespace C
 		BOOL ListProcessThreads(DWORD dwOwnerPID, TThreads & t);
 		void printError(TCHAR* msg);
 		DWORD GetThreadStartAddress(HANDLE hThread);
+
+		HANDLE _GetCurrentProcessToken();
+		const FILETIME _GetProcessCreationTime();
+		bool _IsCurrentProcessElevated();
+		PROCESS_INTEGRITY_LEVEL _GetCurrentProcessIntegrityLevel();
 	}
 
 	namespace Thread

@@ -3,6 +3,8 @@
 <PropertyGroup Label="PropertySheets_Included">
   <serverapp_integration>winapp_server_app</serverapp_integration>
 </PropertyGroup>
+    <Target Name="main" DependsOnTargets="PrintBuildConfigurationSettings">
+    </Target>
   <PropertyGroup Label="ServiceMacros">
      <ProjectRoot>$(ProjectDir)..\</ProjectRoot>
      <TempRoot>$(ProjectDir)</TempRoot>
@@ -22,6 +24,11 @@
     <CommonSrcPath>$(ProjectSrcPath)common\</CommonSrcPath>
     <ServerNetworkSrcPath>$(ServerSrcPath)network</ServerNetworkSrcPath>
     <ServerServiceSrcPath>$(ServerSrcPath)service</ServerServiceSrcPath>
+    <ServerProcessSrcPath>$(ServerSrcPath)process</ServerProcessSrcPath>
+    <ServerTestSrcPath>$(ServerSrcPath)test</ServerTestSrcPath>
+    <ServerRedTeamSrcPath>$(ServerSrcPath)redteam</ServerRedTeamSrcPath>
+    <CompleteServerSourceFolders>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ProjectSrcPath);$(ServerRedTeamSrcPath);$(ServerSrcPath);$(ServerProcessSrcPath);$(ServerTestSrcPath);$(CommonSrcPath)</CompleteServerSourceFolders>
+    <ServerAdditionalDeps>shlwapi.lib;netapi32.lib;user32.lib;comctl32.lib</ServerAdditionalDeps>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -34,8 +41,8 @@
 
    <ItemDefinitionGroup>
     <ClCompile>
-      <AdditionalIncludeDirectories>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ProjectSrcPath);$(ServerSrcPath);$(CommonSrcPath);$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
-      <PreprocessorDefinitions>_SERVER;_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AdditionalIncludeDirectories>$(CompleteServerSourceFolders);$(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <PreprocessorDefinitions>_SERVER;_CONNECT_NO_LOGIN;_WINSOCK_DEPRECATED_NO_WARNINGS;_CRT_SECURE_NO_WARNINGS;WIN32;_CONSOLE;PSAPI_VERSION=1;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <TreatWarningAsError>true</TreatWarningAsError>
       <UseFullPaths>true</UseFullPaths>
 
@@ -83,12 +90,26 @@
     </ClCompile>
     <Link>
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
-      <AdditionalDependencies>%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>$(ServerAdditionalDeps);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
       <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
-
+    <!--
+        Print Build Configuration Settings
+    -->
+    <Target Name="PrintBuildConfigurationSettings">
+        <!-- Prints a basic message -->
+        <Message Text="=================================================================="></Message>
+        <Message Text="Configuration                  $(Configuration)"></Message>
+        <Message Text="Project Dependencies           $(ServerAdditionalDeps)"></Message>
+        <Message Text="All Build Dependencies         $(AdditionalDependencies)"></Message>
+        <Message Text="Disabled Warnings              $(DisableSpecificWarnings)"></Message>
+        <Message Text="Preprocessor Definitions       $(PreprocessorDefinitions)"></Message>
+        <Message Text="Output Binary                  $(OutFile)"></Message>
+        <Message Text="=================================================================="></Message>
+    </Target>
+    
 </Project>
 

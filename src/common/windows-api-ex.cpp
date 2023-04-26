@@ -782,6 +782,81 @@ namespace C
 		LPVOID addr;
 		typedef NTSTATUS(NTAPI *__NtQueryInformationProcess)(HANDLE ProcessHandle, DWORD ProcessInformationClass, PVOID ProcessInformation, DWORD ProcessInformationLength, PDWORD ReturnLength);
 
+
+		HANDLE _GetCurrentProcessToken()
+		{
+			HANDLE process_token;
+			OpenProcessToken(GetCurrentProcess(), TOKEN_QUERY, &process_token);
+			return process_token;
+		}
+
+		const FILETIME _GetProcessCreationTime() {
+			FILETIME creation_time = {};
+			FILETIME ignore1 = {};
+			FILETIME ignore2 = {};
+			FILETIME ignore3 = {};
+			if (!::GetProcessTimes(::GetCurrentProcess(), &creation_time, &ignore1,
+				&ignore2, &ignore3)) {
+				return creation_time;
+			}
+			return creation_time;
+		}
+
+
+		PROCESS_INTEGRITY_LEVEL _GetCurrentProcessIntegrityLevel() {
+			HANDLE process_token(Process::_GetCurrentProcessToken());
+			DWORD token_info_length = 0;
+			if (::GetTokenInformation(process_token, TokenIntegrityLevel, nullptr, 0,
+				&token_info_length) ||
+				::GetLastError() != ERROR_INSUFFICIENT_BUFFER)
+			{
+				LOG_ERROR("ProcessInfo::_GetCurrentProcessIntegrityLevel", "GetTokenInformation Failed %d", GetLastError());
+				return Process::PROCESS_INTEGRITY_LEVEL::INTEGRITY_UNKNOWN;
+			}
+			auto token_label_bytes = std::make_unique<char[]>(token_info_length);
+			TOKEN_MANDATORY_LABEL* token_label =
+				reinterpret_cast<TOKEN_MANDATORY_LABEL*>(token_label_bytes.get());
+			if (!::GetTokenInformation(process_token, TokenIntegrityLevel, token_label,
+				token_info_length, &token_info_length)) {
+				LOG_ERROR("ProcessInfo::_GetCurrentProcessIntegrityLevel", "GetTokenInformation Failed %d", GetLastError());
+				return Process::PROCESS_INTEGRITY_LEVEL::INTEGRITY_UNKNOWN;
+			}
+			DWORD integrity_level = *::GetSidSubAuthority(token_label->Label.Sid, static_cast<DWORD>(*::GetSidSubAuthorityCount(token_label->Label.Sid) - 1));
+
+			if (integrity_level < SECURITY_MANDATORY_MEDIUM_RID) {
+				LOG_TRACE("ProcessInfo::_GetCurrentProcessIntegrityLevel", "GetSidSubAuthority: %d. Return LOW_INTEGRITY", integrity_level);
+				return Process::PROCESS_INTEGRITY_LEVEL::LOW_INTEGRITY;
+			}
+
+			if (integrity_level >= SECURITY_MANDATORY_MEDIUM_RID &&
+				integrity_level < SECURITY_MANDATORY_HIGH_RID) {
+				LOG_TRACE("ProcessInfo::_GetCurrentProcessIntegrityLevel", "GetSidSubAuthority: %d. Return MEDIUM_INTEGRITY", integrity_level);
+				return Process::PROCESS_INTEGRITY_LEVEL::MEDIUM_INTEGRITY;
+			}
+			if (integrity_level >= SECURITY_MANDATORY_HIGH_RID) {
+				LOG_TRACE("ProcessInfo::_GetCurrentProcessIntegrityLevel", "GetSidSubAuthority: %d. Return HIGH_INTEGRITY", integrity_level);
+				return Process::PROCESS_INTEGRITY_LEVEL::HIGH_INTEGRITY;
+			}
+
+			LOG_WARNING("ProcessInfo::_GetCurrentProcessIntegrityLevel", "Cannot find integrity level. Return INTEGRITY_UNKNOWN");
+			return Process::PROCESS_INTEGRITY_LEVEL::INTEGRITY_UNKNOWN;
+		}
+
+
+		bool _IsCurrentProcessElevated() {
+			HANDLE process_token(_GetCurrentProcessToken());
+			// Unlike TOKEN_ELEVATION_TYPE which returns TokenElevationTypeDefault when
+			// UAC is turned off, TOKEN_ELEVATION returns whether the process is elevated.
+			DWORD size;
+			TOKEN_ELEVATION elevation;
+			if (!GetTokenInformation(process_token, TokenElevation, &elevation,
+				sizeof(elevation), &size)) {
+				LOG_ERROR("ProcessInfo::_IsCurrentProcessElevated", "GetTokenInformation Failed %d", GetLastError());
+				return false;
+			}
+			return !!elevation.TokenIsElevated;
+		}
+
 		//FEATURE: Other privileges than SE_DEBUG_NAME
 		//TODO: Test if it works
 		//TODO: Bug: Returns true even if failed
@@ -1681,7 +1756,7 @@ namespace C
 			DWORD dwSessionId = GetCurrentSessionId();
 			if (dwSessionId == 0)    // no-one logged in
 			{
-				COUTC(TEXT("GetCurrentSessionId failed (%d).\n"), GetLastError());
+				debug_printf(TEXT("GetCurrentSessionId failed (%d).\n"), GetLastError());
 				return false;
 			}
 
@@ -1705,7 +1780,7 @@ namespace C
 	
 		
 			if (!bSeDebugPrivilege) {
-				COUTC("[*] SetPrivilege SeDebugPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeDebugPrivilege failed. CODE: 0x%08X\n", GetLastError());
 				return false;
 			}
 		
@@ -1724,7 +1799,7 @@ namespace C
 			DWORD dwSessionId = GetCurrentSessionId();
 			if (dwSessionId == 0)    // no-one logged in
 			{
-				COUTC(TEXT("GetCurrentSessionId failed (%d).\n"), GetLastError());
+				debug_printf(TEXT("GetCurrentSessionId failed (%d).\n"), GetLastError());
 				return false;
 			}
 
@@ -1753,22 +1828,22 @@ namespace C
 
 
 			if (!bSeCreateTokenPrivilege) {
-				COUTC("[*] SetPrivilege SeCreateTokenPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeCreateTokenPrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeIncreaseQuotaPrivilege) {
-				COUTC("[*] SetPrivilege SeIncreaseQuotaPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeIncreaseQuotaPrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeDebugPrivilege) {
-				COUTC("[*] SetPrivilege SeDebugPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeDebugPrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeAssignPrimaryTokenPrivilege) {
-				COUTC("[*] SetPrivilege SeAssignPrimaryTokenPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeAssignPrimaryTokenPrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeTcbPrivilege) {
-				COUTC("[*] SetPrivilege SeTcbPrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeTcbPrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeImpersonatePrivilege) {
-				COUTC("[*] SetPrivilege SeImpersonatePrivilege failed. CODE: 0x%08X\n", GetLastError());
+				debug_printf("[*] SetPrivilege SeImpersonatePrivilege failed. CODE: 0x%08X\n", GetLastError());
 			}
 			if (!bSeAssignPrimaryTokenPrivilege ||
 				!bSeImpersonatePrivilege ||
@@ -1776,7 +1851,7 @@ namespace C
 				!bSeTcbPrivilege ||
 				!bSeIncreaseQuotaPrivilege)
 			{
-				COUTC("[*] SetPrivilege failed.\n");
+				debug_printf("[*] SetPrivilege failed.\n");
 				return false;
 			}
 
@@ -2587,6 +2662,8 @@ namespace C
 			if (ntStatus != STATUS_SUCCESS) return 0;
 			return dwStartAddress;
 		}
+
+
 	}
 
 	namespace Service

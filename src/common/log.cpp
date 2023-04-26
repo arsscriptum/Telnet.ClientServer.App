@@ -33,6 +33,18 @@ int WriteToLog(char* str)
     return 0;
 }
 
+
+//==============================================================================
+//					DUMP LOG-RELATED COMPILATION SETTINGS
+//==============================================================================
+#if ENABLE_LOG_CONTEXT
+#   pragma message("LOG: CONTEXT ENABLED")
+#else
+#   pragma message("LOG: CONTEXT DISABLED")
+#endif // ENABLE_LOG_CONTEXT
+
+
+
 //==============================================================================
 // ConsoleOut
 // Used by the ServiceTerminal
