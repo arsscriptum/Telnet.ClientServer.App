@@ -119,12 +119,87 @@ function Out-IniFile {
             }
         }
     }catch{
-        $ErrorOccured = $True
-        Write-Host "[ERROR] `"$_`""
-    }
-    if($ErrorOccured){
-        Write-Host "[ERROR] Restoring `"$Path`""
+        Write-Output "[ERROR] Restoring `"$Path`""
         Remove-Item "$Path" -Force -ErrorAction Ignore
         Copy-Item "$backupFile" "$Path" 
+       throw $_
+    }
+}
+
+
+function Write-Line{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [parameter(mandatory=$false,Position=0)]
+        [int]$LineLength=80,
+        [parameter(mandatory=$false,Position=1)]
+        [char]$LineChar='='
+    )
+    $Line = [string]::new($LineChar,$LineLength)
+    Write-Output "$Line"
+}
+function Write-BuildOutTitle{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [parameter(mandatory=$true,Position=0)]
+        [String]$Title,
+        [parameter(mandatory=$false,Position=1)]
+        [int]$LineLength=80
+    )
+
+    try{
+        $Line = [string]::new('=',$LineLength)
+        $TitleLength = $Title.Length
+        $Spaces = ($LineLength/2)-($TitleLength/2)
+        $NewTitle = [string]::new(' ',$Spaces)
+        $NewTitle += $Title
+        Write-Output "$Line`n$NewTitle`n$Line"
+    }catch{
+        throw $_
+    }
+}
+function Get-Confirmation {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [parameter(mandatory=$true, Position=0)]
+        [string]$Question,
+        [parameter(mandatory=$true, Position=1)]
+        [bool]$Optional
+    )
+
+    try{
+        if($Optional) { return $True }
+        $Anwser = Read-Host -Prompt "$Question (Y/N)?"
+        if([string]::IsNullOrEmpty($Anwser) -eq $True) { throw "invalid anwser" }
+        if($Anwser -match "Y"){ return $True }
+        return $False
+    }catch{
+        throw $_
+    }
+
+}
+function Remove-ReconFirewallRules {
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [parameter(mandatory=$false)]
+        [switch]$Force
+    )
+
+    try{
+        $ToBeDeleted = Get-NetFirewallRule | Where Name -match "recon_"
+        $ToBeDeletedCount = $ToBeDeleted.Count 
+        if($ToBeDeletedCount -gt 3){
+            throw "Retrieved $ToBeDeletedCount Rules To Be Deleted, which ifgroupnas an INSAME amount. Do it manually, to avoid breaking."
+        }
+
+        $ToBeDeleted  | % {
+            $RuleName  = $_.Name 
+            if(Get-Confirmation "Delete Firewall Rule `"$RuleName`"" $Force) {
+                Write-Output "DELETING Firewall Rule `"$RuleName`""
+                $_ | Remove-NetFirewallRule
+            }
+        }
+    }catch{
+        throw $_
     }
 }

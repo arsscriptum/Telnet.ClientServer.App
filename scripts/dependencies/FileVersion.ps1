@@ -18,8 +18,8 @@ function Set-BinaryFileVersionSettings {
     ) 
       try{
         $VersionPatcherPath = Get-VerPatchExecutable
-
-        $inf = Get-Item -Path "$BuiltExecutable"
+        $Path = (Resolve-Path -Path "$Path" -ErrorAction Ignore).Path
+        $inf = Get-Item -Path "$Path"
         [DateTime]$CreatedOn = $inf.CreationTime
         $DescriptionAvailable = ! ([string]::IsNullOrEmpty("$Description"))
         $ResourceAvailable = ! ([string]::IsNullOrEmpty("$ResourceFile"))
@@ -66,7 +66,8 @@ function Set-BinaryFileVersionSettings {
             throw "Error when updating version"
         }
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        
+        throw $_
        
     }
 }
@@ -99,7 +100,7 @@ function Set-BinaryFileVersionProperty {
         &"$VersionPatcherPath" $Arguments
       
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }
@@ -113,8 +114,7 @@ function Get-VerPatchExecutable {
           $VersionPatcherPath = "$ENV:VersionPatcherPath"
           return $VersionPatcherPath
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
-       
+        throw $_
     }
 }
 
@@ -134,7 +134,7 @@ function Get-NativeFileVersion {
        }
        return $VerPatchCompatible
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }
@@ -146,11 +146,11 @@ function Test-VerPatchCompatible {
         [string]$Path
     )
       try{
-       $CurrentFileVersion = (gi "$BuiltExecutable").VersionInfo.FileVersion
+       $CurrentFileVersion = (gi "$Path").VersionInfo.FileVersion
        $VerPatchCompatible = !([string]::IsNullOrEmpty($CurrentFileVersion))
        return $VerPatchCompatible
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }
@@ -178,7 +178,7 @@ function Get-VerPatchProperty {
         }
 
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }
@@ -202,7 +202,7 @@ function Get-VerPatchPropertyNames {
         }
         $PropertyNames
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }

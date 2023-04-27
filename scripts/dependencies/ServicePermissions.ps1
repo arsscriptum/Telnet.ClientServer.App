@@ -47,7 +47,6 @@ function Get-AccesschkPath{
         Throw "Could not locate accesschk64.exe"
 
     }catch{
-        Write-Error $_
         throw $_
     }
 }
@@ -176,7 +175,6 @@ function Get-ServicePermissions{
         $Permissions
 
     }catch{
-        Write-Error "$_"
         throw $_
     }
 }
@@ -208,7 +206,7 @@ function Set-ServicePermissions{
             Write-Output "[Set-ServicePermissions] SUCCESS ($Identity)"
         }
     }catch{
-        Write-Error "$_"
+
         throw $_
     }
 }

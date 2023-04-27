@@ -1,5 +1,5 @@
 {
-  "ReleaseDLL": [
+  "ReleaseDLL_DynamicMFC": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -15,7 +15,7 @@
       "Size": 0
     }
   ],
-  "DebugDLL_DynamicMFC": [
+  "ReleaseDLL": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -67,6 +67,22 @@
       "Bytes": 2650112,
       "DiffBytes": 0,
       "Size": "2.53 MB"
+    }
+  ],
+  "DebugDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
     }
   ],
   "Debug": [
@@ -597,25 +613,581 @@
       "Bytes": 9675264,
       "DiffBytes": -2263040,
       "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 26, 2023 5:26:30 AM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.163",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:47:31 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.164",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:49:13 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.165",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:49:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.166",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:51:04 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.167",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:55:32 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.168",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:56:17 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.169",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:58:12 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.170",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:58:28 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.171",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:58:45 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.172",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 7:59:32 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.173",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:01:35 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.174",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:03:07 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.175",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:05:37 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.176",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:05:59 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.177",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:07:11 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.178",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:08:40 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.179",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:08:55 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.179",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:09:37 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.180",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 9675264,
+      "DiffBytes": 0,
+      "Size": "9.23 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:16:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.181",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 12304896,
+      "DiffBytes": -2629632,
+      "Size": "11.73 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:44:44 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.182",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": -2236416,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:44:44 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.183",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.184",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.185",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.186",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.187",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.188",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.189",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.190",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.191",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.192",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.193",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:07:11 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.194",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:07:11 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.195",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:07:11 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.196",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:46:57 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:46:57 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:46:57 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:46:57 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:52:11 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": -1024,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:53:00 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:53:46 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:53:53 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.197",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 8:48:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.198",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10068480,
+      "DiffBytes": -1024,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 9:58:54 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.199",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": -1024,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 10:01:09 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.200",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 10:02:39 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.201",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 10:02:39 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.202",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 10:02:39 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.203",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 10:38:27 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.204",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 11:25:47 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.205",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 27, 2023 11:44:52 PM",
+      "Revision": "92c047f038326313b065e54c104a892e5f9f6699",
+      "Version": "1.0.1.206",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
     }
   ],
   "DebugDLL": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
-    },
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
-    }
-  ],
-  "ReleaseDLL_DynamicMFC": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",

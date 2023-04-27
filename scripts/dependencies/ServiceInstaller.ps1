@@ -17,7 +17,7 @@ function Get-AccesschkPath{
         }
         ""
      }catch{
-         Write-Error $_
+  
          throw $_
      }
 }
@@ -34,7 +34,7 @@ function Get-SetAclPath{
         }
         ""
      }catch{
-         Write-Error $_
+         
          throw $_
      }
 }
@@ -179,7 +179,7 @@ function Stop-WinService{
         }    
  
      }catch{
-         Write-Error $_
+         throw $_
      }
  }
 
@@ -278,7 +278,6 @@ function Install-WinService{
 
         "[Install-WinService] SUCCESS"
      }catch{
-         Write-Error $_
          throw $_
      }
  }
@@ -329,8 +328,7 @@ function Set-GroupConfig{
 
         $newGroupKey = $subKey.CreateSubKey($Name, $true)
      }catch{
-        Write-Error $_
-        throw $_
+         throw $_
      }
  }
 
@@ -388,7 +386,6 @@ function Remove-ServiceGroupConfig{
 
         Write-Verbose "Remove-ServiceGroupConfig Changes: $Changes"
      }catch{
-        Write-Error $_
-        throw $_
+         throw $_
      }
  }

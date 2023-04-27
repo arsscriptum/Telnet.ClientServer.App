@@ -9,41 +9,49 @@
 function Invoke-CmProtek{
     <#
     .SYNOPSIS
-    Removes/deletes a service.
+    Use AxProtextor to encrypt the binary
  
     .DESCRIPTION
-    Removes an existing Windows service. If the service doesn't exist, nothing happens. The service is stopped before being deleted, so that the computer doesn't need to be restarted for the removal to complete.
+    Use AxProtextor to encrypt the binary
  
     .LINK
-    Uninstall-WinService
+    Invoke-CmProtek
  
     .EXAMPLE
-    Uninstall-WinService -Name DeathStar
+    Invoke-CmProtek -Name DeathStar
  
-    Removes the Death Star Windows service. It is destro..., er, stopped first, then destro..., er, deleted. If only the rebels weren't using Linux!
+    
     #>
     [CmdletBinding(SupportsShouldProcess=$true)]
     param(
-        [Parameter(Mandatory=$false, Position=0)]
-        [string]$InputFile="F:\Code\recon\bin\x64\Debug\recon.dll",
-        [Parameter(Mandatory=$false, Position=1)]
-        [string]$OutputFile="F:\ServiceRoot\System32\recon.dll",
-        [Parameter(Mandatory=$false, Position=1)]
-        [int]$ProductId=601001
-        
+        [parameter(mandatory=$true,Position=0)]
+        [String]$TemplateWbc,
+        [Parameter(Mandatory=$true, Position=1)]
+        [string]$InputFile,
+        [Parameter(Mandatory=$true, Position=2)]
+        [string]$OutputFile,
+        [Parameter(Mandatory=$true, Position=3)]
+        [int]$ProductId
     )
-    
-    $TemplateWbc = "F:\Code\recon\scripts\codemeter\Protek.wbc"
-    $WbcContent = Get-Content "$TemplateWbc"
-    $WbcContent = $WbcContent.Replace('__OUTPUT_PROTECTED_FILE__',$OutputFile).Replace('__INPUT_PROTECTED_FILE__',$InputFile).Replace('__PRODUCT_ID__',$ProductId)
-    Set-Content -Path "$ENV:Temp\protek.wbc" -Value $WbcContent
-    $AxProtector="C:\Program Files (x86)\WIBU-SYSTEMS\AxProtector\Devkit\bin\AxProtector.exe"
-    Write-Output "########################################################"
-    Write-Output "                   ENCRYPTION OF BINARY                 "
-    Write-Output "InputFile   `"$InputFile`" "
-    Write-Output "OutputFile  `"$OutputFile`" "
-    Write-Output "ProductId   `"$ProductId `" "
-    Write-Output "########################################################"
-    $Out = &"$AxProtector" "@$ENV:Temp\protek.wbc"
+    try{
+        $TemplateWbc = (Resolve-Path -Path "$TemplateWbc").Path
+        $InputFile = (Resolve-Path -Path "$InputFile").Path
+        $OutputFile = (Resolve-Path -Path "$OutputFile").Path
+        $WbcContent = Get-Content "$TemplateWbc"
+        $WbcContent = $WbcContent.Replace('__OUTPUT_PROTECTED_FILE__',$OutputFile).Replace('__INPUT_PROTECTED_FILE__',$InputFile).Replace('__PRODUCT_ID__',$ProductId)
+        Set-Content -Path "$ENV:Temp\protek.wbc" -Value $WbcContent
+        $AxProtector="C:\Program Files (x86)\WIBU-SYSTEMS\AxProtector\Devkit\bin\AxProtector.exe"
+        Write-Output "########################################################"
+        Write-Output "                   ENCRYPTION OF BINARY                 "
+        Write-Output "TemplateWbc   `"$TemplateWbc`" "
+        Write-Output "InputFile     `"$InputFile`" "
+        Write-Output "OutputFile    `"$OutputFile`" "
+        Write-Output "ProductId     `"$ProductId `" "
+        Write-Output "########################################################"
+        &"$AxProtector" "@$ENV:Temp\protek.wbc"
+    }catch{
+        throw "$_"
+    }
+
 }
 

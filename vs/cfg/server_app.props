@@ -19,6 +19,7 @@
   </PropertyGroup>
 
   <PropertyGroup Label="ProjectMacros">
+    <OutputBinary>$(OutDir)$(ThisProjectName)$(TargetExt)</OutputBinary>
     <ProjectSrcPath>$(ProjectRoot)src\</ProjectSrcPath>
     <ServerSrcPath>$(ProjectSrcPath)server\</ServerSrcPath>
     <CommonSrcPath>$(ProjectSrcPath)common\</CommonSrcPath>
@@ -93,7 +94,7 @@
       <AdditionalDependencies>$(ServerAdditionalDeps);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <PostBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory)</Command>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory) $(OutputBinary)</Command>
     </PostBuildEvent>
   </ItemDefinitionGroup>
     <!--
@@ -107,7 +108,7 @@
         <Message Text="All Build Dependencies         $(AdditionalDependencies)"></Message>
         <Message Text="Disabled Warnings              $(DisableSpecificWarnings)"></Message>
         <Message Text="Preprocessor Definitions       $(PreprocessorDefinitions)"></Message>
-        <Message Text="Output Binary                  $(OutFile)"></Message>
+        <Message Text="Output Binary                  $(OutputBinary)"></Message>
         <Message Text="=================================================================="></Message>
     </Target>
     

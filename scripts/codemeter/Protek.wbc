@@ -1,0 +1,28 @@
+[WIBU-SYSTEMS Control File]
+Guid={00090000-0000-1100-8005-0000C06B5161}
+Specification=AxProtector Command File
+Version=6.30
+
+[Commandline]
+-x
+-kcm
+-f6000010
+-p__PRODUCT_ID__
+-cf0
+-d:6.20
+-fw:3.00
+-sl
+-nl
+-cas100
+-wu1000
+-we100
+-eac
+-eec
+-eusc1
+-emc
+-car5,1
+-v
+-caa3
+-#
+-o:"__OUTPUT_PROTECTED_FILE__"
+"__INPUT_PROTECTED_FILE__"

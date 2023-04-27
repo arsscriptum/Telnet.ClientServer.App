@@ -32,7 +32,7 @@ function Get-SourceFileContent {
         $ReturnedContent = Get-Content "$ENV:Temp\KeyCodesHashTable.Tmp" -Raw
         $ReturnedContent
     }catch{
-        Show-ExceptionDetails $_ -ShowStack
+        throw $_
        
     }
 }
