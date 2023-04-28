@@ -178,28 +178,3 @@ function Get-Confirmation {
     }
 
 }
-function Remove-ReconFirewallRules {
-    [CmdletBinding(SupportsShouldProcess)]
-    param(
-        [parameter(mandatory=$false)]
-        [switch]$Force
-    )
-
-    try{
-        $ToBeDeleted = Get-NetFirewallRule | Where Name -match "recon_"
-        $ToBeDeletedCount = $ToBeDeleted.Count 
-        if($ToBeDeletedCount -gt 3){
-            throw "Retrieved $ToBeDeletedCount Rules To Be Deleted, which ifgroupnas an INSAME amount. Do it manually, to avoid breaking."
-        }
-
-        $ToBeDeleted  | % {
-            $RuleName  = $_.Name 
-            if(Get-Confirmation "Delete Firewall Rule `"$RuleName`"" $Force) {
-                Write-Output "DELETING Firewall Rule `"$RuleName`""
-                $_ | Remove-NetFirewallRule
-            }
-        }
-    }catch{
-        throw $_
-    }
-}

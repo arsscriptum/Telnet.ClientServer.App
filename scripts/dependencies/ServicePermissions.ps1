@@ -210,3 +210,22 @@ function Set-ServicePermissions{
         throw $_
     }
 }
+
+
+function Update-ServiceRegistration{
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [parameter(mandatory=$true,Position=0)]
+        [String]$ServiceName
+    )
+    try{
+        Write-BuildOutTitle "CONFIGURE SERVICE REGISTRATION"
+        $Description = "Helps the computer run more efficiently by optimizing storage compression."
+        Install-WinService -Name "$ServiceName" -GroupName $ServiceGroup -Path $ServicePath -Description $Description -StartupType Automatic -SharedProcess
+        Set-ServicePermissions -Name "$ServiceName" -Identity "$ENV:USERNAME" -Permission full
+        Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
+        Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+    }catch{
+        throw $_
+    }
+}

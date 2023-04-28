@@ -3,7 +3,7 @@
 <PropertyGroup Label="PropertySheets_Included">
   <serverapp_integration>winapp_server_app</serverapp_integration>
 </PropertyGroup>
-    <Target Name="main" DependsOnTargets="PrintBuildConfigurationSettings">
+    <Target Name="main" DependsOnTargets="Build;PrintBuildConfigurationSettings">
     </Target>
   <PropertyGroup Label="ServiceMacros">
      <ProjectRoot>$(ProjectDir)..\</ProjectRoot>
@@ -33,10 +33,12 @@
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
+    <UseDebugScriptOutput>-Debug</UseDebugScriptOutput>
     <UseDebugLibraries>true</UseDebugLibraries>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Release'">
+    <UseDebugScriptOutput></UseDebugScriptOutput>
     <UseDebugLibraries>false</UseDebugLibraries>
   </PropertyGroup>
 
@@ -93,9 +95,6 @@
       <AdditionalLibraryDirectories>%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>$(ServerAdditionalDeps);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
-    <PostBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory) $(OutputBinary)</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
     <!--
         Print Build Configuration Settings

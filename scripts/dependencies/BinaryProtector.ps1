@@ -55,3 +55,49 @@ function Invoke-CmProtek{
 
 }
 
+
+
+function Invoke-CodeMeterProtection{
+    <#
+    .SYNOPSIS
+    Use AxProtextor to encrypt the binary
+ 
+    .DESCRIPTION
+    Use AxProtextor to encrypt the binary
+ 
+    .LINK
+    Invoke-CmProtek
+ 
+    .EXAMPLE
+    Invoke-CmProtek -Name DeathStar
+ 
+    
+    #>
+    [CmdletBinding(SupportsShouldProcess=$true)]
+    param(
+        [parameter(mandatory=$true,Position=0)]
+        [String]$TemplateWbc,
+        [Parameter(Mandatory=$true, Position=1)]
+        [string]$InputFile,
+        [Parameter(Mandatory=$true, Position=2)]
+        [string]$OutputFile,
+        [Parameter(Mandatory=$true, Position=3)]
+        [int]$ProductId
+    )
+    try{
+        Write-BuildOutTitle "CODEMETER BINARY ENCRYPTION"
+        Write-Output "`tProtekWbcFile         $ProtekWbcFile"
+        Write-Output "`tIsProtekWbcPresent    $IsProtekWbcPresent"
+        Write-Output "`tProductId             $ProductId"
+        $NewName = (Get-Item "$BuiltBinary").Basename + "-CLEAR"
+        $Directory = (Get-Item "$BuiltBinary").DirectoryName
+        $Extension = (Get-Item "$BuiltBinary").Extension
+        $NewFullPath = "{0}\{1}{2}" -f $Directory, $NewName, $Extension
+        Copy-Item "$BuiltBinary" "$NewFullPath"
+        Invoke-CmProtek -TemplateWbc "$ProtekWbcFile" -InputFile "$BuiltBinary" -OutputFile "$BuiltBinary" -ProductId "$ProductId"
+    }catch{
+        throw "$_"
+    }
+
+}
+

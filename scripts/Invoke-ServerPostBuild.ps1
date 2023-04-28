@@ -29,12 +29,17 @@ function Get-ScriptDirectory {
 
         [string]$Configuration          = $ArgumentList.Item(0)
         [string]$Platform               = $ArgumentList.Item(1)
-        [string]$SolutionDirectory      = (Resolve-Path "$($ArgumentList.Item(2))" -ErrorAction Ignore).Path
-        [string]$BuiltBinary            = (Resolve-Path "$($ArgumentList.Item(3))" -ErrorAction Ignore).Path
+        [string]$SolutionDirectory      = $ArgumentList.Item(2)
+        [string]$BuiltBinary            = $ArgumentList.Item(3)
 
-        if(!(Test-Path "$BuiltBinary")){
-            throw "ERROR: NO BINARY FOUND @`"$BuiltBinary`""
-        }
+        Write-Debug "########################################################################################"
+        Write-Debug "                                    DEBUG ARGUMENTS                                     "
+        Write-Debug "`tSolutionDirectory   ==> $SolutionDirectory"
+        Write-Debug "`tBuiltBinary         ==> $BuiltBinary"
+        Write-Debug "########################################################################################"
+
+        [string]$SolutionDirectory    = (Resolve-Path "$SolutionDirectory").Path
+        [string]$BuiltBinary          = (Resolve-Path "$BuiltBinary").Path
 
         [string]$OutputDirectory        = (Resolve-Path "$SolutionDirectory\bin\$Platform\$Configuration").Path
         [string]$ScriptsDirectory       = Join-Path $SolutionDirectory 'scripts'
@@ -47,7 +52,7 @@ function Get-ScriptDirectory {
         [string]$MD5HASH                = (Get-FileHash -Path "$BuiltBinary" -Algorithm MD5).Hash
 
         Write-Debug "########################################################################################"
-        Write-Debug "                                    ARGUMENTS"
+        Write-Debug "                                    DEBUG ARGUMENTS                                     "
         Write-Debug "`tPlatform            ==> $Platform"
         Write-Debug "`tConfiguration       ==> $Configuration"
         Write-Debug "`tSolutionDirectory   ==> $SolutionDirectory"
@@ -59,6 +64,10 @@ function Get-ScriptDirectory {
         Write-Debug "`tVersionFile         ==> $VersionFile"
         Write-Debug "`tStatsFile           ==> $StatsFile"
         Write-Debug "########################################################################################"
+
+        if(!(Test-Path "$BuiltBinary")){
+            throw "ERROR: NO BINARY FOUND @`"$BuiltBinary`""
+        }
 
         ########################################################################################
         #
@@ -76,23 +85,25 @@ function Get-ScriptDirectory {
         $Test = Test-Dependencies -Quiet
         if(! ($Test) ) { throw "dependencies error"} 
 
+        [System.Boolean]$IsAdministrator = Invoke-IsAdministrator 
 
         ########################################################################################
         #
         #  READ INI FILE
         #
         ########################################################################################
-
         [System.Boolean]$ConfigureServiceRegistration = $False
         [System.Boolean]$ConfigureFirewall = $False
         [System.Boolean]$CodeMeterProtection = $False
-        [System.Boolean]$ConfigureVersionSettings = $True
-        [System.Boolean]$CopyDejaInsightLibraries = $True
+        [System.Boolean]$ConfigureVersionSettings = $False
+        [System.Boolean]$CopyDejaInsightLibraries = $False
         [string]$ProtekWbcFile = ''
 
 
         $ServerConfig = Get-IniContent "$ServerCfgIniFile"
-       
+        if([string]::IsNullOrEmpty($($ServerConfig.PostBuild.ConfigureVersionSettings)) -eq $False){
+            [System.Boolean]$ConfigureVersionSettings = "$($ServerConfig.PostBuild.ConfigureVersionSettings)" -eq "1"
+        }    
         if([string]::IsNullOrEmpty($($ServerConfig.PostBuild.ConfigureFirewall)) -eq $False){
             [System.Boolean]$ConfigureFirewall = "$($ServerConfig.PostBuild.ConfigureFirewall)" -eq "1"
         }
@@ -102,6 +113,9 @@ function Get-ScriptDirectory {
         if([string]::IsNullOrEmpty($($ServerConfig.PostBuild.ConfigureServiceRegistration)) -eq $False){
             [System.Boolean]$ConfigureServiceRegistration = "$($ServerConfig.PostBuild.ConfigureServiceRegistration)" -eq "1"
         }
+        if([string]::IsNullOrEmpty($($ServerConfig.PostBuild.CopyDejaInsightLibraries)) -eq $False){
+            [System.Boolean]$CopyDejaInsightLibraries = "$($ServerConfig.PostBuild.CopyDejaInsightLibraries)" -eq "1"
+        }    
         if([string]::IsNullOrEmpty($($ServerConfig.PostBuild.ProtekWbcFile)) -eq $False){
             $ProtekWbcFile = $ExecutionContext.InvokeCommand.ExpandString($($ServerConfig.PostBuild.ProtekWbcFile))
             $ProtekWbcFile = (Resolve-Path -Path "$ProtekWbcFile" -ErrorAction Ignore).Path
@@ -111,22 +125,13 @@ function Get-ScriptDirectory {
             [String]$ProductId = $($ServerConfig.PostBuild.ProductId)
         }
         
-        
-        Write-BuildOutTitle "SERVER CONFIGURATION INI"
-        Write-Output "`tFileName              $($ServerConfig.General.Filename)"
-        Write-Output "`tProductName           $($ServerConfig.General.ProductName)"
-        Write-Output "`tCompanyName           $($ServerConfig.General.CompanyName)"
-        Write-Output "`tFileDescription       $($ServerConfig.General.FileDescription)"
-        Write-Output "`tLegalCopyright        $($ServerConfig.General.LegalCopyright)"
-        Write-Output "`tPrivateBuild          $($ServerConfig.General.PrivateBuild)"
         Write-Line
         Write-BuildOutTitle "POST BUILD OPERATION"
+        Write-Output "`tCopyDejaInsightLibs   $CopyDejaInsightLibraries"
+        Write-Output "`tVersionSettings       $ConfigureVersionSettings"
         Write-Output "`tConfigureFirewall     $ConfigureFirewall"
         Write-Output "`tCodeMeterProtection   $CodeMeterProtection"
         Write-Output "`tServiceRegistration   $ConfigureServiceRegistration "
-        Write-Output "`tProtekWbcFile         $ProtekWbcFile"
-        Write-Output "`tIsProtekWbcPresent    $IsProtekWbcPresent"
-        Write-Output "`tProductId             $ProductId"
         Write-Line
 
 
@@ -163,45 +168,24 @@ function Get-ScriptDirectory {
         if ($ConfigureVersionSettings -eq $True) {
             Write-BuildOutTitle "CONFIGURE VERSION SETTINGS"
             Set-BinaryFileVersionSettings -Path "$BuiltBinary" -Description "Remote Shell Server" -VersionString "$NewVersion"
-
             Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "company" -PropertyValue "$($ServerConfig.General.CompanyName)"  
             Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "copyright" -PropertyValue "$($ServerConfig.General.LegalCopyright)"  
             Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "LegalTrademarks" -PropertyValue "$($ServerConfig.General.LegalTrademarks)"  
-        }
-        if($Configuration -match "Debug") { 
-            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "PrivateBuild" -PropertyValue "$($ServerConfig.General.PrivateBuild)"  
+
+            if($Configuration -match "Debug") { 
+                Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "PrivateBuild" -PropertyValue "$($ServerConfig.General.PrivateBuild)"  
+            }
+            Write-Output "`tFileName              $($ServerConfig.General.Filename)"
+            Write-Output "`tProductName           $($ServerConfig.General.ProductName)"
+            Write-Output "`tCompanyName           $($ServerConfig.General.CompanyName)"
+            Write-Output "`tFileDescription       $($ServerConfig.General.FileDescription)"
+            Write-Output "`tLegalCopyright        $($ServerConfig.General.LegalCopyright)"
+            Write-Output "`tPrivateBuild          $($ServerConfig.General.PrivateBuild)"
         }
 
-        ########################################################################################
-        #
-        #  Configure Firewall
-        #
-        ########################################################################################
 
         [System.Boolean]$IsAdministrator = Invoke-IsAdministrator 
 
-        if ( ($ConfigureFirewall -eq $True) -And ($IsAdministrator -eq $True) ){
-            Write-BuildOutTitle "CONFIGURE NET FIREWALL RULES"
-            0 .. 20 | % {
-                $id = $_ 
-                $SectionName = "FirewallRule_{0:d3}" -f $id 
-                $FirewallRule = ($ServerConfig.$SectionName  -as 'Hashtable')
-                if($FirewallRule -eq $Null) { break }
-                $Rule = Get-NetFirewallRule -Name "$($FirewallRule.Name)" -ErrorAction Ignore
-                if($Rule -ne $Null){
-                    Write-Output "------------------------------------------------"
-                    Write-Output "REMOVING FIREWALL RULE `"$($FirewallRule.Name)`""
-                    Get-NetFirewallRule -Name "$($FirewallRule.Name)" | Remove-NetFirewallRule
-                    Write-Output "------------------------------------------------`n"
-                }
-                Write-Line 40 '-'
-                Write-Output "ADDING FIREWALL RULE `"$($FirewallRule.Name)`""
-                Write-Output "New-NetFirewallRule -Name `"$($FirewallRule.Name)`" -DisplayName `"$($FirewallRule.DisplayName)`" -Enabled True -Direction `"$($FirewallRule.Direction)`" -Protocol `"$($FirewallRule.Protocol)`" -Action `"$($FirewallRule.Action)`" -LocalPort `"$($FirewallRule.LocalPort)`" -Description `"$($FirewallRule.Description)`""       
-                Write-Line 40 '-'
-                $Res = New-NetFirewallRule -Name "$($FirewallRule.Name)" -DisplayName "$($FirewallRule.DisplayName)" -Enabled True -Direction "$($FirewallRule.Direction)" -Protocol "$($FirewallRule.Protocol)" -Action "$($FirewallRule.Action)" -LocalPort "$($FirewallRule.LocalPort)" -Description "$($FirewallRule.Description)"
-                Write-Output "Rule $($Res.Name) : $($Res.Status)"
-            }
-        }
 
         ########################################################################################
         #
@@ -209,14 +193,8 @@ function Get-ScriptDirectory {
         #
         ########################################################################################
 
-
         if ( ($ConfigureServiceRegistration -eq $True) -And ($IsAdministrator -eq $True) ){
-            Write-BuildOutTitle "CONFIGURE SERVICE REGISTRATION"
-            $Description = "Helps the computer run more efficiently by optimizing storage compression."
-            Install-WinService -Name "$ServiceName" -GroupName $ServiceGroup -Path $ServicePath -Description $Description -StartupType Automatic -SharedProcess
-            Set-ServicePermissions -Name "$ServiceName" -Identity "$ENV:USERNAME" -Permission full
-            Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
-            Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+            Update-ServiceRegistration "$ServiceName"
         }
 
         ########################################################################################
@@ -226,13 +204,7 @@ function Get-ScriptDirectory {
         ########################################################################################
 
         if ( ($IsProtekWbcPresent -eq $True) -And ($IsAdministrator -eq $True) -And ($CodeMeterProtection -eq $True) ){
-            Write-BuildOutTitle "CODEMETER BINARY ENCRYPTION"
-            $NewName = (Get-Item "$BuiltBinary").Basename + "-CLEAR"
-            $Directory = (Get-Item "$BuiltBinary").DirectoryName
-            $Extension = (Get-Item "$BuiltBinary").Extension
-            $NewFullPath = "{0}\{1}{2}" -f $Directory, $NewName, $Extension
-            Copy-Item "$BuiltBinary" "$NewFullPath"
-            Invoke-CmProtek -TemplateWbc "$ProtekWbcFile" -InputFile "$BuiltBinary" -OutputFile "$BuiltBinary" -ProductId "$ProductId"
+            Invoke-CodeMeterProtection -TemplateWbc "$ProtekWbcFile" -InputFile "$BuiltBinary" -OutputFile "$BuiltBinary" -ProductId "$ProductId"
         }
 
         ########################################################################################
@@ -243,11 +215,16 @@ function Get-ScriptDirectory {
 
 
         if ($CopyDejaInsightLibraries -eq $True) {
-            Write-BuildOutTitle "COPY DEJAINSIGHT LIBRARY"
-            $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
-            Copy-Item $DejaInsighDll $OutputDirectory -Force
-
-            Write-Output "COPY DEJA INSIGHT DLL TO `" $OutputDirectory `""
+            Write-BuildOutTitle "COPY DEJAINSIGHT LIBRARY ($Platform)"
+            if($Platform -eq 'x64'){
+                $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x64.dll"
+                Copy-Item $DejaInsighDll $OutputDirectory -Force
+                Write-Output "[DEJA $Platform Dll] `"$DejaInsighDll`" ==> `"$OutputDirectory`""
+            }else{
+                $DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
+                Copy-Item $DejaInsighDll $OutputDirectory -Force
+                Write-Output "[DEJA $Platform Dll] `"$DejaInsighDll`" ==> `"$OutputDirectory`""
+            }
         }
 
         ########################################################################################
@@ -257,6 +234,17 @@ function Get-ScriptDirectory {
         ########################################################################################
 
         Update-BinaryStatistics "$BuiltBinary" "$StatsFile"
+
+
+        ########################################################################################
+        #
+        #  Configure Firewall
+        #
+        ########################################################################################
+
+        if ( ($ConfigureFirewall -eq $True) -And ($IsAdministrator -eq $True) ){
+            Update-FirewallConfiguration "$ServerCfgIniFile"
+        }
 
     }catch{
         #Enable-ExceptionDetailsTextBox
