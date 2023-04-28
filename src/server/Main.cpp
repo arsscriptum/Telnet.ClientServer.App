@@ -22,10 +22,6 @@
 #include "ServerService.h"
 #include "utilities.h"
 
-#pragma NOTE("LINKING WITH wsock32.lib")
-#pragma NOTE("LINKING WITH advapi32.lib")
-#pragma comment( lib, "wsock32" )
-#pragma comment( lib, "advapi32" ) 
 
 #ifdef _DEBUG
 #define new DEBUG_NEW

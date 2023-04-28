@@ -1,5 +1,5 @@
 {
-  "ReleaseDLL_DynamicMFC": [
+  "DebugDLL": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -15,7 +15,7 @@
       "Size": 0
     }
   ],
-  "ReleaseDLL": [
+  "DebugDLL_DynamicMFC": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -69,7 +69,7 @@
       "Size": "2.53 MB"
     }
   ],
-  "DebugDLL_DynamicMFC": [
+  "ReleaseDLL": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -1339,9 +1339,53 @@
       "Bytes": 12733952,
       "DiffBytes": -2664448,
       "Size": "12.14 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 1:06:09 AM",
+      "Revision": "5aeee20935ae8dc9774f1d49e73710278555cf83",
+      "Version": "1.0.1.221",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 12733952,
+      "DiffBytes": 0,
+      "Size": "12.14 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 1:06:45 AM",
+      "Revision": "5aeee20935ae8dc9774f1d49e73710278555cf83",
+      "Version": "1.0.1.222",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": -2664448,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 1:20:30 AM",
+      "Revision": "5aeee20935ae8dc9774f1d49e73710278555cf83",
+      "Version": "1.0.1.223",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 1:20:50 AM",
+      "Revision": "5aeee20935ae8dc9774f1d49e73710278555cf83",
+      "Version": "1.0.1.224",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10069504,
+      "DiffBytes": 0,
+      "Size": "9.60 MB"
     }
   ],
-  "DebugDLL": [
+  "ReleaseDLL_DynamicMFC": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",

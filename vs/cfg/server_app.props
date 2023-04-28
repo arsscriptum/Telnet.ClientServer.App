@@ -28,8 +28,15 @@
     <ServerProcessSrcPath>$(ServerSrcPath)process</ServerProcessSrcPath>
     <ServerTestSrcPath>$(ServerSrcPath)test</ServerTestSrcPath>
     <ServerRedTeamSrcPath>$(ServerSrcPath)redteam</ServerRedTeamSrcPath>
+    <RemoteDesktopServicesLib>Wtsapi32.lib</RemoteDesktopServicesLib>
+    <WindowsShellLib>shlwapi.lib</WindowsShellLib>
+    <WindowsNetLib>netapi32.lib</WindowsNetLib>
+    <CommonControlLib>comctl32.lib</CommonControlLib>
+    <WindowsUserComponentLib>user32.lib</WindowsUserComponentLib>
+    <WinSockLib>wsock32.lib</WinSockLib>
+    <UserEnvironmentLib>Userenv.lib</UserEnvironmentLib>  <!-- CreateEnvironmentBlock  --> 
     <CompleteServerSourceFolders>$(ServerServiceSrcPath);$(ServerNetworkSrcPath);$(ProjectSrcPath);$(ServerRedTeamSrcPath);$(ServerSrcPath);$(ServerProcessSrcPath);$(ServerTestSrcPath);$(CommonSrcPath)</CompleteServerSourceFolders>
-    <ServerAdditionalDeps>shlwapi.lib;netapi32.lib;user32.lib;comctl32.lib</ServerAdditionalDeps>
+    <ServerAdditionalDeps>$(UserEnvironmentLib);$(WinSockLib);$(WindowsShellLib);$(RemoteDesktopServicesLib);$(WindowsNetLib)</ServerAdditionalDeps>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)'=='Debug'">
