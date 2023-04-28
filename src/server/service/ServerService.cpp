@@ -55,13 +55,16 @@ long RECON_CALL_CONV ServerService::StartInBackground()
 	LOG_INFO("ServerService::StartInBackground", "StartInBackground");
 
 	SERVICE_TABLE_ENTRY DispatchTable[] = {
-		  {Service_Name(), (LPSERVICE_MAIN_FUNCTION)ServiceMain},
-		 {NULL, NULL}
+	  {Service_Name(), (LPSERVICE_MAIN_FUNCTION)ServiceExecute},
+	  {NULL, NULL}
 	};
+	LOG_TRACE("ServerService::DispatchTable", "DispatchTable %s", Service_Name());
+		
 	if (!StartServiceCtrlDispatcher(DispatchTable)) {
 		TCHAR szBuf[255];
 		LOG_WARNING("ServerService::StartInBackground", "[%s] StartDispatcher Error %d. %s", Service_Name(),GetLastError(), GetLastErrorText(szBuf, 255));
-
+		int RetVal = 0;
+		SetAndReportStatus(RECON_CURRENT_STATE_STOPPED, RetVal, 1000);
 		return RECON_ERROR_START;
 	}
 	return RECON_NO_ERROR;
@@ -100,7 +103,7 @@ BOOL ServerService::ConsoleCtrlHandler(DWORD CtrlCode)
 }
 
 
-void WINAPI ServerService::ServiceMain(DWORD dwArgc, LPTSTR* lpszArgv) {
+void WINAPI ServerService::ServiceExecute(DWORD dwArgc, LPTSTR* lpszArgv) {
 
 	LOG_TRACE("ServerService::ServiceMain", "register our service control handler for %s", Service_Name());
 	

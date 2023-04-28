@@ -96,6 +96,9 @@
     <ClCompile Include="..\src\server\test\Test_UACBypass.cpp">
       <Filter>test</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\server\MainDll.cpp">
+      <Filter>server</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\common\keycodes_hashtable.tmp">

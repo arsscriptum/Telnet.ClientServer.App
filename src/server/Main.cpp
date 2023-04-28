@@ -7,6 +7,7 @@
 //  arsscriptum - made in quebec 2020 <guillaumeplante.qc@gmail.com>
 //==============================================================================
 
+#ifdef _SERVICE_EXECUTABLE
 
 #define WIN32_LEAN_AND_MEAN
 
@@ -153,12 +154,9 @@ int main( int argc, char ** argv )
 	
 		cprint_r("Test Mode\n");
 	}
-	else {
-		cprint_r("Please provide a mode of execution.\n");
-		return -1;
-	}
 
-	LOG_TRACE("Main", "StartInBackground");
+
+	LOG_TRACE("EXECUTABLE::MAIN", "StartInBackground");
 	
 	cprint_r("Start Service (in background mode)\n");
 	ret = service.StartInBackground();
@@ -173,24 +171,25 @@ int main( int argc, char ** argv )
 
 static int RECON_CALL_CONV ServerMain(int argc, char* argv[])
 {
-	LOG_TRACE("ServerMain", "Entry Point");
+	LOG_TRACE("EXECUTABLE::ServerMain", "Entry Point");
 
 	pServiceControllerInst->Start();
 
 	while (pServiceControllerInst->StopReceived() == false)
 	{
+		LOG_TRACE("EXECUTABLE::ServerMain", "LOOP");
 		pServiceControllerInst->CheckAndHandlePauseResume(1000, 0);
 		Sleep(1000);
 		pServiceControllerInst->Step();
 	}
 
-	LOG_TRACE("ServerMain", "Exiting...");
+	LOG_TRACE("EXECUTABLE::ServerMain", "Exiting...");
 	return 0;
 }
 
 void ServerEventHandler(RECON_CONTROL EventCode)
 {
-	LOG_INFO("ServerEventHandler", "Received Service Control Event: %d", EventCode);
+	LOG_TRACE("ServerEventHandler", "Received Service Control Event: %d", EventCode);
 
 	switch (EventCode)
 	{
@@ -228,3 +227,5 @@ void ServerEventHandler(RECON_CONTROL EventCode)
 		break;
 	}
 }
+
+#endif //_SERVICE_EXECUTABLE

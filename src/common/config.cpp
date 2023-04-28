@@ -12,6 +12,8 @@
 #include "config.h"
 #include <random>
 #include "utilities.h"
+
+
 Global_Settings INTERNAL::_Global_Settings;
 
 Global_Settings::Global_Settings(){

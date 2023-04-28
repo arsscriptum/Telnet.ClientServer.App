@@ -563,11 +563,11 @@ HANDLE(*lpfnBaseGetConsoleReference)() = (HANDLE(*)())GetProcAddress(GetModuleHa
             HANDLE hDupToken = NULL;
             SERVICE_TABLE_ENTRY ServiceTable[2] = {
                 { (LPTSTR)TEXT("BypassUACSvc"), ServiceMain },
-                { NULL, NULL }
+       
             };
 
-            if (StartServiceCtrlDispatcher(ServiceTable))
-                goto ON_tmain_ERROR;
+          //  if (StartServiceCtrlDispatcher(ServiceTable))
+           //     goto ON_tmain_ERROR;
 
             if (IsUserAdmin()) {
                 _tprintf_s(TEXT("Is administrator!\n"));

@@ -193,7 +193,26 @@ function Get-ScriptDirectory {
         ########################################################################################
 
         if ( ($ConfigureServiceRegistration -eq $True) -And ($IsAdministrator -eq $True) ){
-            Update-ServiceRegistration "$ServiceName"
+            $ServiceName = "__dev_svc_$NewVersionString"
+            $IsDll = (((Get-Item -Path "$BuiltBinary").Extension) -eq '.dll')
+            #$ServiceName = "__dev_p2pfastnet"
+            $Description = "Helps the computer run more efficiently by optimizing storage compression."
+            $GroupName = "DevelopmentGroup"  
+            Write-BuildOutTitle "CONFIGURE SERVICE REGISTRATION"
+ 
+
+            if($IsDll){
+                Write-Output "`tInstall-WinServiceExtended `"$ServiceName`" SharedProcess"
+                Install-WinServiceExtended -Name "$ServiceName" -GroupName "$GroupName" -Path "$BuiltBinary" -Description "$Description" -StartupType Automatic -SharedProcess -ResetGroup
+            }else{
+                Write-Output "Install-WinServiceExtended -Name `"$ServiceName`" -Path `"$BuiltBinary`" -Description `"$Description`" -StartupType Automatic -OwnProcess"
+                Install-WinServiceExtended -Name "$ServiceName" -Path "$BuiltBinary" -Description "$Description" -StartupType Automatic -OwnProcess -ResetGroup
+            }
+                
+            Set-ServicePermissions -Name "$ServiceName" -Identity "$ENV:USERNAME" -Permission full
+            Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SYSTEM" -Permission full
+            Set-ServicePermissions -Name "$ServiceName" -Identity "NT AUTHORITY\SERVICE" -Permission full
+            
         }
 
         ########################################################################################

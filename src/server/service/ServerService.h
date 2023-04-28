@@ -80,7 +80,7 @@ private:
 	static BOOL WINAPI ConsoleCtrlHandler(DWORD CtrlCode);
 
 	static VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode);
-	static void WINAPI ServiceMain(DWORD argc, LPTSTR* argv);
+	static void WINAPI ServiceExecute(DWORD argc, LPTSTR* argv);
 
 	static int (RECON_CALL_CONV* _MainFunction)(int argc, char* argv[]);
 	static void (RECON_CALL_CONV* _EventNotifierFunction)(RECON_CONTROL EventCode);		

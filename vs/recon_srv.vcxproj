@@ -70,6 +70,7 @@
     <ClCompile Include="..\src\common\targetver.cpp" />
     <ClCompile Include="..\src\common\windows-api-ex.cpp" />
     <ClCompile Include="..\src\server\Main.cpp" />
+    <ClCompile Include="..\src\server\MainDll.cpp" />
     <ClCompile Include="..\src\server\network\firewall.cpp" />
     <ClCompile Include="..\src\server\process\psinfo.cpp" />
     <ClCompile Include="..\src\server\process\ps_enum.cpp" />
