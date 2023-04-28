@@ -10,7 +10,6 @@
 
 #include "stdafx.h"
 
-#ifdef __USE_CUSTOM_WINAPI_EX__
 
 #include "windows-api-ex.h"
 #include <Windows.h>
@@ -2839,5 +2838,3 @@ namespace C
 		}
 	}
 }
-
-#endif

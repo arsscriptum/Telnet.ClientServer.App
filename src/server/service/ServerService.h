@@ -15,11 +15,7 @@
 #include "BaseService.h"
 
 extern HANDLE ghRunThreadStopEvent;
-//----------------------------------------------------------------
-//our service wrapper class.
-//performs all tasks required to be
-//an NT service
-//----------------------------------------------------------------
+
 class ServerService : public BaseService
 {
 private:
@@ -42,52 +38,54 @@ public:
 	void	Pause();
 	void	Continue();
 	void	Shutdown() {};
-
+	
 	//construction code
-	ServerService(int (CCC_CALL_CONV* MainFunction)(int argc, char* argv[])) : BaseService(Service_Name(), Service_Display_Name(), Service_AccountName(), Service_Password())
+	ServerService(int (RECON_CALL_CONV* MainFunction)(int argc, char* argv[])) : BaseService(Service_Name(), Service_Display_Name(), Service_AccountName(), Service_Password())
 	{
 		ServerService(MainFunction, 0);
 	}
-	ServerService(int (CCC_CALL_CONV* MainFunction)(int argc, char* argv[]), void (CCC_CALL_CONV* EventNotifierFunction)(CCC_CONTROL EventCode))  : BaseService(Service_Name(), Service_Display_Name(), Service_AccountName(), Service_Password())
+	ServerService(int (RECON_CALL_CONV* MainFunction)(int argc, char* argv[]), void (RECON_CALL_CONV* EventNotifierFunction)(RECON_CONTROL EventCode))  : BaseService(Service_Name(), Service_Display_Name(), Service_AccountName(), Service_Password())
 	{
 		_MainFunction = MainFunction;
 		_EventNotifierFunction = EventNotifierFunction;
-		memset(&mCurrentStatus, 0, sizeof(mCurrentStatus));
-		mCurrentStatus.CheckPoint = 1;
-		hWinStatusHandle = 0;
+		memset(&m_CurrentStatus, 0, sizeof(m_CurrentStatus));
+		m_CurrentStatus.CheckPoint = 1;
+		m_hWinStatusHandle = 0;
 	}
 	virtual STD_STRING ServerService::CurrentStateString();
-	virtual bool IsRunning() { return (mCurrentStatus.CurrentState == SERVICE_RUNNING); }
-	virtual bool StopReceived() { return (mCurrentStatus.CurrentState == SERVICE_STOP_PENDING); }
-	virtual bool PauseReceived() { return (mCurrentStatus.CurrentState == SERVICE_PAUSE_PENDING); }
-	virtual bool ContinueReceived() { return (mCurrentStatus.CurrentState == SERVICE_CONTINUE_PENDING); }
+	virtual bool IsRunning() { return (m_CurrentStatus.CurrentState == SERVICE_RUNNING); }
+	virtual bool StopReceived() { return (m_CurrentStatus.CurrentState == SERVICE_STOP_PENDING); }
+	virtual bool PauseReceived() { return (m_CurrentStatus.CurrentState == SERVICE_PAUSE_PENDING); }
+	virtual bool ContinueReceived() { return (m_CurrentStatus.CurrentState == SERVICE_CONTINUE_PENDING); }
 	virtual bool IsInteractive() { return (IsRunning() && m_bInteractiveMode); };
+
 	//==============================================================================
-//  Starting and running the service
-//==============================================================================
-	CCC_INTERFACE_DEF(long)  StartInBackground();
-	CCC_INTERFACE_DEF(long)  StartInForeground(int argc, char* argv[]);
-	CCC_INTERFACE_DEF(bool)  IsStartedInForeground() { return bInteractiveMode; }
-	CCC_INTERFACE_DEF(bool)  IsStartedInBackground() { return !bInteractiveMode; }
-	CCC_INTERFACE_DEF(CCC_RETURN_CODES)   Step();
-	CCC_INTERFACE_DEF(void)  CheckAndHandlePauseResume(long SleepTime);
-	CCC_INTERFACE_DEF(void)  CheckAndHandlePauseResume(long SleepTime, void (CCC_CALL_CONV* ExtraPauseFunction)());
+	//  Starting and running the service
+	//==============================================================================
+	long  StartInBackground();
+	long  StartInForeground(int argc, char* argv[]);
+	bool  IsStartedInForeground() { return bInteractiveMode; }
+	bool  IsStartedInBackground() { return !bInteractiveMode; }
+	RECON_RETURN_CODES   Step();
+	void  CheckAndHandlePauseResume(long SleepTime);
+	void  CheckAndHandlePauseResume(long SleepTime, void (RECON_CALL_CONV* ExtraPauseFunction)());
+
+private:
 	//==============================================================================
 	// Additional Control&Reporting
 	//==============================================================================
-	static long SetAndReportStatus(CCC_CURRENT_STATES CurrentState, long ExitCode, long ExpectedTimeMillisecs);
-	static void ServiceReportEvent(CCC_LOG_TYPES LogType, const TCHAR* ProcessName, TCHAR* Message);
-	static long ReportStatusToOS(const CCC_STATUS& CurrentStatus);
+	static long WINAPI SetAndReportStatus(RECON_CURRENT_STATES CurrentState, long ExitCode, long ExpectedTimeMillisecs);
+	static long WINAPI ReportStatusToOS(const RECON_STATUS& CurrentStatus);
 
-	static BOOL        ConsoleCtrlHandler(DWORD CtrlCode);
+	static BOOL WINAPI ConsoleCtrlHandler(DWORD CtrlCode);
 
 	static VOID WINAPI ServiceCtrlHandler(DWORD CtrlCode);
-	static void WINAPI	ServiceMain(DWORD argc, LPTSTR* argv);
-	static BOOL WINAPI	ControlHandler(DWORD CtrlType);
-	static int  (CCC_CALL_CONV* _MainFunction)(int argc, char* argv[]);				// Main
-	static void (CCC_CALL_CONV* _EventNotifierFunction)(CCC_CONTROL EventCode);		// Event Notifier CB
-	static CCC_STATUS                mCurrentStatus;
-	static SERVICE_STATUS_HANDLE	 hWinStatusHandle;
+	static void WINAPI ServiceMain(DWORD argc, LPTSTR* argv);
+
+	static int (RECON_CALL_CONV* _MainFunction)(int argc, char* argv[]);
+	static void (RECON_CALL_CONV* _EventNotifierFunction)(RECON_CONTROL EventCode);		
+	static RECON_STATUS                m_CurrentStatus;
+	static SERVICE_STATUS_HANDLE	 m_hWinStatusHandle;
 	BOOL bInteractiveMode;
 };
 

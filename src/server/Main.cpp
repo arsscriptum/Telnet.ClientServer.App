@@ -34,8 +34,8 @@ static char THIS_FILE[] = __FILE__;
 
 ServerService *pServiceControllerInst = nullptr;
 
-static int  CCC_CALL_CONV ServerMain(int argc, char* argv[]);
-static void CCC_CALL_CONV ServerEventHandler(CCC_CONTROL EventCode);
+static int  RECON_CALL_CONV ServerMain(int argc, char* argv[]);
+static void RECON_CALL_CONV ServerEventHandler(RECON_CONTROL EventCode);
 
 void banner() {
 	std::wcout << std::endl;
@@ -153,6 +153,10 @@ int main( int argc, char ** argv )
 	
 		cprint_r("Test Mode\n");
 	}
+	else {
+		cprint_r("Please provide a mode of execution.\n");
+		return -1;
+	}
 
 	LOG_TRACE("Main", "StartInBackground");
 	
@@ -167,7 +171,7 @@ int main( int argc, char ** argv )
 }
 
 
-static int CCC_CALL_CONV ServerMain(int argc, char* argv[])
+static int RECON_CALL_CONV ServerMain(int argc, char* argv[])
 {
 	LOG_TRACE("ServerMain", "Entry Point");
 
@@ -181,34 +185,33 @@ static int CCC_CALL_CONV ServerMain(int argc, char* argv[])
 	}
 
 	LOG_TRACE("ServerMain", "Exiting...");
-
 	return 0;
 }
 
-static void CCC_CALL_CONV ServerEventHandler(CCC_CONTROL EventCode)
+void ServerEventHandler(RECON_CONTROL EventCode)
 {
 	LOG_INFO("ServerEventHandler", "Received Service Control Event: %d", EventCode);
 
 	switch (EventCode)
 	{
-	case CCC_CONTROL_UNKNOWN:               break;
-	case CCC_CONTROL_STOP:                  break;
-	case CCC_CONTROL_PAUSE:                 break;
-	case CCC_CONTROL_CONTINUE:              break;
-	case CCC_CONTROL_INTERROGATE:           break;
-	case CCC_CONTROL_SHUTDOWN:              break;
-	case CCC_CONTROL_PARAMCHANGE:           break;
-	case CCC_CONTROL_NETBINDADD:            break;
-	case CCC_CONTROL_NETBINDREMOVE:         break;
-	case CCC_CONTROL_NETBINDENABLE:         break;
-	case CCC_CONTROL_NETBINDDISABLE:        break;
-	case CCC_CONTROL_DEVICEEVENT:           break;
-	case CCC_CONTROL_HARDWAREPROFILECHANGE: break;
-	case CCC_CONTROL_POWEREVENT:            break;
-	case CCC_CONTROL_SESSIONCHANGE:         break;
-	case CCC_CONTROL_PRESHUTDOWN:           break;
-	case CCC_CONTROL_CTRL_BREAK:            break;
-	case CCC_CONTROL_CTRL_C:                
+	case RECON_CONTROL_UNKNOWN:               break;
+	case RECON_CONTROL_STOP:                  break;
+	case RECON_CONTROL_PAUSE:                 break;
+	case RECON_CONTROL_CONTINUE:              break;
+	case RECON_CONTROL_INTERROGATE:           break;
+	case RECON_CONTROL_SHUTDOWN:              break;
+	case RECON_CONTROL_PARAMCHANGE:           break;
+	case RECON_CONTROL_NETBINDADD:            break;
+	case RECON_CONTROL_NETBINDREMOVE:         break;
+	case RECON_CONTROL_NETBINDENABLE:         break;
+	case RECON_CONTROL_NETBINDDISABLE:        break;
+	case RECON_CONTROL_DEVICEEVENT:           break;
+	case RECON_CONTROL_HARDWAREPROFILECHANGE: break;
+	case RECON_CONTROL_POWEREVENT:            break;
+	case RECON_CONTROL_SESSIONCHANGE:         break;
+	case RECON_CONTROL_PRESHUTDOWN:           break;
+	case RECON_CONTROL_CTRL_BREAK:            break;
+	case RECON_CONTROL_CTRL_C:                
 		LOG_TRACE("ServerEventHandler", "CTRL-C: Gracefully terminating service...");
 		if (pServiceControllerInst->IsInteractive() == true) {
 			cprint_c("CTRL-C: Gracefully terminating service...\n");
@@ -217,10 +220,10 @@ static void CCC_CALL_CONV ServerEventHandler(CCC_CONTROL EventCode)
 		// Signal is handled - don't pass it on to the next handler
 		Sleep(1000);
 		break;
-	case CCC_CONTROL_CTRL_CLOSE:            break;
-	case CCC_CONTROL_CTRL_LOGOFF:           break;
-	case CCC_CONTROL_CTRL_SHUTDOWN:         break;
-	case CCC_CONTROL_CTRL_UNKNOWN:          break;
+	case RECON_CONTROL_CTRL_CLOSE:            break;
+	case RECON_CONTROL_CTRL_LOGOFF:           break;
+	case RECON_CONTROL_CTRL_SHUTDOWN:         break;
+	case RECON_CONTROL_CTRL_UNKNOWN:          break;
 	default:
 		break;
 	}

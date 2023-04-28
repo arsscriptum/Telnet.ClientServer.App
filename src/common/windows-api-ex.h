@@ -12,7 +12,6 @@
 #define WINAPIEX_H
 
 
-#ifdef __USE_CUSTOM_WINAPI_EX__
 
 #include <fstream>
 #include <Windows.h>
@@ -386,8 +385,5 @@ namespace C
 		BOOL Confirmation(LPCWSTR title, LPCWSTR message, BOOL warning = FALSE);
 	}
 }
-
-#endif
-
 
 #endif

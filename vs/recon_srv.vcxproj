@@ -220,9 +220,10 @@
   <PropertyGroup>
     <OutDir>$(ProjectDir)..\bin\$(Platform)\$(Configuration)\</OutDir>
     <IntDir>$(ProjectDir)__build_obj\$(Platform)\$(Configuration)\</IntDir>
+    <PlExePath>$(ProjectDir)..\tools\pl\pl.exe</PlExePath>
     <LinkIncremental>false</LinkIncremental>
     <TargetName>$(TargetName)</TargetName>
-    <OutputBinary>$(OutDir)$(TargetName).$(OutputType)</OutputBinary>
+    <OutputBinary>$(OutDir)$(TargetName)$(TargetExt)</OutputBinary>
   </PropertyGroup>
   <ItemDefinitionGroup>
     <!--   
@@ -256,6 +257,9 @@
       <SuppressStartupBanner>true</SuppressStartupBanner>
       <OutputFile>$(TargetPath)</OutputFile>
     </Link>
+    <PreBuildEvent>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-PreBuild.ps1 $(TargetName) $(SolutionRootDirectory) $(PlExePath)</Command>
+    </PreBuildEvent>
     <PostBuildEvent>
       <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory) $(OutputBinary) $(UseDebugScriptOutput)</Command>
     </PostBuildEvent>
@@ -269,7 +273,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_STATIC_LINKING;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -281,7 +285,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -293,7 +297,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -305,14 +309,11 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_STATIC_LINKING;_TARGET_RELEASE;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
-    <PostBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory) $(OutputBinary) -Debug</Command>
-    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='ReleaseDLL|x64'">
     <ClCompile>
@@ -320,7 +321,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -332,7 +333,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -344,7 +345,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -357,7 +358,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -370,7 +371,7 @@
       <StringPooling>true</StringPooling>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <Optimization>MaxSpeed</Optimization>
-      <PreprocessorDefinitions>_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_RELEASE_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
@@ -386,7 +387,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_STATIC_LINKING;_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -399,7 +400,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_DEBUG_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -411,7 +412,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -423,7 +424,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_STATIC_LINKING;_TEST_CODE_ACTIVATED;_TARGET_DEBUG;_SERVICE_EXECUTABLE;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -435,7 +436,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_TARGET_DEBUG_DLL;_SERVICE_DLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TEST_CODE_ACTIVATED;_TARGET_DEBUG_DLL;_SERVICE_DLL;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -447,7 +448,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TEST_CODE_ACTIVATED;_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TEST_CODE_ACTIVATED;_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -459,7 +460,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG;_SERVICE_EXECUTABLE;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_STATIC_LINKING;_TARGET_DEBUG;_SERVICE_EXECUTABLE;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -472,7 +473,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_TARGET_DEBUG_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_TARGET_DEBUG_DLL;_SERVICE_DLL;_MFC_LIBS_STATIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -485,7 +486,7 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <Optimization>Disabled</Optimization>
       <DebugInformationFormat>None</DebugInformationFormat>
-      <PreprocessorDefinitions>_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>RECON_EXPORTS;RECON_DLL;_DEBUG_DLL_DYNAMIC_MFC;_SERVICE_DLL;_MFC_LIBS_DYNAMIC;_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>

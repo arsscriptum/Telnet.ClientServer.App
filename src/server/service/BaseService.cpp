@@ -2,97 +2,24 @@
 #include "config.h"
 #include <afx.h>
 
-/////////////////////////////////////////////////////////////////////////////
-// Copyright (C) 1997 by Joerg Koenig and the ADG mbH, Mannheim, Germany
-// All rights reserved
-//
-// Distribute freely, except: don't remove my name from the source or
-// documentation (don't take credit for my work), mark your changes (don't
-// get me blamed for your possible bugs), don't alter or remove this
-// notice.
-// No warrantee of any kind, express or implied, is included with this
-// software; use at your own risk, responsibility for damages (if any) to
-// anyone resulting from the use of this software rests entirely with the
-// user.
-//
-// Send bug reports, bug fixes, enhancements, requests, flames, etc., and
-// I'll try to keep a version up to date.  I can be reached as follows:
-//    J.Koenig@adg.de                 (company site)
-//    Joerg.Koenig@rhein-neckar.de    (private site)
-/////////////////////////////////////////////////////////////////////////////
-//
-// MODIFIED BY TODD C. WILSON FOR THE ROAD RUNNER NT LOGIN SERVICE.
-// HOWEVER, THESE MODIFICATIONS ARE BROADER IN SCOPE AND USAGE AND CAN BE USED
-// IN OTHER PROJECTS WITH NO CHANGES.
-// MODIFIED LINES FLAGGED/BRACKETED BY "//!! TCW MOD"
-//
-/////////////////////////////////////////////////////////////////////////////
 
-
-// last revised: $Date: 11.05.98 21:09 $, $Revision: 3 $
-
-
-/////////////////////////////////////////////////////////////////////////////
-// Acknoledgements:
-//	o	Thanks to Victor Vogelpoel (VictorV@Telic.nl) for his bug-fixes
-//		and enhancements.
-//	o	Thanks to Todd C. Wilson (todd@mediatec.com) for the
-//		"service" on Win95
-//
-// Changes:
-//	01/21/99
-//	o	Bug fixed in "DeregisterApplicationLog()"
-//		thanks to Grahame Willis (grahamew@questsoftware.com.au):
-//
-//	04/30/98
-//	o	Added two more switches to handle command line arguments:
-//		-e will force a running service to stop (corresponding
-//		method in this class: virtual BOOL EndService();) and
-//		-s will force the service to start (method:
-//		virtual BOOL StartupService())
-//
-//	02/05/98
-//	o	Added the methods "RegisterApplicationLog()" and
-//		"DeregisterApplicationLog()" (both virtual). The first one will be
-//		called from "InstallService()" and creates some registry-entries
-//		for a better event-log. The second one removes these entries when
-//		the service will uninstall (see "RemoveService()")
-//	o	The service now obtains the security identifier of the current user
-//		and uses this SID for event-logging.
-//	o	The memory allocated by "CommandLineToArgvW()" will now release
-//		(UNICODE version only)
-//	o	The service now uses a simple message catalogue for a nicer
-//		event logging
 
 #include <windows.h>
 #include <tchar.h>
 #include <stdio.h>
 #include <crtdbg.h>
 
-#include <io.h>			//!! TCW MOD
-#include <fcntl.h>		//!! TCW MOD
+#include <io.h>			
+#include <fcntl.h>		
 #include "targetver.h"
 #include "utilities.h"
 #include "BaseService.h"
 #include "BaseServiceEventLogMsg.h"
 
 
-#ifndef RSP_SIMPLE_SERVICE
-	#define RSP_SIMPLE_SERVICE 1
-#endif
-#ifndef RSP_UNREGISTER_SERVICE
-	#define RSP_UNREGISTER_SERVICE 0
-#endif
-
-static BaseService * gpTheService = 0;			// the one and only instance
-
-BaseService * AfxGetService() { return gpTheService; }
-
-
 
 
 static LPCTSTR gszAppRegKey = TEXT("SYSTEM\\CurrentControlSet\\Services\\EventLog\\Application\\");
-static LPCTSTR gszWin95ServKey=TEXT("Software\\Microsoft\\Windows\\CurrentVersion\\RunServices");	//!! TCW MOD
 
 
 /////////////////////////////////////////////////////////////////////////////
@@ -105,12 +32,6 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 	, m_fConsoleReady(false)
 {
 
-	gpTheService = this;
-
-		/////////////////////////////////////////////////////////////////////////
-		// Providing a SID (security identifier) was contributed by Victor
-		// Vogelpoel (VictorV@Telic.nl).
-		// The code from Victor was slightly modified.
 
 #if USE_USERACCOUNT_SIDS
 		// Get security information of current user
@@ -153,11 +74,7 @@ BaseService :: BaseService( LPCSTR lpServiceName, LPCSTR lpDisplayName, LPCSTR l
 }
 
 
-BaseService :: ~BaseService() {
-
-
-	gpTheService = 0;
-}
+BaseService :: ~BaseService() {}
 
 
 
@@ -166,12 +83,7 @@ BOOL BaseService :: InstallService() {
     TCHAR szPath[1024];
 
 	LOG_TRACE("BaseService::InstallService", "");
-	SetupConsole();	//!! TCW MOD - have to show the console here for the
-					// diagnostic or error reason: orignal class assumed
-					// that we were using _main for entry (a console app).
-					// This particular usage is a Windows app (no console),
-					// so we need to create it. Using SetupConsole with _main
-					// is ok - does nothing, since you only get one console.
+	SetupConsole();
 
 	if( GetModuleFileName( 0, szPath, 1023 ) == 0 ) {
 		TCHAR szErr[256];
@@ -181,7 +93,7 @@ BOOL BaseService :: InstallService() {
 	}
 
 	BOOL bRet = FALSE;
-
+	TCHAR szErr[256];
 
 		// Real NT services go here.
 		SC_HANDLE schSCManager = OpenSCManager(0,0,SC_MANAGER_ALL_ACCESS);
@@ -208,13 +120,13 @@ BOOL BaseService :: InstallService() {
 				CloseServiceHandle(schService);
 				bRet = TRUE;
 			} else {
-				TCHAR szErr[256];
+				
 				LOG_ERROR("BaseService::InstallService", "CreateService failed - %s", GetLastErrorText(szErr, 256));
 			}
 
 			CloseServiceHandle(schSCManager);
 		 } else {
-			TCHAR szErr[256];
+
 			LOG_ERROR("BaseService::InstallService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
@@ -235,6 +147,7 @@ BOOL BaseService :: InstallService() {
 
 BOOL BaseService :: RemoveService() {
 	BOOL bRet = FALSE;
+	TCHAR szErr[256];
 	SERVICE_STATUS tmpCurrentStatus;
 	SetupConsole();	//!! TCW MOD - have to show the console here for the
 					// diagnostic or error reason: orignal class assumed
@@ -278,19 +191,19 @@ BOOL BaseService :: RemoveService() {
 					LOG_TRACE("BaseService::RemoveService", "%s removed.", Service_Name());
 					bRet = TRUE;
 				} else {
-					TCHAR szErr[256];
+					
 					LOG_ERROR("BaseService::RemoveService", "DeleteService failed - %s", GetLastErrorText(szErr,256));
 				}
 
 				CloseServiceHandle(schService);
 			} else {
-				TCHAR szErr[256];
+				
 				LOG_ERROR("BaseService::RemoveService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 			}
 
 			  CloseServiceHandle(schSCManager);
 		 } else {
-			TCHAR szErr[256];
+			
 			LOG_ERROR("BaseService::RemoveService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 		}
 
@@ -303,6 +216,7 @@ BOOL BaseService :: RemoveService() {
 
 BOOL BaseService :: EndService() {
 	BOOL bRet = FALSE;
+	TCHAR szErr[256];
 	SERVICE_STATUS tmpCurrentStatus;
 	unsigned int counter = 0;
 	unsigned int num_retries = 1;
@@ -364,13 +278,13 @@ BOOL BaseService :: EndService() {
 
 			::CloseServiceHandle(schService);
 		} else {
-			TCHAR szErr[256];
+			
 			LOG_ERROR("BaseService::EndService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
-		TCHAR szErr[256];
+		
 		LOG_ERROR("BaseService::EndService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 
@@ -380,6 +294,7 @@ BOOL BaseService :: EndService() {
 
 BOOL BaseService :: StartupService() {
 	BOOL bRet = FALSE;
+	TCHAR szErr[256];
 	SERVICE_STATUS tmpCurrentStatus;
 	unsigned int counter = 0;
 	unsigned int num_retries = 0;
@@ -439,19 +354,19 @@ BOOL BaseService :: StartupService() {
                     
 			} else {
 				// StartService failed
-				TCHAR szErr[256];
+				
 				LOG_ERROR("BaseService::StartupService", "%s failed to start: %s", Service_Name(), GetLastErrorText(szErr,256));
 			}
 
 			::CloseServiceHandle(schService);
 		} else {
-			TCHAR szErr[256];
+			
 			LOG_ERROR("BaseService::StartupService", "OpenService failed - %s", GetLastErrorText(szErr,256));
 		}
 
         ::CloseServiceHandle(schSCManager);
     } else {
-		TCHAR szErr[256];
+		
 		LOG_ERROR("BaseService::StartupService", "OpenSCManager failed - %s", GetLastErrorText(szErr,256));
 	}
 

@@ -1,3 +1,8 @@
+<#
+#̷𝓍   𝓐𝓡𝓢 𝓢𝓒𝓡𝓘𝓟𝓣𝓤𝓜
+#̷𝓍   🇵​​​​​🇴​​​​​🇼​​​​​🇪​​​​​🇷​​​​​🇸​​​​​🇭​​​​​🇪​​​​​🇱​​​​​🇱​​​​​ 🇸​​​​​🇨​​​​​🇷​​​​​🇮​​​​​🇵​​​​​🇹​​​​​ 🇧​​​​​🇾​​​​​ 🇬​​​​​🇺​​​​​🇮​​​​​🇱​​​​​🇱​​​​​🇦​​​​​🇺​​​​​🇲​​​​​🇪​​​​​🇵​​​​​🇱​​​​​🇦​​​​​🇳​​​​​🇹​​​​​🇪​​​​​.🇶​​​​​🇨​​​​​@🇬​​​​​🇲​​​​​🇦​​​​​🇮​​​​​🇱​​​​​.🇨​​​​​🇴​​​​​🇲​​​​​
+#>
+
 
 function Invoke-IsAdministrator  {  
     (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
@@ -16,10 +21,10 @@ function Get-ScriptDirectory {
         #  Read Arguments 
         #
         ########################################################################################
-
+        $ExpectedNumberArguments = 3
         $Script:Arguments = $args.Clone()
         [System.Collections.ArrayList]$ArgumentList = [System.Collections.ArrayList]::new()
-        0..3 |  % {
+        0..$ExpectedNumberArguments |  % {
             $index = $_
             if([string]::IsNullOrEmpty($Script:Arguments[$index]) -eq $True){
              Write-Output "missing argument $index"
@@ -32,14 +37,8 @@ function Get-ScriptDirectory {
         [string]$SolutionDirectory      = $ArgumentList.Item(2)
         [string]$BuiltBinary            = $ArgumentList.Item(3)
 
-        Write-Debug "########################################################################################"
-        Write-Debug "                                    DEBUG ARGUMENTS                                     "
-        Write-Debug "`tSolutionDirectory   ==> $SolutionDirectory"
-        Write-Debug "`tBuiltBinary         ==> $BuiltBinary"
-        Write-Debug "########################################################################################"
-
-        [string]$SolutionDirectory    = (Resolve-Path "$SolutionDirectory").Path
-        [string]$BuiltBinary          = (Resolve-Path "$BuiltBinary").Path
+        [string]$SolutionDirectory      = (Resolve-Path "$SolutionDirectory").Path
+        [string]$BuiltBinary            = (Resolve-Path "$BuiltBinary").Path
 
         [string]$OutputDirectory        = (Resolve-Path "$SolutionDirectory\bin\$Platform\$Configuration").Path
         [string]$ScriptsDirectory       = Join-Path $SolutionDirectory 'scripts'

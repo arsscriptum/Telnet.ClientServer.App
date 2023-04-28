@@ -43,27 +43,19 @@
 #include <commctrl.h>       // InitCommonControlsEx, etc.
 #include <stdexcept>
 
-#define __USE_CUSTOM_WINAPI_EX__
 
-#undef CCC_CALL_CONV
-#undef CCC_INTERFACE_DEF_NOCC
-#undef CCC_INTERFACE_DEF
-
-#define CCC_STATIC_LINKING
-
-#ifdef CCC_STATIC_LINKING
-#  define CCC_CALL_CONV
-#  define CCC_INTERFACE_DEF_NOCC
-#  define CCC_INTERFACE_DEF(x)   x
+#ifdef RECON_STATIC_LINKING
+#  define RECON_CALL_CONV WINAPI
+#  define RECON_INTERFACE_DEF_NOCC
+#  define RECON_INTERFACE_DEF(x)   x
 #else
-//#  define CCC_CALL_CONV  __stdcall
-#  define CCC_CALL_CONV  __cdecl
-#  ifdef CCC_EXPORTS
-#    define CCC_INTERFACE_DEF_NOCC __declspec(dllexport)                    
-#    define CCC_INTERFACE_DEF(x)   __declspec(dllexport) x CCC_CALL_CONV 
+#  define RECON_CALL_CONV  WINAPI
+#  ifdef RECON_EXPORTS
+#    define RECON_INTERFACE_DEF_NOCC __declspec(dllexport)                    
+#    define RECON_INTERFACE_DEF(x)   __declspec(dllexport) x RECON_CALL_CONV 
 #  else
-#    define CCC_INTERFACE_DEF_NOCC __declspec(dllimport)                    
-#    define CCC_INTERFACE_DEF(x)   __declspec(dllimport) x CCC_CALL_CONV
+#    define RECON_INTERFACE_DEF_NOCC __declspec(dllimport)                    
+#    define RECON_INTERFACE_DEF(x)   __declspec(dllimport) x RECON_CALL_CONV
 #  endif
 #endif
 

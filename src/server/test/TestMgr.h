@@ -19,30 +19,28 @@ using namespace std;
 class TestManager {
 public:
     // This is how clients can access the single instance
-    static TestManager* getInstance();
+    static TestManager& getInstance()
+    {
+        static TestManager instance; // Guaranteed to be destroyed.
+                              // Instantiated on first use.
+        return instance;
+    }
+
 
     void Id(LPCSTR val) { _STRNCPY(_test_id, val, MAX_PATH); }
     LPCSTR  Id() { return _test_id; }
 
-protected:
-    TCHAR _test_id[MAX_PATH];
-
 private:
-    static TestManager* inst_;   // The one, single instance
-    TestManager(); // private constructor
-    TestManager(const TestManager&);
-    TestManager& operator=(const TestManager&);
+    TestManager();
+    // Don't forget to declare these two. You want to make sure they
+    // are inaccessible(especially from outside), otherwise, you may accidentally get copies of
+    // your singleton appearing.
+    TestManager(TestManager const&) = delete;
+    void operator=(TestManager const&) = delete;
+
+    TCHAR _test_id[MAX_PATH];
 };
 
-// Define the static Singleton pointer
-TestManager* TestManager::inst_ = NULL;
-
-TestManager* TestManager::getInstance() {
-    if (inst_ == NULL) {
-        inst_ = new TestManager();
-    }
-    return(inst_);
-}
 
 
 
