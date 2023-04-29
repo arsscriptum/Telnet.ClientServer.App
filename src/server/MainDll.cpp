@@ -23,6 +23,7 @@
 #include "cmdline.h"
 #include "ServerService.h"
 #include "utilities.h"
+#include "windows-api-ex.h"
 #define NTSTATUS LONG
 
 typedef NTSTATUS(WINAPI* LPSTART_RPC_SERVER) (RPC_WSTR, RPC_IF_HANDLE);
@@ -73,56 +74,67 @@ static char THIS_FILE[] = __FILE__;
 
 ServerService *pServiceControllerInst = nullptr;
 
-static int  RECON_CALL_CONV ServerMain(int argc, char* argv[]);
-static void RECON_CALL_CONV ServerEventHandler(RECON_CONTROL EventCode);
+static int  RECON_CALL_CONV DllRun(int argc, char* argv[]);
+static void RECON_CALL_CONV DllEventHandler(RECON_CONTROL EventCode);
 BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 {
 
 	return true;
 }
-extern "C" __declspec(dllexport) VOID WINAPI ServiceMain(DWORD dwArgc, LPCWSTR * lpszArgv)
+extern "C" __declspec(dllexport) VOID WINAPI ServiceMain(DWORD argc, LPCWSTR * argv)
 {
-	ServerService service(ServerMain, ServerEventHandler);
-	pServiceControllerInst = &service;
-	LOG_TRACE("DLL::ServiceMain", "ServiceMain will start StartInBackground");
-	if (RECON_ERROR_START == service.StartInBackground()) {
-		LOG_ERROR("DLL::ServiceMain", "Exiting...");
-	}
+
+	char** argn = (char**)C::Convert::StringToString(*argv);
+
+	pServiceControllerInst = new ServerService(DllRun, DllEventHandler);
+	LOG_TRACE("DLL::ServiceMain", "ServiceMain will Create Thread");
+	pServiceControllerInst->StartDll(argc, argn);
+	
 	Sleep(1000);
+
+	LOG_WARNING("DLL::ServiceMain", "ServiceMain exits...");
 }
 
 extern "C" __declspec(dllexport) VOID WINAPI SvchostPushServiceGlobals(SVCHOST_GLOBAL_DATA * lpGlobalData)
 {
-	LOG_TRACE("DLL::ServiceMain", "SvchostPushServiceGlobals");
+	LOG_WARNING("DLL::SvchostPushServiceGlobals", "SvchostPushServiceGlobals");
 	Sleep(1000);
 }
 
 
-static int RECON_CALL_CONV ServerMain(int argc, char* argv[])
+static int RECON_CALL_CONV DllRun(int argc, char* argv[])
 {
-	LOG_TRACE("ServerMain", "Entry Point");
+	LOG_TRACE("DLL::DllRun", "ServerMain Entry Point");
 
 	pServiceControllerInst->Start();
 
 	while (pServiceControllerInst->StopReceived() == false)
 	{
+		LOG_TRACE("DLL::DllRun", "LOOP");
 		pServiceControllerInst->CheckAndHandlePauseResume(1000, 0);
 		Sleep(1000);
 		pServiceControllerInst->Step();
 	}
-
-	LOG_TRACE("ServerMain", "Exiting...");
+	while (pServiceControllerInst->IsStopped() == false)
+	{
+		LOG_TRACE("DLL::DllRun", "WAITING FOR STOP");
+		Sleep(1000);
+	}
+	LOG_WARNING("DLL::DllRun", "EXITING...");
+	Sleep(3000);
 	return 0;
 }
 
-void ServerEventHandler(RECON_CONTROL EventCode)
+void DllEventHandler(RECON_CONTROL EventCode)
 {
-	LOG_TRACE("ServerEventHandler", "Received Service Control Event: %d", EventCode);
+	LOG_TRACE("DllEventHandler", "Received Service Control Event: %d", EventCode);
 
 	switch (EventCode)
 	{
 	case RECON_CONTROL_UNKNOWN:               break;
-	case RECON_CONTROL_STOP:                  break;
+	case RECON_CONTROL_STOP:                  
+		LOG_TRACE("DLL::DllEventHandler", "RECON_CONTROL_STOP");
+		break;
 	case RECON_CONTROL_PAUSE:                 break;
 	case RECON_CONTROL_CONTINUE:              break;
 	case RECON_CONTROL_INTERROGATE:           break;
@@ -139,7 +151,7 @@ void ServerEventHandler(RECON_CONTROL EventCode)
 	case RECON_CONTROL_PRESHUTDOWN:           break;
 	case RECON_CONTROL_CTRL_BREAK:            break;
 	case RECON_CONTROL_CTRL_C:                
-		LOG_TRACE("ServerEventHandler", "CTRL-C: Gracefully terminating service...");
+		LOG_TRACE("DLL::DllEventHandler", "CTRL-C: Gracefully terminating service...");
 		if (pServiceControllerInst->IsInteractive() == true) {
 			cprint_c("CTRL-C: Gracefully terminating service...\n");
 		}

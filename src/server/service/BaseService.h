@@ -45,6 +45,7 @@ class BaseService {
 
 		virtual STD_STRING CurrentStateString() = 0;
 		virtual bool IsRunning() = 0;
+		virtual bool IsStopped() = 0;
 		virtual bool StopReceived() = 0;
 		virtual bool PauseReceived() = 0;
 		virtual bool ContinueReceived() = 0;

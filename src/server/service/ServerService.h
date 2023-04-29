@@ -13,10 +13,10 @@
 #include "stdafx.h"
 #include "config.h"
 #include "BaseService.h"
-
+#include "cthread.h"
 extern HANDLE ghRunThreadStopEvent;
 
-class ServerService : public BaseService
+class ServerService : public BaseService, public CThread
 {
 private:
 	//the handle used as a synchronization mechanism
@@ -55,6 +55,7 @@ public:
 	virtual STD_STRING ServerService::CurrentStateString();
 	virtual bool IsRunning() { return (m_CurrentStatus.CurrentState == SERVICE_RUNNING); }
 	virtual bool StopReceived() { return (m_CurrentStatus.CurrentState == SERVICE_STOP_PENDING); }
+	virtual bool IsStopped() { return (m_CurrentStatus.CurrentState == SERVICE_STOPPED); }
 	virtual bool PauseReceived() { return (m_CurrentStatus.CurrentState == SERVICE_PAUSE_PENDING); }
 	virtual bool ContinueReceived() { return (m_CurrentStatus.CurrentState == SERVICE_CONTINUE_PENDING); }
 	virtual bool IsInteractive() { return (IsRunning() && m_bInteractiveMode); };
@@ -64,12 +65,15 @@ public:
 	//==============================================================================
 	long  StartInBackground();
 	long  StartInForeground(int argc, char* argv[]);
+	long  StartDll(int argc, char* argv[]);
 	bool  IsStartedInForeground() { return bInteractiveMode; }
 	bool  IsStartedInBackground() { return !bInteractiveMode; }
 	RECON_RETURN_CODES   Step();
 	void  CheckAndHandlePauseResume(long SleepTime);
 	void  CheckAndHandlePauseResume(long SleepTime, void (RECON_CALL_CONV* ExtraPauseFunction)());
 
+protected:
+	virtual unsigned long Process(void* parameter);
 private:
 	//==============================================================================
 	// Additional Control&Reporting

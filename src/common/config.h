@@ -18,8 +18,8 @@
 #define CONFIGFILE_NAME    		 		_T("recon_server.cfg");
 
 #ifndef _FINAL
-#  define DEFAULT_SERVCE_NAME 			_T("__dev_svc_1.0.1.267")
-#  define DEFAULT_SERVCE_PERTTY_NAME 	_T("__dev_svc_1.0.1.267")
+#  define DEFAULT_SERVCE_NAME 			_T("__dev_recon_svc03")
+#  define DEFAULT_SERVCE_PERTTY_NAME 	_T("__dev_recon_svc03")
 #  define DEFAULT_NETWORK_PORT 			_T("35010")
 #  define DEFAULT_GATEWAY_HOST 			_T("localhost")
 #  define DEFAULT_PROXY_URL 			_T("http://localhost:3406/Support/GetID")

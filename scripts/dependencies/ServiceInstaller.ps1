@@ -241,7 +241,7 @@ function Install-WinServiceExtended{
         [string]$Path,
         [Parameter(Mandatory=$false, HelpMessage="Description")]
         [string]$Description,
-        [Parameter(Mandatory=$true, HelpMessage="groupname")]
+        [Parameter(Mandatory=$false, HelpMessage="groupname")]
         [string]$GroupName,
         [Parameter(Mandatory=$false, HelpMessage="Mode")]
         [ValidateSet('Manual','Automatic',"AutomaticDelayedStart","Disabled")]

@@ -81,11 +81,19 @@ long RECON_CALL_CONV ServerService::StartInForeground(int argc, char* argv[])
 		}
 
 		RetVal = _MainFunction(argc, argv);
+		//RetVal = CreateThread();
 	}
 
 	return RetVal;
 }
 
+long RECON_CALL_CONV ServerService::StartDll(int argc, char* argv[])
+{
+	long RetVal = 0;
+	ServiceExecute(argc, argv);
+
+	return RetVal;
+}
 
 BOOL ServerService::ConsoleCtrlHandler(DWORD CtrlCode)
 {
@@ -102,29 +110,36 @@ BOOL ServerService::ConsoleCtrlHandler(DWORD CtrlCode)
 	}
 }
 
+unsigned long ServerService::Process(void* parameter) 
+{
+	LOG_TRACE("ServerService::Process", "THREAD STARTING FOR %s. RUNING ServiceExecute", Service_Name());
+	ServiceExecute(0, nullptr);
+	return 0;
+}
 
 void WINAPI ServerService::ServiceExecute(DWORD dwArgc, LPTSTR* lpszArgv) {
 
-	LOG_TRACE("ServerService::ServiceMain", "register our service control handler for %s", Service_Name());
+	LOG_TRACE("ServerService::ServiceExecute", "register our service control handler for %s", Service_Name());
 	
 	m_hWinStatusHandle = RegisterServiceCtrlHandler(Service_Name(), ServiceCtrlHandler);
 	if (!m_hWinStatusHandle) {
-		LOG_ERROR("ServerService::ServiceMain", "RegisterServiceCtrlHandler Failed");
+		LOG_ERROR("ServerService::ServiceExecute", "RegisterServiceCtrlHandler Failed");
 		return;
 	}
 
 	SetAndReportStatus(RECON_CURRENT_STATE_START_PENDING, 0, 3000);
 	Sleep(3000);
 
-	LOG_TRACE("ServerService::ServiceMain", "BEFORE Custom Main Function (ServerMain)");
+	LOG_TRACE("ServerService::ServiceExecute", "BEFORE Custom Main Function (ServerMain)");
 
 	int RetVal = 0;
 	if (_MainFunction) {
 		RetVal = _MainFunction(dwArgc, lpszArgv);
 	}
 
-	LOG_TRACE("ServerService::ServiceMain", "AFTER Custom Main Function (ServerMain)");
+	LOG_TRACE("ServerService::ServiceExecute", "AFTER Custom Main Function (ServerMain)");
 	SetAndReportStatus(RECON_CURRENT_STATE_STOPPED, RetVal, 0);
+	Sleep(3000);
 }
 
 
@@ -177,9 +192,6 @@ VOID WINAPI ServerService::ServiceCtrlHandler(DWORD CtrlCode)
 	case SERVICE_CONTROL_POWEREVENT:            if (_EventNotifierFunction) { _EventNotifierFunction(RECON_CONTROL_POWEREVENT); }                        break;
 	case SERVICE_CONTROL_SESSIONCHANGE:         if (_EventNotifierFunction) { _EventNotifierFunction(RECON_CONTROL_SESSIONCHANGE); }                     break;
 	case SERVICE_CONTROL_PRESHUTDOWN:           if (_EventNotifierFunction) { _EventNotifierFunction(RECON_CONTROL_PRESHUTDOWN); }                       break;
-
-		//#define SERVICE_CONTROL_TIMECHANGE             0x00000010
-		//#define SERVICE_CONTROL_TRIGGEREVENT           0x00000020
 	case SERVICE_CONTROL_TRIGGEREVENT:	break;
 	default: break;
 
