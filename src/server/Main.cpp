@@ -33,7 +33,7 @@ static char THIS_FILE[] = __FILE__;
 #pragma message( "Compiling " __FILE__ )
 #pragma message( "Last modified on " __TIMESTAMP__ )
 
-ServerService *pServiceControllerInst = nullptr;
+std::unique_ptr<ServerService> pServiceControllerInst;
 
 static int  RECON_CALL_CONV ServerMain(int argc, char* argv[]);
 static void RECON_CALL_CONV ServerEventHandler(RECON_CONTROL EventCode);
@@ -106,7 +106,7 @@ int main( int argc, char ** argv )
 	bool optServiceDebug = inputParser->isSet(cmdlineOptionDebug);
 	bool optTest = inputParser->isSet(cmdlineOptionTest);
 
-	
+	//SetConsoleCtrlHandler(HandlerRoutine, TRUE);
 	bool gExitRequested = false;
 	if (optHelp) {
 		usage();
@@ -116,8 +116,11 @@ int main( int argc, char ** argv )
 		banner();
 	}
 	
-	ServerService service(ServerMain, ServerEventHandler);
-	pServiceControllerInst = &service;
+	//ServerService service(ServerMain, ServerEventHandler);
+	//pServiceControllerInst = &service;
+
+	pServiceControllerInst = std::unique_ptr<ServerService>(new ServerService(ServerMain, ServerEventHandler));
+
 
 	BOOL ret = TRUE;
 
@@ -125,28 +128,28 @@ int main( int argc, char ** argv )
 		LOG_TRACE("main", "InstallService;");
 		
 		cprint_r("InstallService\n");
-		ret = service.InstallService();
+		ret = pServiceControllerInst->InstallService();
 		return (ret ? 0 : -1);
 	}
 	else if (optServiceUninstall) {
 		LOG_TRACE("main", "UninstallService;");
 		
 		cprint_r("Uninstall Service\n");
-		ret = service.RemoveService();
+		ret = pServiceControllerInst->RemoveService();
 		return (ret ? 0 : -2);
 	}
 	else if (optServiceStop) {
 		LOG_TRACE("main", "StopService;");
 		
 		cprint_r("Stop Service\n");
-		ret = service.EndService();
+		ret = pServiceControllerInst->EndService();
 		return (ret ? 0 : -3);
 	}
 	else if (optServiceDebug) {
 		LOG_TRACE("main", "StartInForeground;");
 		
 		cprint_r("Debug (start service in foreground)\nCTRL-C to QUIT.");
-		ret = service.StartInForeground(argc, argv);
+		ret = pServiceControllerInst->StartInForeground(argc, argv);
 		return (ret ? 0 : -3);
 	}
 	else if (optTest) {
@@ -159,7 +162,7 @@ int main( int argc, char ** argv )
 	LOG_TRACE("EXECUTABLE::MAIN", "StartInBackground");
 	
 	cprint_r("Start Service (in background mode)\n");
-	ret = service.StartInBackground();
+	ret = pServiceControllerInst->StartInBackground();
 	return (ret ? 0 : -6);
 
 	

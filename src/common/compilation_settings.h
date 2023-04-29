@@ -15,7 +15,7 @@
 #define USE_USERACCOUNT_SIDS		0
 
 
-
+//#define BLOCK_SERVICEMAIN_RETURN    1
 #define ENABLE_LOG_CONTEXT			1
 
 

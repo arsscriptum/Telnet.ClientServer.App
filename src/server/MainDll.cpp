@@ -72,7 +72,8 @@ static char THIS_FILE[] = __FILE__;
 #pragma message( "Compiling " __FILE__ )
 #pragma message( "Last modified on " __TIMESTAMP__ )
 
-ServerService *pServiceControllerInst = nullptr;
+	
+std::unique_ptr<ServerService> pServiceControllerInst;
 
 static int  RECON_CALL_CONV DllRun(int argc, char* argv[]);
 static void RECON_CALL_CONV DllEventHandler(RECON_CONTROL EventCode);
@@ -81,14 +82,23 @@ BOOL APIENTRY DllMain(HMODULE module, DWORD reason, LPVOID reserved)
 
 	return true;
 }
+
+// NOTE Service Main calls StartDll which starts a thread to execute ServiceExecute. ServiceMain must return.
+// 
+// In version 6.0, SVCHOST logs each call to ServiceMain as an event, such that it may be retrieved through the Event Viewer in the Diagnostic channel 
+// under the heading Microsoft Windows Services Svchost Performance Diagnostic Provider.Each call is preceded by event 101 and each return is marked 
+// as event 102. For both, the event data is the service’s name.
+// This event log provides ready confirmation that many services implemented in service 
+// DLLs do not return from ServiceMain until stopped.
+// https://www.geoffchappell.com/studies/windows/win32/services/svchost/dll/servicemain.htm
+
 extern "C" __declspec(dllexport) VOID WINAPI ServiceMain(DWORD argc, LPCWSTR * argv)
 {
-
 	char** argn = (char**)C::Convert::StringToString(*argv);
-	//unique_ptr<ServerService> pServiceControllerInst(new ServerService(DllRun, DllEventHandler));
-	pServiceControllerInst = new ServerService(DllRun, DllEventHandler);
-	//ServerService service(DllRun, DllEventHandler);
-	//pServiceControllerInst = &service;
+
+	// unique ptr to avoid leak on exit
+	pServiceControllerInst = std::unique_ptr<ServerService>(new ServerService(DllRun, DllEventHandler)); 
+	
 	LOG_TRACE("DLL::ServiceMain", "ServiceMain will Create Thread");
 	pServiceControllerInst->StartDll(argc, argn);
 	

@@ -44,7 +44,9 @@ public:
 		memset(&m_CurrentStatus, 0, sizeof(m_CurrentStatus));
 		m_CurrentStatus.CheckPoint = 1;
 		m_hWinStatusHandle = 0;
+		bInteractiveMode = false;
 		mArgv = nullptr;
+	
 		mArgc = 0;
 	}
 	virtual STD_STRING ServerService::CurrentStateString();

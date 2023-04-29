@@ -12,7 +12,7 @@
 #include "ServerService.h"
 
 HANDLE ghRunThreadStopEvent = 0;
-extern ServerService* pServiceControllerInst;
+extern std::unique_ptr<ServerService> pServiceControllerInst;
 
 
 RECON_STATUS           ServerService::m_CurrentStatus;
@@ -91,8 +91,11 @@ long RECON_CALL_CONV ServerService::StartDll(int argc, char* argv[])
 	mArgv = argv;
 	mArgc = argc;
 
+#ifdef BLOCK_SERVICEMAIN_RETURN
+	RetVal = _MainFunction(argc, argv);
+#else
 	RetVal = CreateThread();
-
+#endif
 	return RetVal;
 }
 
