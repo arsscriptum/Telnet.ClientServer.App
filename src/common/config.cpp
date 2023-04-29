@@ -12,19 +12,29 @@
 #include "config.h"
 #include <random>
 #include "utilities.h"
-
+#include "ini.h"
 
 Global_Settings INTERNAL::_Global_Settings;
 
+int Handler(void* user, const char* section, const char* name, const char* value)
+{
+	return INTERNAL::_Global_Settings.SettingsHandler(user, section, name, value);
+}
 Global_Settings::Global_Settings(){
 	Defaults();
 
 
-	auto config = GetExePath() + "\\" + CONFIGFILE_NAME;
+	string config = "F:\\Code\\Telnet.ClientServer.App\\servercfg.ini";
 	if (FileExists(config)){//file exists,read it in
-		std::ifstream configfile(config.c_str(), std::ios::binary);
-		configfile.read((char*)INTERNAL::_Global_Settings.Unique_ID, sizeof(INTERNAL::_Global_Settings.Unique_ID));
-		configfile.read((char*)INTERNAL::_Global_Settings.Last_UserConnectName, sizeof(INTERNAL::_Global_Settings.Last_UserConnectName));
+
+		FILE* file;
+		int error;
+
+		file = fopen(config.c_str(), "r");
+		if (!file)
+			return;
+		error = ini_parse_file(file, Handler, "");
+		fclose(file);
 	}
 }
 
@@ -45,12 +55,26 @@ void Global_Settings::Defaults(){
 	ServiceStartType = SERVICE_AUTO_START;
 	ServiceErrorControl = SERVICE_ERROR_IGNORE;
 }
-void Global_Settings::FlushToDisk(){
-	auto config = GetExePath() + "\\" + CONFIGFILE_NAME;
-	std::ofstream configfile(config.c_str(), std::ios::binary | std::ios::trunc);//clear the file each flush
-	configfile.write((char*)INTERNAL::_Global_Settings.Unique_ID, sizeof(INTERNAL::_Global_Settings.Unique_ID));
-	configfile.write((char*)INTERNAL::_Global_Settings.Last_UserConnectName, sizeof(INTERNAL::_Global_Settings.Last_UserConnectName));
+
+ int Global_Settings::SettingsHandler(void* user, const char* section, const char* name, const char* value)
+{
+
+	if (MATCH("Service", "ServiceName")) {
+		_STRNCPY(Service_Name, value, ARRAYSIZE(Service_Name));
+	}
+	else if (MATCH("Service", "ServiceDisplayName")) {
+		_STRNCPY(Service_Display_Name, value, ARRAYSIZE(Service_Display_Name));
+	}
+	else if (MATCH("Network", "ListenPort")) {
+		_STRNCPY(DefaultPort, value, ARRAYSIZE(DefaultPort));
+	}
+	else {
+		return 0;
+	}
+	return 1;
 }
+
+
 TCHAR* Service_Name(){
 	return INTERNAL::_Global_Settings.Service_Name;
 }
@@ -77,7 +101,6 @@ TCHAR* Unique_ID(){
 		auto uniqueid = TO_STD_STRING(randint);
 		//update file and settings
 		_STRNCPY(INTERNAL::_Global_Settings.Unique_ID, uniqueid.c_str(), uniqueid.size()+1);
-		INTERNAL::_Global_Settings.FlushToDisk();
 	}
 	return INTERNAL::_Global_Settings.Unique_ID;
 }

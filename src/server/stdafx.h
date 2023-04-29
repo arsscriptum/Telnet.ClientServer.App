@@ -75,6 +75,7 @@
 #  define			_STRNCAT_S		wcsncat_s
 #  define			TO_STD_STRING	std::to_string
 #  define			STD_STRING		std::wstring
+#  define			MATCH(s, n) wstrcmp(section, s) == 0 && wstrcmp(name, n) == 0
 #else
 #  define           _PRINTF         printf
 #  define			_STRCPY		    strcpy
@@ -87,6 +88,7 @@
 #  define			_STRNLEN		strnlen
 #  define			TO_STD_STRING	std::to_string
 #  define			STD_STRING		std::string
+#  define			MATCH(s, n) strcmp(section, s) == 0 && strcmp(name, n) == 0
 #endif
 #if defined _WIN32
 #  define			__PATH_SEPARATOR  _T('\\')

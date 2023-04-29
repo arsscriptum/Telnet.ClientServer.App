@@ -65,6 +65,7 @@
     <ClCompile Include="..\src\common\critsec.cpp" />
     <ClCompile Include="..\src\common\cthread.cpp" />
     <ClCompile Include="..\src\common\handle_wrappers.cpp" />
+    <ClCompile Include="..\src\common\ini.cpp" />
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
     <ClCompile Include="..\src\common\targetver.cpp" />
@@ -99,6 +100,7 @@
     <ClInclude Include="..\src\common\enum_to_string.h" />
     <ClInclude Include="..\src\common\handle_wrappers.h" />
     <ClInclude Include="..\src\common\hashtable.h" />
+    <ClInclude Include="..\src\common\ini.h" />
     <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
     <ClInclude Include="..\src\common\log_types.h" />

@@ -67,7 +67,7 @@
 
 
 
-	class Global_Settings{
+class Global_Settings{
 	public:
 		Global_Settings();
 		void Defaults();
@@ -89,10 +89,12 @@
 		DWORD ServiceStartType;
 		DWORD ServiceErrorControl;
 		TCHAR ServiceBinaryPath[128];
+
+		int SettingsHandler(void* user, const char* section, const char* name, const char* value);
+
 	};	
-	namespace INTERNAL{
-		extern Global_Settings _Global_Settings;
-	}
+
+namespace INTERNAL{ extern Global_Settings _Global_Settings; }
 
 TCHAR* Service_Name();
 TCHAR* Service_Display_Name();

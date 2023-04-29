@@ -99,6 +99,9 @@
     <ClCompile Include="..\src\server\MainDll.cpp">
       <Filter>server</Filter>
     </ClCompile>
+    <ClCompile Include="..\src\common\ini.cpp">
+      <Filter>common</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\src\common\keycodes_hashtable.tmp">
@@ -206,6 +209,9 @@
       <Filter>test</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\log_types.h">
+      <Filter>common</Filter>
+    </ClInclude>
+    <ClInclude Include="..\src\common\ini.h">
       <Filter>common</Filter>
     </ClInclude>
   </ItemGroup>
