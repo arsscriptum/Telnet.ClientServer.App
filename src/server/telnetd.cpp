@@ -25,9 +25,7 @@
 
 # define net_debug_log( ... )
 
-extern long restartCount;
 
-extern volatile BOOL requestReset;
 
 SOCKET client_socket[10];
 int max_clients = 10;

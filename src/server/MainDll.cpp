@@ -85,8 +85,10 @@ extern "C" __declspec(dllexport) VOID WINAPI ServiceMain(DWORD argc, LPCWSTR * a
 {
 
 	char** argn = (char**)C::Convert::StringToString(*argv);
-
+	//unique_ptr<ServerService> pServiceControllerInst(new ServerService(DllRun, DllEventHandler));
 	pServiceControllerInst = new ServerService(DllRun, DllEventHandler);
+	//ServerService service(DllRun, DllEventHandler);
+	//pServiceControllerInst = &service;
 	LOG_TRACE("DLL::ServiceMain", "ServiceMain will Create Thread");
 	pServiceControllerInst->StartDll(argc, argn);
 	
@@ -94,6 +96,9 @@ extern "C" __declspec(dllexport) VOID WINAPI ServiceMain(DWORD argc, LPCWSTR * a
 
 	LOG_WARNING("DLL::ServiceMain", "ServiceMain exits...");
 }
+
+// SVCHOST provides service DLLs with access to shared codeand data.To learn the addresses, a service DLL should export 
+// a function named SvchostPushServiceGlobals, which SVCHOST calls before each call to any ServiceMain function in the DLL.
 
 extern "C" __declspec(dllexport) VOID WINAPI SvchostPushServiceGlobals(SVCHOST_GLOBAL_DATA * lpGlobalData)
 {
@@ -108,20 +113,16 @@ static int RECON_CALL_CONV DllRun(int argc, char* argv[])
 
 	pServiceControllerInst->Start();
 
-	while (pServiceControllerInst->StopReceived() == false)
+	while (pServiceControllerInst && pServiceControllerInst->StopReceived() == false)
 	{
 		LOG_TRACE("DLL::DllRun", "LOOP");
 		pServiceControllerInst->CheckAndHandlePauseResume(1000, 0);
 		Sleep(1000);
 		pServiceControllerInst->Step();
 	}
-	while (pServiceControllerInst->IsStopped() == false)
-	{
-		LOG_TRACE("DLL::DllRun", "WAITING FOR STOP");
-		Sleep(1000);
-	}
+
 	LOG_WARNING("DLL::DllRun", "EXITING...");
-	Sleep(3000);
+
 	return 0;
 }
 
@@ -155,7 +156,10 @@ void DllEventHandler(RECON_CONTROL EventCode)
 		if (pServiceControllerInst->IsInteractive() == true) {
 			cprint_c("CTRL-C: Gracefully terminating service...\n");
 		}
-		pServiceControllerInst->Stop();
+		if (pServiceControllerInst) {
+			pServiceControllerInst->Stop();
+		}
+		
 		// Signal is handled - don't pass it on to the next handler
 		Sleep(1000);
 		break;

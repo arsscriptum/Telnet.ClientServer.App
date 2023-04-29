@@ -1,4 +1,36 @@
 {
+  "ReleaseDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
+  "DebugDLL_DynamicMFC": [
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    },
+    {
+      "Revision": "0A0A0A0A0A",
+      "Version": "1.0.0.1",
+      "Bytes": 0,
+      "DiffBytes": 0,
+      "Size": 0
+    }
+  ],
   "Debug": [
     {
       "Filename": null,
@@ -1561,6 +1593,61 @@
       "Bytes": 10075136,
       "DiffBytes": -5120,
       "Size": "9.61 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:08:28 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.302",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10074112,
+      "DiffBytes": -1024,
+      "Size": "9.61 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:11:53 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.303",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10074112,
+      "DiffBytes": 0,
+      "Size": "9.61 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:53:47 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.312",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10075136,
+      "DiffBytes": -1024,
+      "Size": "9.61 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:57:42 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.313",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10074624,
+      "DiffBytes": -512,
+      "Size": "9.61 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:59:58 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.314",
+      "Configuration": "Debug",
+      "Platform": "x64",
+      "Bytes": 10075136,
+      "DiffBytes": -512,
+      "Size": "9.61 MB"
     }
   ],
   "Release": [
@@ -1601,7 +1688,7 @@
       "Size": "2.53 MB"
     }
   ],
-  "ReleaseDLL_DynamicMFC": [
+  "ReleaseDLL": [
     {
       "Revision": "0A0A0A0A0A",
       "Version": "1.0.0.1",
@@ -1615,6 +1702,83 @@
       "Bytes": 0,
       "DiffBytes": 0,
       "Size": 0
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 10:25:55 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.258",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": -2793984,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 10:42:44 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.259",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 10:46:58 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.260",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 10:48:34 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.261",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 11:02:03 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.262",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 11:06:34 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.263",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 28, 2023 11:13:54 PM",
+      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
+      "Version": "1.0.1.264",
+      "Configuration": "ReleaseDLL",
+      "Platform": "x64",
+      "Bytes": 2793984,
+      "DiffBytes": 0,
+      "Size": "2.66 MB"
     }
   ],
   "DebugDLL": [
@@ -2060,115 +2224,193 @@
       "Bytes": 9951232,
       "DiffBytes": 0,
       "Size": "9.49 MB"
-    }
-  ],
-  "ReleaseDLL": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
-    },
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 10:25:55 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.258",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 6:56:04 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.295",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
-      "DiffBytes": -2793984,
-      "Size": "2.66 MB"
+      "Bytes": 9951232,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 10:42:44 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.259",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 6:56:32 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.296",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
+      "Bytes": 9951232,
       "DiffBytes": 0,
-      "Size": "2.66 MB"
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 10:46:58 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.260",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 6:58:02 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.297",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
+      "Bytes": 9951232,
       "DiffBytes": 0,
-      "Size": "2.66 MB"
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 10:48:34 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.261",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 6:58:21 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.296",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
+      "Bytes": 9951232,
       "DiffBytes": 0,
-      "Size": "2.66 MB"
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 11:02:03 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.262",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 6:59:19 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.297",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
-      "DiffBytes": 0,
-      "Size": "2.66 MB"
+      "Bytes": 9950208,
+      "DiffBytes": -1024,
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 11:06:34 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.263",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 7:05:25 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.298",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
-      "DiffBytes": 0,
-      "Size": "2.66 MB"
+      "Bytes": 9951232,
+      "DiffBytes": -1024,
+      "Size": "9.49 MB"
     },
     {
       "Filename": null,
-      "LastWriteTime": "April 28, 2023 11:13:54 PM",
-      "Revision": "f589d84e7941f572ab2ba2085c9025eec2fcd84d",
-      "Version": "1.0.1.264",
-      "Configuration": "ReleaseDLL",
+      "LastWriteTime": "April 29, 2023 7:05:41 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.299",
+      "Configuration": "DebugDLL",
       "Platform": "x64",
-      "Bytes": 2793984,
+      "Bytes": 9951232,
       "DiffBytes": 0,
-      "Size": "2.66 MB"
-    }
-  ],
-  "DebugDLL_DynamicMFC": [
-    {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
-      "DiffBytes": 0,
-      "Size": 0
+      "Size": "9.49 MB"
     },
     {
-      "Revision": "0A0A0A0A0A",
-      "Version": "1.0.0.1",
-      "Bytes": 0,
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:07:21 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.300",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9951232,
       "DiffBytes": 0,
-      "Size": 0
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:07:34 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.301",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9951232,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:12:34 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.304",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950208,
+      "DiffBytes": -1024,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:15:45 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.305",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950208,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:18:29 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.306",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950208,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:19:53 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.307",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950208,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:24:24 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.308",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950720,
+      "DiffBytes": -512,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:26:06 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.309",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950720,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:27:55 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.310",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9950720,
+      "DiffBytes": 0,
+      "Size": "9.49 MB"
+    },
+    {
+      "Filename": null,
+      "LastWriteTime": "April 29, 2023 7:35:09 PM",
+      "Revision": "029e5d4fb28886fb5b3ca0980e5265531cbb2913",
+      "Version": "1.0.1.311",
+      "Configuration": "DebugDLL",
+      "Platform": "x64",
+      "Bytes": 9951232,
+      "DiffBytes": -512,
+      "Size": "9.49 MB"
     }
   ]
 }

@@ -18,17 +18,10 @@ extern HANDLE ghRunThreadStopEvent;
 
 class ServerService : public BaseService, public CThread
 {
-private:
-	//the handle used as a synchronization mechanism
-	HANDLE m_hStop;
-	long restartCount;
-	volatile BOOL requestReset;
-	unsigned long masterThread;
-	UINT thrid_daemon;
 
 public:
 
-	ServerService();
+
 	//the run process
 	virtual void Start();
 
@@ -51,6 +44,8 @@ public:
 		memset(&m_CurrentStatus, 0, sizeof(m_CurrentStatus));
 		m_CurrentStatus.CheckPoint = 1;
 		m_hWinStatusHandle = 0;
+		mArgv = nullptr;
+		mArgc = 0;
 	}
 	virtual STD_STRING ServerService::CurrentStateString();
 	virtual bool IsRunning() { return (m_CurrentStatus.CurrentState == SERVICE_RUNNING); }
@@ -75,6 +70,7 @@ public:
 protected:
 	virtual unsigned long Process(void* parameter);
 private:
+	ServerService();
 	//==============================================================================
 	// Additional Control&Reporting
 	//==============================================================================
@@ -91,6 +87,8 @@ private:
 	static RECON_STATUS                m_CurrentStatus;
 	static SERVICE_STATUS_HANDLE	 m_hWinStatusHandle;
 	BOOL bInteractiveMode;
+	int mArgc;
+	char** mArgv;
 };
 
 #endif	// __SERVER_SERVICE_H__

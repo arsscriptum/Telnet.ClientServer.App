@@ -14,7 +14,6 @@
 HANDLE ghRunThreadStopEvent = 0;
 extern ServerService* pServiceControllerInst;
 
-unsigned  __stdcall ThreadProc(LPVOID lpParam);
 
 RECON_STATUS           ServerService::m_CurrentStatus;
 SERVICE_STATUS_HANDLE  ServerService::m_hWinStatusHandle = 0;
@@ -81,7 +80,6 @@ long RECON_CALL_CONV ServerService::StartInForeground(int argc, char* argv[])
 		}
 
 		RetVal = _MainFunction(argc, argv);
-		//RetVal = CreateThread();
 	}
 
 	return RetVal;
@@ -90,8 +88,22 @@ long RECON_CALL_CONV ServerService::StartInForeground(int argc, char* argv[])
 long RECON_CALL_CONV ServerService::StartDll(int argc, char* argv[])
 {
 	long RetVal = 0;
-	ServiceExecute(argc, argv);
+	mArgv = argv;
+	mArgc = argc;
 
+	RetVal = CreateThread();
+
+	return RetVal;
+}
+
+unsigned long ServerService::Process(void* parameter) 
+{
+	long RetVal = 0;
+#ifdef _SERVICE_DLL
+	ServiceExecute(mArgc, mArgv);
+#else //EXECUTABLE
+	
+#endif 
 	return RetVal;
 }
 
@@ -110,12 +122,6 @@ BOOL ServerService::ConsoleCtrlHandler(DWORD CtrlCode)
 	}
 }
 
-unsigned long ServerService::Process(void* parameter) 
-{
-	LOG_TRACE("ServerService::Process", "THREAD STARTING FOR %s. RUNING ServiceExecute", Service_Name());
-	ServiceExecute(0, nullptr);
-	return 0;
-}
 
 void WINAPI ServerService::ServiceExecute(DWORD dwArgc, LPTSTR* lpszArgv) {
 
@@ -127,8 +133,8 @@ void WINAPI ServerService::ServiceExecute(DWORD dwArgc, LPTSTR* lpszArgv) {
 		return;
 	}
 
-	SetAndReportStatus(RECON_CURRENT_STATE_START_PENDING, 0, 3000);
-	Sleep(3000);
+	SetAndReportStatus(RECON_CURRENT_STATE_START_PENDING, 0, 1000);
+	Sleep(1000);
 
 	LOG_TRACE("ServerService::ServiceExecute", "BEFORE Custom Main Function (ServerMain)");
 
@@ -138,8 +144,8 @@ void WINAPI ServerService::ServiceExecute(DWORD dwArgc, LPTSTR* lpszArgv) {
 	}
 
 	LOG_TRACE("ServerService::ServiceExecute", "AFTER Custom Main Function (ServerMain)");
-	SetAndReportStatus(RECON_CURRENT_STATE_STOPPED, RetVal, 0);
-	Sleep(3000);
+	SetAndReportStatus(RECON_CURRENT_STATE_STOPPED, RetVal, 1000);
+	Sleep(1000);
 }
 
 
@@ -164,8 +170,6 @@ void ServerService::Continue()
 
 void ServerService::Stop()
 {
-	LOG_TRACE("ServerService::Stop", "Stop Called. RAISING stop Event");
-	if (m_hStop) { SetEvent(m_hStop); }
 	Sleep(100);
 
 	LOG_TRACE("ServerService::Stop", "Stop Called. Setting state to RECON_CURRENT_STATE_STOP_PENDING");

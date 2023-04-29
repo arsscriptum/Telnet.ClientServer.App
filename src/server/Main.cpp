@@ -106,7 +106,7 @@ int main( int argc, char ** argv )
 	bool optServiceDebug = inputParser->isSet(cmdlineOptionDebug);
 	bool optTest = inputParser->isSet(cmdlineOptionTest);
 
-	//SetConsoleCtrlHandler(HandlerRoutine, TRUE);
+	
 	bool gExitRequested = false;
 	if (optHelp) {
 		usage();
