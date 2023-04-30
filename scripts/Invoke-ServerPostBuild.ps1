@@ -157,6 +157,12 @@ function Get-ScriptDirectory {
         $ServerConfig.Version.Revision = $HeadRevisionLong 
         $UpdatedVersion = $NewVersionString
 
+        $inf = Get-Item "$BuiltBinary"
+        [DateTime]$LastWriteDate = $inf.LastWriteTime
+        [String]$LastWriteTime = $LastWriteDate.GetDateTimeFormats()[26]
+        $ServerConfig.Version.LastBuildTime = $LastWriteTime
+      
+        Out-IniFile -Path "$ServerCfgIniFile" -InputObject $ServerConfig
 
         ########################################################################################
         #

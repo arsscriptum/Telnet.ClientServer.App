@@ -49,13 +49,8 @@ function Update-BinaryStatistics{
             throw "ERROR: NO BINARY FOUND @`"$BuiltBinary`""
         }
         $inf = Get-Item "$BuiltBinary"
-        [DateTime]$LastWriteDate = $inf.LastWriteTime
-        [String]$LastWriteTime = $LastWriteDate.GetDateTimeFormats()[26]
         $FileLengthBytes = $inf.Length 
         $SizePretty = Convert-Bytes -Size $FileLengthBytes -Format MB
-        $ServerConfig.Version.LastBuildTime = $LastWriteTime
-      
-        Out-IniFile -Path "$ServerCfgIniFile" -InputObject $ServerConfig
 
         if(!(Test-Path "$StatsFile")){
             Write-Output "[ERROR] : NO STATS FILE! CREATING"
