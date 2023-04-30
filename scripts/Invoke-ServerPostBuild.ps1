@@ -172,20 +172,26 @@ function Get-ScriptDirectory {
 
         if ($ConfigureVersionSettings -eq $True) {
             Write-BuildOutTitle "CONFIGURE VERSION SETTINGS"
-            Set-BinaryFileVersionSettings -Path "$BuiltBinary" -Description "Remote Shell Server" -VersionString "$NewVersion"
-            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "company" -PropertyValue "$($ServerConfig.General.CompanyName)"  
-            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "copyright" -PropertyValue "$($ServerConfig.General.LegalCopyright)"  
-            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "LegalTrademarks" -PropertyValue "$($ServerConfig.General.LegalTrademarks)"  
+
+            Write-Output "`tFileName              $($CfgFile.General.Filename)"
+            Write-Output "`tProductName           $($CfgFile.General.ProductName)"
+            Write-Output "`tCompanyName           $($CfgFile.General.CompanyName)"
+            Write-Output "`tFileDescription       $($CfgFile.General.FileDescription)"
+            Write-Output "`tLegalCopyright        $($CfgFile.General.LegalCopyright)"
+            Write-Output "`tPrivateBuild          $($CfgFile.General.PrivateBuild)"
+            [String]$Description = ""
+            if([string]::IsNullOrEmpty($($CfgFile.General.FileDescription)) -eq $False){
+                [String]$Description = $($CfgFile.General.FileDescription)
+            }   
+            Set-BinaryFileVersionSettings -Path "$BuiltBinary" -Description "$Description" -VersionString "$NewVersion"
+            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "company" -PropertyValue "$($CfgFile.General.CompanyName)"  
+            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "copyright" -PropertyValue "$($CfgFile.General.LegalCopyright)"  
+            Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "LegalTrademarks" -PropertyValue "$($CfgFile.General.LegalTrademarks)"  
 
             if($Configuration -match "Debug") { 
-                Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "PrivateBuild" -PropertyValue "$($ServerConfig.General.PrivateBuild)"  
+                Set-BinaryFileVersionProperty -Path "$BuiltBinary" -PropertyName "PrivateBuild" -PropertyValue "$($CfgFile.General.PrivateBuild)"  
             }
-            Write-Output "`tFileName              $($ServerConfig.General.Filename)"
-            Write-Output "`tProductName           $($ServerConfig.General.ProductName)"
-            Write-Output "`tCompanyName           $($ServerConfig.General.CompanyName)"
-            Write-Output "`tFileDescription       $($ServerConfig.General.FileDescription)"
-            Write-Output "`tLegalCopyright        $($ServerConfig.General.LegalCopyright)"
-            Write-Output "`tPrivateBuild          $($ServerConfig.General.PrivateBuild)"
+
         }
 
 
