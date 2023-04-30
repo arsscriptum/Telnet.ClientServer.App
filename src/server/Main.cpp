@@ -116,9 +116,7 @@ int main( int argc, char ** argv )
 		banner();
 	}
 	
-	//ServerService service(ServerMain, ServerEventHandler);
-	//pServiceControllerInst = &service;
-
+	// unique ptr to avoid leak on exit
 	pServiceControllerInst = std::unique_ptr<ServerService>(new ServerService(ServerMain, ServerEventHandler));
 
 

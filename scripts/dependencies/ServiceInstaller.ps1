@@ -278,7 +278,7 @@ function Install-WinServiceExtended{
         if($IsDll -eq $False){
             $binaryPath = $Path
         }
-        Write-Output "[Install-WinService] Description $Description"
+        
         if([string]::IsNullOrEmpty($Description)){
             $DateStr = (Get-Date).GetDateTimeFormats()[14]
             $Description = "Service `"{0}`" created on {1}" -f $Name, $DateStr
@@ -289,11 +289,11 @@ function Install-WinServiceExtended{
         $ScExe=(get-command sc.exe).Source
         if($SharedProcess){
             $OutSc =  &"$ScExe" 'config' "$Name" 'type=' 'share'
-            Write-Output $OutSc
+           
         }elseif($OwnProcess){
             Write-Output '`"$ScExe`" "config" "$Name" "type=" "own"'
             $OutSc =  &"$ScExe" 'config' "$Name" 'type=' 'own'
-            Write-Output $OutSc
+            
         }
 
         Write-Output "[Install-WinService] SUCCESS"
