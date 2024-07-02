@@ -22,6 +22,7 @@
 
 #define VC_EXTRALEAN		// Exclude rarely-used stuff from Windows headers
 
+#define CSBLOCK
 
 #pragma  warning( disable: 4996 )
 

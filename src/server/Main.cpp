@@ -40,7 +40,7 @@ static void RECON_CALL_CONV ServerEventHandler(RECON_CONTROL EventCode);
 
 void banner() {
 	std::wcout << std::endl;
-	cprint_cb("recon_srv v2.1 - Remote Shell Service\n");
+	cprint_cb("recon_srv v2.1 - Test Service\n");
 	cprint_c("Built on %s\n", __TIMESTAMP__);
 	cprint_c("Copyright (C) 2000-2021 Guillaume Plante\n");
 	std::wcout << std::endl;

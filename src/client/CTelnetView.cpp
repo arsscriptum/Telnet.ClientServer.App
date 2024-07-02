@@ -11,7 +11,7 @@
 #include "Process.h"
 
 #include "HostDialog.h"
-#include "log_scope.h"
+
 #ifdef _DEBUG
 #define new DEBUG_NEW
 #undef THIS_FILE

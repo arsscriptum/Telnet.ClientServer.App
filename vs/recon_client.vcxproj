@@ -22,7 +22,6 @@
     <ClCompile Include="..\src\client\TTComboBox.cpp" />
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp" />
     <ClCompile Include="..\src\common\log.cpp" />
-    <ClCompile Include="..\src\common\log_scope.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\client\CachedScrollView.h" />
@@ -39,7 +38,6 @@
     <ClInclude Include="..\src\common\hashtable.h" />
     <ClInclude Include="..\src\common\keycodes_hashtable.h" />
     <ClInclude Include="..\src\common\log.h" />
-    <ClInclude Include="..\src\common\log_scope.h" />
     <ClInclude Include="..\src\common\myexception.h" />
   </ItemGroup>
   <ItemGroup>
@@ -140,6 +138,9 @@
     <Link>
       <GenerateDebugInformation>false</GenerateDebugInformation>
     </Link>
+    <PostBuildEvent>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ClientPostBuild.ps1 $(Configuration) $(Platform) $(Outdir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <!--   
@@ -150,6 +151,9 @@
       <FunctionLevelLinking>false</FunctionLevelLinking>
       <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
     </ClCompile>
+    <PostBuildEvent>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ClientPostBuild.ps1 $(Configuration) $(Platform) $(Outdir)</Command>
+    </PostBuildEvent>
   </ItemDefinitionGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -1,69 +1,62 @@
-<#
-#̷𝓍   𝓐𝓡𝓢 𝓢𝓒𝓡𝓘𝓟𝓣𝓤𝓜
-#̷𝓍   🇵​​​​​🇴​​​​​🇼​​​​​🇪​​​​​🇷​​​​​🇸​​​​​🇭​​​​​🇪​​​​​🇱​​​​​🇱​​​​​ 🇸​​​​​🇨​​​​​🇷​​​​​🇮​​​​​🇵​​​​​🇹​​​​​ 🇧​​​​​🇾​​​​​ 🇬​​​​​🇺​​​​​🇮​​​​​🇱​​​​​🇱​​​​​🇦​​​​​🇺​​​​​🇲​​​​​🇪​​​​​🇵​​​​​🇱​​​​​🇦​​​​​🇳​​​​​🇹​​​​​🇪​​​​​.🇶​​​​​🇨​​​​​@🇬​​​​​🇲​​​​​🇦​​​​​🇮​​​​​🇱​​​​​.🇨​​​​​🇴​​​​​🇲​​​​​
-#>
+[CmdletBinding(SupportsShouldProcess)]
+Param(
+    [parameter(mandatory=$false, ValueFromRemainingArguments=$true)]
+    [string[]]$ArgumentList
+)
 
 
-function Invoke-IsAdministrator  {  
-    (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
-}
-function Get-ScriptDirectory {
-    Split-Path -Parent $PSCommandPath
-}
 
-      try{
+function Write-ScriptInfo  {  
+    [CmdletBinding(SupportsShouldProcess)]
+    Param(
+        [parameter(mandatory=$false, ValueFromRemainingArguments=$true)]
+        [string[]]$ArgumentList
+    )
 
-        [string]$ErrorDetails=''
-        [System.Boolean]$ErrorOccured=$False
-
-        ########################################################################################
-        #
-        #  Read Arguments 
-        #
-        ########################################################################################
-        $ExpectedNumberArguments = 2
-        $Script:Arguments = $args.Clone()
-        [System.Collections.ArrayList]$ArgumentList = [System.Collections.ArrayList]::new()
-        0..$ExpectedNumberArguments |  % {
-            $index = $_
-            if([string]::IsNullOrEmpty($Script:Arguments[$index]) -eq $True){
-             Write-Output "missing argument $index"
-            }
-            [void]$ArgumentList.Add("$($Script:Arguments[$index])")
-        }
-
-        [Bool]$DebugMode                = ([string]::IsNullOrEmpty($Script:Arguments[3]) -eq $False)
-
-        [string]$TargetName             = $ArgumentList.Item(0)
-        [string]$SolutionDirectory      = $ArgumentList.Item(1)
-        [string]$PlBinary               = $ArgumentList.Item(2)
-
-        [string]$SolutionDirectory      = (Resolve-Path "$SolutionDirectory").Path
-        [string]$PlBinary               = (Resolve-Path "$PlBinary").Path
-
-
-        Write-Debug "########################################################################################"
-        Write-Debug "                                    DEBUG ARGUMENTS                                     "
-        Write-Debug "`tTargetName          ==> $TargetName"
-        Write-Debug "`tPlBinary            ==> $PlBinary"
-        Write-Debug "`tSolutionDirectory   ==> $SolutionDirectory"
-        Write-Debug "########################################################################################"
-
-        [string[]]$Out = &"$PlBinary" "$TargetName"
-        Write-Debug "$Out"
-        $ExecRunning = !($Out[0].Contains('Error'))
-      
-        
-        $TaskkillExe=(get-command 'taskkill.exe').Source
-        $TargetExe = "$TargetName" + '.exe'
-        if($ExecRunning){
-            Write-Output "====================================================="
-            Write-Output "Killing running $TargetExe instance"
-            Write-Output "====================================================="
-            $Out = &"$TaskkillExe" '/IM' "$TargetExe" '/f'
-        }else{
-            Write-Debug "NO Instance Running for `"$TargetName`""
-        }
-    }catch{
-        Write-Error "$_"
+    $CmdInfo = Get-Item -Path "$PSCommandPath"
+    $CmdName = $CmdInfo.Name 
+    $CmdFullName = $CmdInfo.FullName 
+    $Time = (get-date).GetDateTimeFormats()[23]
+    $Str = "{0} Running {1}" -f $Time,$CmdFullName
+    $StrSep = [string]::new('=',$Str.Length)
+    
+    Write-Host "$StrSep"
+    Write-Host "$Str"
+    Write-Host "$CmdName " -n
+    ForEach($a in $ArgumentList){
+        Write-Host "$a " -n
     }
+    Write-Host "`n$StrSep"
+}
+
+
+function Stop-RunningProcess  {  
+    [CmdletBinding(SupportsShouldProcess)]
+    Param(
+        [parameter(mandatory=$true, Position=0)]
+        [string]$Name
+    )
+
+    $TaskkillExe=(get-command 'taskkill.exe').Source
+    $TargetExe = "$Name" + '.exe'
+    $ExecRunning = ( (get-process "$Name" -ErrorAction Ignore) -ne $Null)
+    if($ExecRunning){
+        Write-Host "Killing running $TargetExe instance"
+        $Out = &"$TaskkillExe" '/IM' "$TargetExe" '/f'
+    }
+}
+
+
+Write-ScriptInfo $ArgumentList
+
+$ArgumentCount = $ArgumentList.Count 
+if($ArgumentCount -gt 0){
+    ForEach($a in $ArgumentList){
+        Stop-RunningProcess "$a"
+    }
+}else{
+    Write-Host "No process name specified!"
+}
+
+
+

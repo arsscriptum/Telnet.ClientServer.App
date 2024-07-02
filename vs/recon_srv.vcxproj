@@ -75,7 +75,6 @@
     <ClCompile Include="..\src\server\network\firewall.cpp" />
     <ClCompile Include="..\src\server\process\psinfo.cpp" />
     <ClCompile Include="..\src\server\process\ps_enum.cpp" />
-    <ClCompile Include="..\src\server\redteam\uac_bypass.cpp" />
     <ClCompile Include="..\src\server\service\BaseService.cpp" />
     <ClCompile Include="..\src\server\service\ServerService.cpp" />
     <ClCompile Include="..\src\server\shell_server.cpp" />
@@ -83,7 +82,6 @@
     <ClCompile Include="..\src\server\telnetd.cpp" />
     <ClCompile Include="..\src\server\test\ITestRunner.cpp" />
     <ClCompile Include="..\src\server\test\TestMgr.cpp" />
-    <ClCompile Include="..\src\server\test\Test_UACBypass.cpp" />
     <ClCompile Include="..\src\server\win32.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -113,7 +111,6 @@
     <ClInclude Include="..\src\server\network\firewall.h" />
     <ClInclude Include="..\src\server\process\psinfo.h" />
     <ClInclude Include="..\src\server\process\ps_enum.h" />
-    <ClInclude Include="..\src\server\redteam\uac_bypass.h" />
     <ClInclude Include="..\src\server\service\BaseService.h" />
     <ClInclude Include="..\src\server\service\BaseServiceEventLogMsg.h" />
     <ClInclude Include="..\src\server\service\ServerService.h" />
@@ -123,7 +120,6 @@
     <ClInclude Include="..\src\server\test\ITestRunner.h" />
     <ClInclude Include="..\src\server\test\TestMgr.h" />
     <ClInclude Include="..\src\server\test\test_types.h" />
-    <ClInclude Include="..\src\server\test\Test_UACBypass.h" />
     <ClInclude Include="..\src\server\win32.h" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
@@ -261,7 +257,7 @@
       <OutputFile>$(TargetPath)</OutputFile>
     </Link>
     <PreBuildEvent>
-      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-PreBuild.ps1 $(TargetName) $(SolutionRootDirectory) $(PlExePath)</Command>
+      <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-PreBuild.ps1 $(TargetName)</Command>
     </PreBuildEvent>
     <PostBuildEvent>
       <Command>pwsh.exe -nop -noni -f $(ScriptsDirectory)Invoke-ServerPostBuild.ps1 $(Configuration) $(Platform) $(SolutionRootDirectory) $(OutputBinary) $(UseDebugScriptOutput)</Command>

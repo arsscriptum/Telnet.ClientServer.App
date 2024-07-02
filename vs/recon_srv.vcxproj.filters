@@ -13,9 +13,6 @@
     <Filter Include="server">
       <UniqueIdentifier>{0379c0c2-6847-4fbf-825c-7ee7f83048c5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="redteam">
-      <UniqueIdentifier>{f7c6a6c6-dcae-424c-b29c-cd846ae7170e}</UniqueIdentifier>
-    </Filter>
     <Filter Include="process">
       <UniqueIdentifier>{88730b5a-01f4-4bb8-927a-0df89eba632e}</UniqueIdentifier>
     </Filter>
@@ -78,9 +75,6 @@
     <ClCompile Include="..\src\server\network\firewall.cpp">
       <Filter>network</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\server\redteam\uac_bypass.cpp">
-      <Filter>redteam</Filter>
-    </ClCompile>
     <ClCompile Include="..\src\server\test\TestMgr.cpp">
       <Filter>test</Filter>
     </ClCompile>
@@ -92,9 +86,6 @@
     </ClCompile>
     <ClCompile Include="..\src\server\process\psinfo.cpp">
       <Filter>process</Filter>
-    </ClCompile>
-    <ClCompile Include="..\src\server\test\Test_UACBypass.cpp">
-      <Filter>test</Filter>
     </ClCompile>
     <ClCompile Include="..\src\server\MainDll.cpp">
       <Filter>server</Filter>
@@ -187,9 +178,6 @@
     <ClInclude Include="..\src\server\network\firewall.h">
       <Filter>network</Filter>
     </ClInclude>
-    <ClInclude Include="..\src\server\redteam\uac_bypass.h">
-      <Filter>redteam</Filter>
-    </ClInclude>
     <ClInclude Include="..\src\server\test\TestMgr.h">
       <Filter>test</Filter>
     </ClInclude>
@@ -204,9 +192,6 @@
     </ClInclude>
     <ClInclude Include="..\src\server\process\psinfo.h">
       <Filter>process</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\server\test\Test_UACBypass.h">
-      <Filter>test</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\log_types.h">
       <Filter>common</Filter>

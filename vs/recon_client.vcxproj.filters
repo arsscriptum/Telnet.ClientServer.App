@@ -34,9 +34,6 @@
     <ClCompile Include="..\src\common\keycodes_hashtable.cpp">
       <Filter>src</Filter>
     </ClCompile>
-    <ClCompile Include="..\src\common\log_scope.cpp">
-      <Filter>src</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\src\client\ClientSocket.h">
@@ -82,9 +79,6 @@
       <Filter>headers</Filter>
     </ClInclude>
     <ClInclude Include="..\src\common\myexception.h">
-      <Filter>headers</Filter>
-    </ClInclude>
-    <ClInclude Include="..\src\common\log_scope.h">
       <Filter>headers</Filter>
     </ClInclude>
   </ItemGroup>

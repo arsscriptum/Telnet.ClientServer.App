@@ -1,3 +1,55 @@
+[CmdletBinding(SupportsShouldProcess)]
+Param(
+    [parameter(mandatory=$false, ValueFromRemainingArguments=$true)]
+    [string[]]$ArgumentList
+)
+
+
+
+function Write-ScriptInfo  {  
+    [CmdletBinding(SupportsShouldProcess)]
+    Param(
+        [parameter(mandatory=$false, ValueFromRemainingArguments=$true)]
+        [string[]]$ArgumentList
+    )
+
+    $CmdInfo = Get-Item -Path "$PSCommandPath"
+    $CmdName = $CmdInfo.Name 
+    $CmdFullName = $CmdInfo.FullName 
+    $Time = (get-date).GetDateTimeFormats()[23]
+    $Str = "{0} Running {1}" -f $Time,$CmdFullName
+    $StrSep = [string]::new('=',$Str.Length)
+    
+    Write-Host "$StrSep"
+    Write-Host "$Str"
+    Write-Host "$CmdName " -n
+    ForEach($a in $ArgumentList){
+        Write-Host "$a " -n
+    }
+    Write-Host "`n$StrSep"
+}
+
+
+$Platform = $ArgumentList[0]
+$Target = $ArgumentList[1]
+$OutputDirectory = $ArgumentList[2]
+$FullOutPath = (Resolve-Path "$OutputDirectory").Path
+
+
+Write-ScriptInfo $ArgumentList
+
+Write-Host "Platform        $Platform"
+Write-Host "Target          $Target"
+Write-Host "OutputDirectory $OutputDirectory"
+Write-Host "FullOutPath     $FullOutPath"
+
+$DejaInsighDll = "$ENV:DejaToolsRootDirectory\lib\DejaInsight.x86.dll"
+Copy-Item $DejaInsighDll $FullOutPath -Force -Verbose
+
+
+
+return 
+
 
 function Invoke-IsAdministrator  {  
     (New-Object Security.Principal.WindowsPrincipal ([Security.Principal.WindowsIdentity]::GetCurrent())).IsInRole([Security.Principal.WindowsBuiltinRole]::Administrator)  
